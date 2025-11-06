@@ -34,11 +34,21 @@ public class ResponseOperators {
         return new HeaderCondition(headerName, matcher);
     }
 
-    public static BodyJsonValidatorCondition bodyJsonValidator(String path) {
+    /**
+     * Validate response body against JSON schema
+     *
+     * @param path path to file in resources
+     */
+    public static BodyJsonValidatorCondition matchesJsonSchema(String path) {
         return new BodyJsonValidatorCondition(path);
     }
 
-    public static BodyXmlValidatorCondition bodyXmlValidator(String path) {
+    /**
+     * Validate response body against XML schema
+     *
+     * @param path path to file in resources
+     */
+    public static BodyXmlValidatorCondition matchesXmlSchema(String path) {
         return new BodyXmlValidatorCondition(path);
     }
 
@@ -46,67 +56,67 @@ public class ResponseOperators {
      * Check is Json/JsonArray type
      * <p> extensible fields not expected
      */
-    public static BodyIsJsonTypeCondition bodyIsJson() {
+    public static BodyIsJsonTypeCondition beJsonType() {
         return new BodyIsJsonTypeCondition();
     }
 
     /**
-     * Assertion without strict array ordering
+     * Json assertion without strict array ordering
      * <p> extensible fields will be skipped
      *
      * @param path path to file with expected part of JSON with arrays (can be not ordered)
      */
-    public static BodyJsonContainsFromFileCondition bodyJsonContains(Path path) {
+    public static BodyJsonContainsFromFileCondition containsJson(Path path) {
         return new BodyJsonContainsFromFileCondition(path);
     }
 
     /**
-     * Assertion without strict array ordering
+     * Json assertion without strict array ordering
      * <p> extensible fields will be skipped
      *
      * @param body expected part of JSON with arrays (can be not ordered)
      */
-    public static BodyJsonContainsCondition bodyJsonContains(String body) {
+    public static BodyJsonContainsCondition containsJson(String body) {
         return new BodyJsonContainsCondition(body);
     }
 
     /**
-     * Assertion with strict array ordering
+     * Json assertion with strict array ordering
      * <p> extensible fields not expected
      *
      * @param body expected full JSON with strict ordered arrays
      */
-    public static BodyJsonEqualCondition bodyJsonEqual(String body) {
+    public static BodyJsonEqualCondition exactlyMatchJson(String body) {
         return new BodyJsonEqualCondition(body);
     }
 
     /**
-     * Assertion with strict array ordering
+     * Json assertion with strict array ordering
      * <p> extensible fields not expected
      *
      * @param path path to file with expected full JSON with strict ordered arrays
      */
-    public static BodyJsonEqualFromFileCondition bodyJsonEqual(Path path) {
+    public static BodyJsonEqualFromFileCondition exactlyMatchJson(Path path) {
         return new BodyJsonEqualFromFileCondition(path);
     }
 
     /**
-     * Assertion with strict array ordering
+     * Json assertion with strict array ordering
      * <p> extensible fields will be skipped
      *
      * @param body expected part of JSON with strict ordered arrays
      */
-    public static BodyJsonContainsStrictOrderCondition bodyJsonContainsStrictOrder(String body) {
+    public static BodyJsonContainsStrictOrderCondition containsJsonStrictOrder(String body) {
         return new BodyJsonContainsStrictOrderCondition(body);
     }
 
     /**
-     * Assertion without strict array ordering
+     * Json assertion without strict array ordering
      * <p> extensible fields not expected
      *
      * @param body expected full JSON with arrays (can be not ordered)
      */
-    public static BodyJsonEqualNonStrictOrderCondition bodyJsonEqualNoStrictOrder(String body) {
+    public static BodyJsonEqualNonStrictOrderCondition exactlyMatchJsonIgnoringOrder(String body) {
         return new BodyJsonEqualNonStrictOrderCondition(body);
     }
 

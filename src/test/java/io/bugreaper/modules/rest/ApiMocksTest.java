@@ -127,7 +127,7 @@ class ApiMocksTest extends PreSetup {
                         """
                                 {"id": 1}""")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyIsJson());
+                .bodyShould(beJsonType());
     }
 
     @Test
@@ -183,7 +183,7 @@ class ApiMocksTest extends PreSetup {
 
         api.sendGet("/api/get")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonValidator("testdata/schemas/post_1.json"));
+                .bodyShould(matchesJsonSchema("testdata/schemas/post_1.json"));
     }
 
     @Test
@@ -194,8 +194,8 @@ class ApiMocksTest extends PreSetup {
 
         api.sendGet("/api/get")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonContains(Path.of("testdata/responses/get_1_part.json")))
-                .bodyShould(bodyJsonContains("""
+                .bodyShould(containsJson(Path.of("testdata/responses/get_1_part.json")))
+                .bodyShould(containsJson("""
                         {
                           "status": 11,
                           "statusName": "Something"
@@ -219,7 +219,7 @@ class ApiMocksTest extends PreSetup {
 
         api.sendGet("/api/get")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonEqual(Path.of("testdata/responses/get_1_equal.json")));
+                .bodyShould(exactlyMatchJson(Path.of("testdata/responses/get_1_equal.json")));
     }
 
     @Test
@@ -230,7 +230,7 @@ class ApiMocksTest extends PreSetup {
 
         api.sendGet("/api/get")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonEqual("""
+                .bodyShould(exactlyMatchJson("""
                         {
                           "statusName": "Something",
                           "id": 901,
@@ -246,7 +246,7 @@ class ApiMocksTest extends PreSetup {
 
         api.sendGet("/api/get")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonContainsStrictOrder("""
+                .bodyShould(containsJsonStrictOrder("""
                         {
                           "array": [
                             {
@@ -330,7 +330,7 @@ class ApiMocksTest extends PreSetup {
                                 {"mainId": 555}""")
                 .shouldHave(statusCode(200))
 
-                .bodyShould(bodyJsonEqual("""
+                .bodyShould(exactlyMatchJson("""
                         {
                           "id": 125,
                           "status": "active",
@@ -352,7 +352,7 @@ class ApiMocksTest extends PreSetup {
                         """
                                 {"id": 1}""")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyJsonEqual("""
+                .bodyShould(exactlyMatchJson("""
                         {
                           "result": "ok"
                         }"""))
@@ -381,7 +381,7 @@ class ApiMocksTest extends PreSetup {
 
         api.sendPost("/api/post")
                 .shouldHave(statusCodeSuccessful())
-                .bodyShould(bodyJsonEqualNoStrictOrder("""
+                .bodyShould(exactlyMatchJsonIgnoringOrder("""
                         {
                           "id": 1,
                           "array": [1,3,2]
@@ -492,7 +492,7 @@ class ApiMocksTest extends PreSetup {
         apiXml.sendPost("/api/post-xml",
                         "<response> <key>some_data</key> </response>")
                 .shouldHave(statusCode(200))
-                .bodyShould(bodyXmlValidator("testdata/schemas/post_2_xml.xsd"))
+                .bodyShould(matchesXmlSchema("testdata/schemas/post_2_xml.xsd"))
                 .shouldHave(bodyField("response.id", is("285")))
                 .shouldHave(bodyField("response.status", is("ok")));
 
