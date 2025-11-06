@@ -1,0 +1,10 @@
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/get"
+  },
+  "times": {
+    "atLeast": 1,
+    "atMost": 1
+  }
+}
