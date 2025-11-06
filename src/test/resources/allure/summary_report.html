@@ -1,0 +1,41 @@
+<html title="test title">
+<head>
+<style>
+                    table {
+                        width: 100%;
+                        margin-bottom: 1rem;
+                        color: #111314;
+                        border-collapse: collapse;
+                        font-size: 12;
+                    }
+                    table td, table th {
+                        vertical-align: center;
+                        text-align:center;
+                        border: 1px solid #dee2e6;
+                    }
+                    table th{
+                        position: sticky;
+                        top: 0;
+                        background-color:#FBFCFC!important;
+                    }
+                    #stick-column {
+                        position: sticky;
+                        left: 0;
+                        font-weight: bold;
+                    }
+</style>
+</head>
+<body>
+<table>
+<tr>
+<th style="font-weight: normal;">
+Expected verify: Exactly <2><br>
+All requests: <2><br>
+Passed verify: <1></th><th>№1</th><th>№2</th></tr>
+<tr><td id="stick-column">method/path</td><td style="background-color: #c2f0e7;">passed</td><td style="background-color: #c2f0e7;">passed</td></tr>
+<tr><td id="stick-column">body</td><td style="background-color: #c2f0e7;">passed</td><td style="background-color: #f0c2cb;">failed</td></tr>
+<tr><td id="stick-column">headers</td><td>skipped</td><td>skipped</td></tr>
+<tr><td id="stick-column">Full assert</td><td style="background-color: #c2f0e7;">passed</td><td style="background-color: #f0c2cb;">failed</td></tr>
+</table>
+</body>
+</html>

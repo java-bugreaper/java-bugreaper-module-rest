@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mock-server:
+    container_name: mock-server
+    image: mockserver/mockserver:5.15.0
+    environment:
+      TZ: "Europe/Kiev"
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8 -Dmockserver.watchInitializationJson=true # -Dmockserver.logLevel=OFF
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+#    volumes:
+#      - type: bind
+#        source: ./dump/initializerJson.json
+#        target: /config/initializerJson.json
+    ports:
+      - "1080:1080"
+

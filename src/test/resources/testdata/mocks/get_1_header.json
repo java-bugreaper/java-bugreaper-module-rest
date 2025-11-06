@@ -1,0 +1,22 @@
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/get"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "some_header_1": [
+        "test1"
+      ],
+      "some_header_2": [
+        "head/test2"
+      ]
+    },
+    "body": {
+      "id": 901,
+      "status": 11,
+      "statusName": "Something"
+    }
+  }
+}

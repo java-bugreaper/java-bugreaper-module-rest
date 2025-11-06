@@ -1,0 +1,18 @@
+{
+  "httpRequest": {
+    "method": "POST",
+    "path": "/api/post",
+    "body": {
+      "mainId": 555
+    }
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "body": {
+      "id": 125,
+      "status": "active",
+      "amount": 100.99,
+      "isTrue": true
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/get"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "body": {
+      "idAll": 1,
+      "array": [
+        {
+          "id": 901,
+          "test": "one"
+        },
+        {
+          "id": 902,
+          "test": "two"
+        }
+      ]
+    }
+  }
+}
