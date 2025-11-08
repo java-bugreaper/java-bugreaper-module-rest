@@ -1,11 +1,11 @@
 package io.bugreaper.modules.mocks.allurereporter;
 
-import io.qameta.allure.Allure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static io.bugreaper.core.allurereporter.AllureReporter.createHtmlAllureAttachment;
 import static io.bugreaper.core.mappers.StringMappers.stringMapper;
 import static io.bugreaper.core.mappers.StringMappers.stringMapperV2;
 
@@ -113,10 +113,6 @@ public class AllureBuilder {
         return dataRows;
     }
 
-
-    private static void createHtmlAllureAttachment(String name, String attachment) {
-        Allure.addAttachment(name, "text/html", attachment, ".html");
-    }
 
 
     private static String reportSummaryTable(StringBuilder columns,

@@ -39,8 +39,8 @@ import static io.bugreaper.modules.mocks.enchanted.EnchantedAllureLogic.mockSche
 import static io.bugreaper.modules.mocks.enchanted.GetActual.*;
 import static io.bugreaper.modules.mocks.enchanted.GetExpected.*;
 import static io.bugreaper.modules.mocks.enchanted.SummaryReportForVerify.summaryReport;
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.getObjectFromJsonByKey;
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.jsonObjectFromString;
+import static io.bugreaper.core.mappers.JsonMappers.getObjectFromJsonByKey;
+import static io.bugreaper.core.mappers.JsonMappers.jsonObjectFromString;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;

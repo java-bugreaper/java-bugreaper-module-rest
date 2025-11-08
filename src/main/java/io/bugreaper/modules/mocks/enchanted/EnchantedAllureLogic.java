@@ -22,7 +22,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.jsonObjectFromString;
+import static io.bugreaper.core.mappers.JsonMappers.jsonObjectFromString;
 import static io.bugreaper.modules.mocks.mappers.MapDifferenceReporter.jsonDifLogic;
 
 

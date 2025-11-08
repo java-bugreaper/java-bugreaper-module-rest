@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ApiMocksEnchantedValidationTests extends PreSetup {
 
     @Test
-    void wrongSetupStillWork() {
+    void testWrongSetup() {
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
                 mocksApi.verifyMock("""
@@ -34,7 +34,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for wrong verify setup",
                 exception.getMessage(),
-                StringContains.containsString("Wrong JSON/JSONArray format"));
+                StringContains.containsString("Invalid lenient JSON/JSONArray"));
     }
 
     @Test

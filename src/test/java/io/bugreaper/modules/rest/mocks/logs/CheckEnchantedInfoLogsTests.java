@@ -72,10 +72,10 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
                                         "type": "object",
                                         "properties": {
                                              "id_wrong": {
-                                             "type": "integer"
+                                             "type": "integer",
                                              }
                                         },
-                                        "additionalProperties": false
+                                        "additionalProperties": false,
                                     }
                                 }
                             },

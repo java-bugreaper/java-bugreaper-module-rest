@@ -53,7 +53,7 @@ class MocksApiCatchTest extends PreSetup {
         MatcherAssert.assertThat(
                 "Broken JSON for mock vetify",
                 exception.getMessage(),
-                StringContains.containsString("Wrong JSON/JSONArray format:"));
+                StringContains.containsString("Invalid lenient JSON/JSONArray"));
     }
 
     @Test

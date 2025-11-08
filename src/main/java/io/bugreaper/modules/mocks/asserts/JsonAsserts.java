@@ -36,7 +36,8 @@ public class JsonAsserts {
         }
     }
 
-    //if no assert error will be null
+    // use for enchanted report for mocks (used enums)
+    // if no assert error will be null
     public static String assertSchemaMethod(String expectedSchema, String actualJson, JsonSchemaFactory factory, boolean returnReport) {
 
         JsonSchema jsonSchema = factory.getSchema(expectedSchema);

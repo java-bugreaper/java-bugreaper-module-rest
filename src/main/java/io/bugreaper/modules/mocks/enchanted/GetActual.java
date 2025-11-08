@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static io.bugreaper.core.mappers.JsonMappers.*;
 import static io.bugreaper.core.mappers.StringMappers.listToString;
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.*;
+import static io.bugreaper.modules.mocks.mappers.JsonMappersRest.*;
 
 
 public class GetActual extends EnchantedSetup {

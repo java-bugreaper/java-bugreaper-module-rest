@@ -27,7 +27,7 @@ for interact with the MINIO
 - ### [Tests](https://gitlab.com/bug-reaper/java-bugreaper-sandbox/-/tree/main/java-test-part1)
 
 ### Dependencies
-| Lib                                                                                   | Version | Description    |
-|---------------------------------------------------------------------------------------|---------|----------------|
-| [bugreaper-core](https://mvnrepository.com/artifact/io.gitlab.ambu550/bugreaper-core) | 0.0.7   | BugReaper CORE |
-| [REST Assured](https://mvnrepository.com/artifact/io.rest-assured/rest-assured)       | 5.5.1   | API interact   |
+| Lib                                                                                   | Version  | Description    |
+|---------------------------------------------------------------------------------------|----------|----------------|
+| [bugreaper-core](https://mvnrepository.com/artifact/io.gitlab.ambu550/bugreaper-core) | 0.0.8-rc | BugReaper CORE |
+| [REST Assured](https://mvnrepository.com/artifact/io.rest-assured/rest-assured)       | 5.5.1    | API interact   |
