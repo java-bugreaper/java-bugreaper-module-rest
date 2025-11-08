@@ -24,7 +24,9 @@ import org.json.JSONObject;
 import java.text.MessageFormat;
 import java.util.*;
 
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.*;
+import static io.bugreaper.core.mappers.JsonMappers.jsonToStringBeautifier;
+import static io.bugreaper.core.mappers.JsonMappers.putObjectToJson;
+import static io.bugreaper.modules.mocks.mappers.JsonMappersRest.*;
 
 public class GetExpected extends EnchantedSetup {
 

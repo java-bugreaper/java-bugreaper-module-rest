@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.bugreaper.core.allurereporter.AllureReporter.attachJson;
-import static io.bugreaper.core.assertions.JsonAsserts.checkJson;
+import static io.bugreaper.core.assertions.JsonAsserts.assertLenientValidJson;
 import static io.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static io.bugreaper.core.mappers.StringMappers.*;
 import static io.bugreaper.modules.mocks.enchanted.GetActual.getActualMethodsAndPathsList;
@@ -222,8 +222,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Step("(MOCK)[VERIFY] Verify mock")
     public void verifyMock(@Param(mode = HIDDEN) String verifySetup) {
 
-        //validate json (mockserver can pass but better to validate for manual debug and enchanted log logic)
-        checkJson(verifySetup);
+        assertLenientValidJson(verifySetup);
 
         try {
             assertEquals(
@@ -279,7 +278,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Step("(MOCK)[VERIFY] Verify sequence with await")
     public void verifyMockSequenceWithAwait(@Param(mode = HIDDEN) String verifySetup) {
         attachJson("Sequence within" + formatMilliseconds(awaitMs), verifySetup);
-        checkJson(verifySetup);
+        assertLenientValidJson(verifySetup);
 
         try {
         await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
@@ -294,7 +293,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Step("(MOCK)[VERIFY] Verify mock with await")
     public void verifyMockWithAwait(@Param(mode = HIDDEN) String verifySetup) {
         attachJson("Mock verify setup within" + formatMilliseconds(awaitMs), verifySetup);
-        checkJson(verifySetup);
+        assertLenientValidJson(verifySetup);
         try {
             await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
                     .untilAsserted(

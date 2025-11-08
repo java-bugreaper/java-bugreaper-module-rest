@@ -2,7 +2,7 @@ package io.bugreaper.modules.api.assertable.response.asserters;
 
 import io.restassured.response.Response;
 
-import static io.bugreaper.core.assertions.JsonAsserts.checkJson;
+import static io.bugreaper.core.assertions.JsonAsserts.assertValidJson;
 
 
 public class BodyIsJsonTypeCondition implements BodyCondition {
@@ -12,7 +12,7 @@ public class BodyIsJsonTypeCondition implements BodyCondition {
     public void bodyCheck(Response response) {
 
 
-        checkJson(response.getBody().asString());
+        assertValidJson(response.getBody().asString());
     }
 
     @Override

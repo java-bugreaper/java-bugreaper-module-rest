@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static io.bugreaper.modules.mocks.enchanted.GetExpected.getExpectedBodyType;
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.jsonObjectFromString;
+import static io.bugreaper.core.mappers.JsonMappers.jsonObjectFromString;
 import static org.hamcrest.Matchers.is;
 
 

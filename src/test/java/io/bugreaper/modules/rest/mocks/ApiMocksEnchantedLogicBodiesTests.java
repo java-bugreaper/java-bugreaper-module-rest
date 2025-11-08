@@ -267,9 +267,9 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                             "body" : {
                                  "type": "JSON",
                                  "json": {
-                                    "id": 8888
+                                    "id": 8888,
                                  },
-                                 "matchType": "DUMMY"
+                                 "matchType": "DUMMY",
                             }
                           },
                           "times": {

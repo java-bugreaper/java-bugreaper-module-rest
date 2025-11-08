@@ -29,7 +29,7 @@ repositories {
 def restAssuredVersion = "5.5.1"
 
 dependencies {
-    api 'io.gitlab.ambu550:bugreaper-core:0.0.7'
+    api 'io.gitlab.ambu550:bugreaper-core:0.0.8-rc'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"
@@ -42,17 +42,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    systemProperty('allure.results.directory', project.buildDir.toString() + "/allure-results")
-
-    systemProperties(System.getProperties())
 
     testLogging {
         events("PASSED", "FAILED", "SKIPPED")
-        showStandardStreams = true
-        exceptionFormat = "full"
     }
 
-    test.outputs.upToDateWhen { false }
     finalizedBy jacocoTestReport
 }
 

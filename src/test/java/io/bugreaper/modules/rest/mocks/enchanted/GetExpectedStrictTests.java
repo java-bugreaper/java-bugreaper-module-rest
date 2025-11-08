@@ -4,8 +4,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import static io.bugreaper.core.assertions.Asserts.assertBooleans;
+import static io.bugreaper.core.mappers.JsonMappers.jsonObjectFromString;
 import static io.bugreaper.modules.mocks.enchanted.GetExpected.getExpectedStrict;
-import static io.bugreaper.modules.mocks.mappers.JsonMappers.jsonObjectFromString;
 
 
 class GetExpectedStrictTests {
