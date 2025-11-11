@@ -12,12 +12,12 @@ import testcontainers.SetupMockserver;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.*;
+import static io.bugreaper.core.assertions.JsonAsserts.assertJson;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SuppressWarnings("squid:S2699")
 class ApiMocksTest extends PreSetup {
 
 
@@ -64,11 +64,11 @@ class ApiMocksTest extends PreSetup {
         mocksApi.createMock(universalMock);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
         api.sendPost("/api/post",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         mocksApi.verifyMockSequence("""
@@ -93,9 +93,9 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApiAwait.verifyMockSequenceWithAwait("""
@@ -126,8 +126,8 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200))
-                .bodyShould(beJsonType());
+                .seeResponseCodeIs(200)
+                .seeResponseIsJsonType();
     }
 
     @Test
@@ -147,9 +147,9 @@ class ApiMocksTest extends PreSetup {
                  }""");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .shouldHave(bodyField("id", is(1)))
-                .shouldHave(bodyField("name", is("Alex")));
+                .seeResponseCodeIs(200)
+                .seeResponseBodyFieldMatch("id", is(1))
+                .seeResponseBodyFieldMatch("name", is("Alex"));
 
         mocksApi.verifyMock("""
                 {
@@ -182,8 +182,8 @@ class ApiMocksTest extends PreSetup {
                  }""");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .bodyShould(matchesJsonSchema("testdata/schemas/post_1.json"));
+                .seeResponseCodeIs(200)
+                .seeResponseMatchesJsonSchema(Path.of("testdata/schemas/post_1.json"));
     }
 
     @Test
@@ -193,13 +193,14 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_1.json");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .bodyShould(containsJson(Path.of("testdata/responses/get_1_part.json")))
-                .bodyShould(containsJson("""
+                .seeResponseCodeIs(200)
+                .seeResponseContainsJson(Path.of("testdata/responses/get_1_part.json"))
+                .seeResponseContainsJson("""
                         {
                           "status": 11,
                           "statusName": "Something"
-                        }"""));
+                        }""")
+                .seeResponseCodeIsSuccessful();
 
         mocksApi.verifyMockCustom(
                 "from file",
@@ -218,8 +219,8 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_1.json");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .bodyShould(exactlyMatchJson(Path.of("testdata/responses/get_1_equal.json")));
+                .seeResponseCodeIs(200)
+                .seeResponseExactlyMatchJson(Path.of("testdata/responses/get_1_equal.json"));
     }
 
     @Test
@@ -229,13 +230,13 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_1.json");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .bodyShould(exactlyMatchJson("""
+                .seeResponseCodeIs(200)
+                .seeResponseExactlyMatchJson("""
                         {
                           "statusName": "Something",
                           "id": 901,
                           "status": 11
-                        }"""));
+                        }""");
     }
 
     @Test
@@ -245,8 +246,8 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_order.json");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .bodyShould(containsJsonStrictOrder("""
+                .seeResponseCodeIs(200)
+                .seeResponseContainsJsonStrictOrder("""
                         {
                           "array": [
                             {
@@ -258,7 +259,7 @@ class ApiMocksTest extends PreSetup {
                               "test": "two"
                             }
                           ]
-                        }"""));
+                        }""");
     }
 
 
@@ -278,7 +279,7 @@ class ApiMocksTest extends PreSetup {
                  }""");
 
         apiText.sendPost("/api/post", "some_string")
-                .shouldHave(statusCodeSuccessful());
+                .seeResponseCodeIsSuccessful();
 
         mocksApi.verifyMock("""
                 {
@@ -301,19 +302,18 @@ class ApiMocksTest extends PreSetup {
         mocksApi.createMock(universalMock);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiText.sendPost("/api/post", "some_string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.showBaseRequestsList();
     }
 
     @Test
-    @SuppressWarnings("squid:S2699")
     void testGetBaseRequestsList_empty() {
         mocksApi.showBaseRequestsList();
     }
@@ -328,16 +328,16 @@ class ApiMocksTest extends PreSetup {
         var response = api.sendPost("/api/post",
                         """
                                 {"mainId": 555}""")
-                .shouldHave(statusCode(200))
+                .seeResponseCodeIs(200)
 
-                .bodyShould(exactlyMatchJson("""
+                .seeResponseExactlyMatchJson("""
                         {
                           "id": 125,
                           "status": "active",
                           "amount": 100.99,
                           "isTrue": true
-                        }"""))
-                .extract(grabFromBodyPath("status"));
+                        }""")
+                .grabDataFromResponseByPath("status");
 
         assertEquals("active", response, "Extracted field is valid");
 
@@ -351,17 +351,55 @@ class ApiMocksTest extends PreSetup {
         var response = api.sendPost("/api/post",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200))
-                .bodyShould(exactlyMatchJson("""
+                .seeResponseCodeIs(200)
+                .seeResponseExactlyMatchJson("""
                         {
                           "result": "ok"
-                        }"""))
-                .extract(grabFromBodyPath("wrong"));
+                        }""")
+                .grabDataFromResponseByPath("wrong");
 
         assertNull(response, "Extracted wrong field be NULL");
 
     }
 
+    @Test
+    void testGrabFullBody() {
+
+        mocksApi.createMock(universalMock);
+
+        var expected = """
+                {
+                  "result": "ok"
+                }""";
+
+        var response = api.sendPost("/api/post",
+                        """
+                                {"id": 555}""")
+                .seeResponseCodeIs(200)
+
+                .seeResponseExactlyMatchJson("""
+                        {
+                          "result": "ok"
+                        }""")
+                .grabResponseBody();
+
+        assertJson(expected, response);
+    }
+
+    @Test
+    void testGrabEmptyBody() {
+
+        mocksApi.createMock(noBody);
+
+
+        var response = api.sendPost("/api/post",
+                        """
+                                {"id": 555}""")
+                .seeResponseCodeIs(200)
+                .grabResponseBody();
+
+        assertEquals("", response, "Extracted body is empty");
+    }
 
     @Test
     void testBodyJsonEqualNoStrictOrder() {
@@ -380,12 +418,12 @@ class ApiMocksTest extends PreSetup {
                 }""");
 
         api.sendPost("/api/post")
-                .shouldHave(statusCodeSuccessful())
-                .bodyShould(exactlyMatchJsonIgnoringOrder("""
+                .seeResponseCodeIsSuccessful()
+                .seeResponseExactlyMatchJsonIgnoringOrder("""
                         {
                           "id": 1,
                           "array": [1,3,2]
-                        }"""));
+                        }""");
 
     }
 
@@ -406,7 +444,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"testNum": "111"}""")
-                .shouldHave(statusCode(505));
+                .seeResponseCodeIs(505);
 
         var num = mocksApi.getRequestBodyValue("""
                         {
@@ -426,7 +464,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"testNum": 555}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         var num = mocksApi.getRequestBodyValue("""
                         {
@@ -446,7 +484,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"testNum": true}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         var num = mocksApi.getRequestBodyValue("""
                         {
@@ -469,7 +507,7 @@ class ApiMocksTest extends PreSetup {
         apiJsonPlus.sendPost("/api/post",
                         """
                                 {"text": "test text"}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         var value = mocksApi.getRequestBodyValue("""
                         {
@@ -491,10 +529,10 @@ class ApiMocksTest extends PreSetup {
 
         apiXml.sendPost("/api/post-xml",
                         "<response> <key>some_data</key> </response>")
-                .shouldHave(statusCode(200))
-                .bodyShould(matchesXmlSchema("testdata/schemas/post_2_xml.xsd"))
-                .shouldHave(bodyField("response.id", is("285")))
-                .shouldHave(bodyField("response.status", is("ok")));
+                .seeResponseCodeIs(200)
+                .seeResponseMatchesXmlSchema(Path.of("testdata/schemas/post_2_xml.xsd"))
+                .seeResponseBodyFieldMatch("response.id", is("285"))
+                .seeResponseBodyFieldMatch("response.status", is("ok"));
 
 
         verifyMockTestPostXml(data, 1);
@@ -507,11 +545,11 @@ class ApiMocksTest extends PreSetup {
         mocksApi.createMock(testMock1("Alex", 42, true));
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .shouldHave(bodyField("name", is("Alex")))
-                .shouldHave(bodyField("age", is(42)))
-                .shouldHave(bodyField("name2", is("Alex again")))
-                .shouldHave(bodyField("isRegistered", is(true)));
+                .seeResponseCodeIs(200)
+                .seeResponseBodyFieldMatch("name", is("Alex"))
+                .seeResponseBodyFieldMatch("age", is(42))
+                .seeResponseBodyFieldMatch("name2", is("Alex again"))
+                .seeResponseBodyFieldMatch("isRegistered", is(true));
     }
 
     @Test
@@ -524,10 +562,10 @@ class ApiMocksTest extends PreSetup {
         ));
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .shouldHave(bodyField("name", is("Jonn")))
-                .shouldHave(bodyField("age", is(5)))
-                .shouldHave(bodyField("name2", is("Jonn again")));
+                .seeResponseCodeIs(200)
+                .seeResponseBodyFieldMatch("name", is("Jonn"))
+                .seeResponseBodyFieldMatch("age", is(5))
+                .seeResponseBodyFieldMatch("name2", is("Jonn again"));
     }
 
     @Test
@@ -537,10 +575,10 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_1_header.json");
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .shouldHave(headerField("some_header_1", is("test1")))
-                .shouldHave(headerField("some_header_2", is("head/test2")))
-                .shouldHave(headerField("some_header_1", containsString("test")));
+                .seeResponseCodeIs(200)
+                .seeResponseHeaderMatch("some_header_1", is("test1"))
+                .seeResponseHeaderMatch("some_header_2", is("head/test2"))
+                .seeResponseHeaderMatch("some_header_1", containsString("test"));
     }
 
     @Test
@@ -550,8 +588,8 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/get_1_header.json");
 
         String header = api.sendGet("/api/get")
-                .shouldHave(statusCode(200))
-                .extract(grabHeader("some_header_2"));
+                .seeResponseCodeIs(200)
+                .grabResponseHeader("some_header_2");
 
         assertEquals("head/test2", header, "Extracted header is valid");
     }
@@ -563,7 +601,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"num": "911"}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -596,7 +634,7 @@ class ApiMocksTest extends PreSetup {
         Api apiAuth = new SetupMockserver().getApi().setBasicAuth("user1", "password2");
 
         apiAuth.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock(checkAuth("user1", "password2", 1));
     }
@@ -607,7 +645,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("api/test",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.assertAllMocksCount(1);
         mocksApi.cleanMockLogs();
@@ -620,7 +658,7 @@ class ApiMocksTest extends PreSetup {
         api.sendPost("api/test",
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.assertAllMocksCount(1);
         mocksApi.resetMocks();

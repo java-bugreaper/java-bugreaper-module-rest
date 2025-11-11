@@ -3,8 +3,6 @@ package io.bugreaper.modules.rest.mocks;
 import io.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.Test;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
-
 
 @SuppressWarnings({"squid:S2699", "squid:S5976"})
 class ApiMocksEnchantedLogicPassedTests extends PreSetup {
@@ -19,7 +17,7 @@ class ApiMocksEnchantedLogicPassedTests extends PreSetup {
                                 {
                                   "id": 1
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -46,7 +44,7 @@ class ApiMocksEnchantedLogicPassedTests extends PreSetup {
                                 {
                                   "id": 1
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -74,7 +72,7 @@ class ApiMocksEnchantedLogicPassedTests extends PreSetup {
                                   "id": 1,
                                   "array": [1, 2, 3]
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -102,7 +100,7 @@ class ApiMocksEnchantedLogicPassedTests extends PreSetup {
                                 {
                                   "id": 1
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -134,7 +132,7 @@ class ApiMocksEnchantedLogicPassedTests extends PreSetup {
                                   "id": 1,
                                   "array": [1, 2, 3]
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {

@@ -10,7 +10,6 @@ import testcontainers.SetupMockserver;
 
 import java.util.concurrent.CompletableFuture;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -61,7 +60,7 @@ class MocksApiCatchTest extends PreSetup {
         mocksApi.createMock(universalMock);
 
         api.sendGet("/api/test")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> mocksApi.assertMocksCountWithAwait(2, 3));
@@ -75,7 +74,7 @@ class MocksApiCatchTest extends PreSetup {
         mocksApi.createMock(universalMock);
 
         api.sendGet("/api/test")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(this::verifyPostAwaiting);
@@ -105,7 +104,7 @@ class MocksApiCatchTest extends PreSetup {
             throw new RuntimeException(e);
         }
         api.sendPost("/api/test")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
     }
 
 }

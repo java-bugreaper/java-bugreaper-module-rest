@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
-
 
 class ApiBaseSettersTests extends PreSetup {
 
@@ -16,7 +14,7 @@ class ApiBaseSettersTests extends PreSetup {
     void testSetterBaseAuth() {
         mocksApi.createMock(universalMock);
         api.setBasicAuth("user1", "password2").sendGet("/api/test")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock(checkAuth("user1", "password2", 1));
 
@@ -39,7 +37,7 @@ class ApiBaseSettersTests extends PreSetup {
     void testSetterTokenAuth() {
         mocksApi.createMock(universalMock);
         api.setBearerAuth("TOKEN1").sendGet("/api/test")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -63,7 +61,7 @@ class ApiBaseSettersTests extends PreSetup {
         api
                 .setHeader("Content-Type", "application/json; charset=utf-8")
                 .sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -94,7 +92,7 @@ class ApiBaseSettersTests extends PreSetup {
         apiTest.sendPost("/api/test",
                         """
                                 {"id" : 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -126,7 +124,7 @@ class ApiBaseSettersTests extends PreSetup {
         apiTest.sendPost("/api/test",
                         """
                                 {"id" : 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
