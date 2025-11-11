@@ -6,8 +6,6 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
@@ -23,7 +21,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                   "id": 8888,
                                   "text": "some/not_li\\"nk"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -53,7 +51,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         mocksApi.createMock(universalMock);
 
         apiText.sendPost("/api/post", "103")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -101,14 +99,14 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 {
                                   "id": 8888
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         xmlExpectationDefault();
         apiXml.sendPost("/api/post-xml",
                         """
                                 "<request> <key>id55</key> </request>"
                                 """)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -141,10 +139,10 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 {
                                   "id": 8888
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiText.sendPost("/api/post", "some_string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -173,20 +171,20 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         mocksApi.createMock(universalMock);
 
         apiJsonPlus.sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                   "id": 8888
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiText.sendPost("/api/post", "some_string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -220,7 +218,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 {
                                   "id": 8889
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
                         {
@@ -256,7 +254,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 {
                                   "id": 8889
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -295,7 +293,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                   "id": 8888,
                                   "text": "test"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""

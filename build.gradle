@@ -42,9 +42,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty('allure.results.directory', project.buildDir.toString() + "/allure-results")
 
     testLogging {
         events("PASSED", "FAILED", "SKIPPED")
+        exceptionFormat = "full"
     }
 
     finalizedBy jacocoTestReport

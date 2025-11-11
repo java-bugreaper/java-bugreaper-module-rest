@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 
 import static io.bugreaper.core.assertions.Asserts.assertBooleans;
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,21 +43,21 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
                                 "id": 3,
                                 "text": "some text"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong":"text",
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong": 4,
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->

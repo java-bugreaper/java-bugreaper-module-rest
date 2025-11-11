@@ -4,9 +4,6 @@ import io.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCodeSuccessful;
-
 
 class ApiBaseMethodsTests extends PreSetup {
 
@@ -21,7 +18,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testGet() {
         api.sendGet(endpoint)
-                .shouldHave(statusCodeSuccessful());
+                .seeResponseCodeIsSuccessful();
 
         verifyMockMethod("GET", 1);
     }
@@ -29,7 +26,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testPostNoBody() {
         api.sendPost(endpoint)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethod("POST", 1);
     }
@@ -39,7 +36,7 @@ class ApiBaseMethodsTests extends PreSetup {
         api.sendPost(endpoint,
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethodBody("POST", 1, 1);
     }
@@ -47,7 +44,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testDeleteNoBody() {
         api.sendDelete(endpoint)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIsSuccessful();
 
         verifyMockMethod("DELETE", 1);
     }
@@ -57,7 +54,7 @@ class ApiBaseMethodsTests extends PreSetup {
         api.sendDelete(endpoint,
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethodBody("DELETE", 1, 1);
     }
@@ -65,7 +62,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testPutNoBody() {
         api.sendPut(endpoint)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethod("PUT", 1);
     }
@@ -75,7 +72,7 @@ class ApiBaseMethodsTests extends PreSetup {
         api.sendPut(endpoint,
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIsSuccessful();
 
         verifyMockMethodBody("PUT", 1, 1);
     }
@@ -85,7 +82,7 @@ class ApiBaseMethodsTests extends PreSetup {
         api.sendPatch(endpoint,
                         """
                                 {"id": 1}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethodBody("PATCH", 1, 1);
     }
@@ -93,7 +90,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testOptions() {
         api.sendOptions(endpoint)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethod("OPTIONS", 1);
     }
@@ -101,7 +98,7 @@ class ApiBaseMethodsTests extends PreSetup {
     @Test
     void testHead() {
         api.sendHead(endpoint)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         verifyMockMethod("HEAD", 1);
     }

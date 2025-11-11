@@ -7,7 +7,6 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -71,7 +70,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                                 [
                                   {"id": 3}
                                 ]""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(MockEnchantedException.class, () ->
                 mocksApi.verifyMock("""
@@ -103,7 +102,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
         apiJsonPlus.sendPost("/api/post",
                         """
                                 {"id": 3}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(MockEnchantedException.class, () ->
                 mocksApi.verifyMock("""

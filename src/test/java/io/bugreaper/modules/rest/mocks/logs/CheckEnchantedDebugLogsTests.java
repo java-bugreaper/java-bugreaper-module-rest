@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 
 import static io.bugreaper.core.assertions.Asserts.assertBooleans;
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -45,36 +44,36 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
                                 "id": 3,
                                 "text": "some text"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong": 4
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong":"text"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiNoType
                 .sendPost("/api/admin")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiJsonPlus
                 .sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiText
                 .sendPost("/api/post", "some string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         mocksApi.createMock("""
@@ -98,7 +97,7 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
                 .sendPost("/api/post-xml",
                         """
                                 <request> <key>some_xml</key> </request>""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->

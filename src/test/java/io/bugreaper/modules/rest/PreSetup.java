@@ -36,6 +36,16 @@ public abstract class PreSetup {
               "priority": -1
             }""";
 
+    protected final String noBody = """
+            {
+              "httpRequest": {
+              },
+              "httpResponse": {
+                "statusCode": 200
+              },
+              "priority": -1
+            }""";
+
     protected final String withTimeout = """
             {
               "httpRequest": {

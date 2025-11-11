@@ -5,7 +5,6 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import static io.bugreaper.modules.api.assertable.response.ResponseOperators.statusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,21 +21,21 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                                 "id": 3,
                                 "text": "some text"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong": 4,
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong":"text",
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -76,7 +75,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         mocksApi.createMock(universalMock);
 
         apiJsonPlus.sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         mocksApi.verifyMock("""
                 {
@@ -108,7 +107,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         mocksApi.createMock(universalMock);
 
         apiJsonPlus.sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -150,9 +149,9 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         mocksApi.createMock(universalMock);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -202,12 +201,12 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         xmlExpectationDefault();
 
         apiText.sendPost("/api/post", "some string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
         apiXml.sendPost("/api/post-xml",
                         """
                                 "<request> <key>id55</key> </request>"
                                 """)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -258,36 +257,36 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
 
 
         apiText.sendPost("/api/post", "some string")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong": 5,
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendGet("/api/get")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         api.sendPost("/api/post",
                         """
                                 {
                                 "id_wrong": "text",
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiJsonPlus.sendPost("/api/post", "{}")
-                .shouldHave(statusCode(200)); //problem
+                .seeResponseCodeIs(200); //problem
 
         apiXml.sendPost("/api/post-xml",
                         """
                                 "<request> <key>id55</key> </request>"
                                 """)
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         apiText.sendPost("/api/post", "103")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
@@ -333,7 +332,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                                 "id": 3,
                                 "text": "some text"
                                 }""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
@@ -374,7 +373,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         api.sendPost("/api/post",
                         """
                                 {"id": 3}""")
-                .shouldHave(statusCode(200));
+                .seeResponseCodeIs(200);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
