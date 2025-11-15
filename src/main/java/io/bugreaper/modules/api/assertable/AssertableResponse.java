@@ -15,6 +15,7 @@ import static io.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static io.restassured.matcher.RestAssuredMatchers.matchesXsdInClasspath;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,12 +39,12 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
 
 
     @Override
-    @Step("Status code is: successful")
+    @Step("Status code is: SUCCESSFUL(2xx)")
     public AssertableResponse seeResponseCodeIsSuccessful() {
         int statusCode = response.getStatusCode();
 
         assertTrue(statusCode >= 200 && statusCode <= 299,
-                "Expected successful status code, but got: " + statusCode);
+                "Expected SUCCESSFUL status code, but got: " + statusCode);
 
         return this;
     }
@@ -138,7 +139,7 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
     }
 
     @Override
-    @Step("Response body: have correct JSON schema")
+    @Step("Response body: has correct JSON schema")
     public AssertableResponse seeResponseMatchesJsonSchema(Path path) {
         String pathString = String.valueOf(path);
 
@@ -148,7 +149,7 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
     }
 
     @Override
-    @Step("Response body: have correct XML schema")
+    @Step("Response body: has correct XML schema")
     public AssertableResponse seeResponseMatchesXmlSchema(Path path) {
         String pathString = String.valueOf(path);
 
@@ -161,6 +162,15 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
 
         return this;
     }
+
+    @Step("Response body: has {expectedCount} elements")
+    public AssertableResponse seeResponseBodyElementsCount(int expectedCount) {
+        response.then().assertThat()
+                .body("size()", is(expectedCount));
+
+        return this;
+    }
+
 
     @Override
     @Step("Grab header <{header}> value")

@@ -1,5 +1,6 @@
 package io.bugreaper.modules.rest.api;
 
+import io.bugreaper.modules.api.assertable.AssertableResponse;
 import io.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
@@ -25,6 +26,26 @@ class ApiCatchConditionsTests extends PreSetup {
                 "Timeout catch by condition (but wait response)",
                 exception.getMessage(),
                 StringContains.containsString("response time was not a value less than <400L> milliseconds, was"));
+    }
+
+    @Test
+    void testArrayCountCatch() {
+
+        mocksApi.createMock(arrayMock);
+
+        AssertableResponse result = api.sendGet("/api/test")
+                .seeResponseCodeIsSuccessful();
+
+        Throwable exception = assertThrows(AssertionError.class, () ->
+                result.seeResponseBodyElementsCount(2));
+
+        MatcherAssert.assertThat(
+                "Catch array count",
+                exception.getMessage(),
+                StringContains.containsString("""
+                        JSON path size() doesn't match.
+                        Expected: is <2>
+                          Actual: <3>"""));
     }
 
 }

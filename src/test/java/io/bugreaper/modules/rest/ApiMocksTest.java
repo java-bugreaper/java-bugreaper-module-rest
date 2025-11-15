@@ -665,4 +665,14 @@ class ApiMocksTest extends PreSetup {
         mocksApi.assertAllMocksCount(0);
     }
 
+    @Test
+    void testArrayCount() {
+        mocksApi.createMock(arrayMock);
+
+        api.sendGet("/api/test")
+                .seeResponseCodeIsSuccessful()
+                .seeResponseBodyElementsCount(3);
+
+    }
+
 }
