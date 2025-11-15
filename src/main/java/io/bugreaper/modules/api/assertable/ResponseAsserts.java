@@ -139,4 +139,13 @@ public interface ResponseAsserts {
      */
     AssertableResponse seeResponseMatchesXmlSchema(Path path);
 
+    /**
+     * Assert that response body(JsonArray) has exactly count elements
+     *
+     * @param expectedCount expected count of elements
+     * @return this
+     * @throws AssertionError on assert fail
+     */
+    AssertableResponse seeResponseBodyElementsCount(int expectedCount);
+
 }

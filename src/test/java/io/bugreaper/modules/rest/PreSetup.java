@@ -36,6 +36,21 @@ public abstract class PreSetup {
               "priority": -1
             }""";
 
+    protected final String arrayMock = """
+            {
+              "httpRequest": {
+              },
+              "httpResponse": {
+                "statusCode": 200,
+                "body": [
+                    {"id": 1},
+                    {"id": 2},
+                    {"id": 3}
+                  ]
+              },
+              "priority": -1
+            }""";
+
     protected final String noBody = """
             {
               "httpRequest": {
