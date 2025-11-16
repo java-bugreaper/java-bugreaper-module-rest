@@ -3,8 +3,9 @@
 for interaction with API and mocks
 
 ## [apiDOC](https://bug-reaper.gitlab.io/java-bugreaper-module-rest/)
+## [Wiki](https://gitlab.com/bug-reaper/java-bugreaper-module-rest/-/wikis/home)
 
-### [EXAMPLES.md](EXAMPLES.md)
+### [EXAMPLES.md](https://gitlab.com/bug-reaper/java-bugreaper-module-rest/-/wikis/Examples)
 
 ### Requirements:
 
@@ -25,9 +26,3 @@ for interaction with API and mocks
 ## Real examples here:
 - ### [Report-api](https://bug-reaper.gitlab.io/java-bugreaper-sandbox/#behaviors)
 - ### [Tests](https://gitlab.com/bug-reaper/java-bugreaper-sandbox/-/tree/main/java-test-part1)
-
-### Dependencies
-| Lib                                                                                   | Version  | Description    |
-|---------------------------------------------------------------------------------------|----------|----------------|
-| [bugreaper-core](https://mvnrepository.com/artifact/io.gitlab.ambu550/bugreaper-core) | 0.0.8-rc | BugReaper CORE |
-| [REST Assured](https://mvnrepository.com/artifact/io.rest-assured/rest-assured)       | 5.5.1    | API interact   |
