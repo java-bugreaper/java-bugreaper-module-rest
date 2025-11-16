@@ -25,7 +25,7 @@ class ApiBaseMethodsTests extends PreSetup {
 
     @Test
     void testPostNoBody() {
-        api.sendPost(endpoint)
+        api.withLogging(true).sendPost(endpoint)
                 .seeResponseCodeIs(200);
 
         verifyMockMethod("POST", 1);

@@ -1,6 +1,6 @@
-# BUGREAPER: module-minio
+# BUGREAPER: module-rest
 
-for interact with the MINIO
+for interaction with API and mocks
 
 ## [apiDOC](https://bug-reaper.gitlab.io/java-bugreaper-module-rest/)
 
