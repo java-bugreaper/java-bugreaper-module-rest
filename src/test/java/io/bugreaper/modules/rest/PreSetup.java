@@ -15,6 +15,8 @@ public abstract class PreSetup {
 
     protected MocksApi mocksApi = new SetupMockserver().getMocksApi();
     protected Api api = new SetupMockserver().getApi();
+    protected Api apiLogging = new SetupMockserver().getApi().withLogging(true);
+    protected Api apiNoLogs = new SetupMockserver().getApi().withLogging(false);
 
     protected Api apiJsonPlus = new SetupMockserver().getApi().setHeader("Content-Type", "application/json; charset=utf-8");
     protected Api apiXml = new SetupMockserver().getApi().withContentTypeXml();

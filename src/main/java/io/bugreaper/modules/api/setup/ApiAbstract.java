@@ -37,7 +37,6 @@ public abstract class ApiAbstract {
 
     protected Logger logger = LoggerFactory.getLogger("bugreaper-module-api");
 
-    private final List<Filter> apiFilters;
     private final String url;
     private final int port;
 
@@ -59,7 +58,6 @@ public abstract class ApiAbstract {
     protected ApiAbstract(String url, int port) {
         this.url = url;
         this.port = port;
-        this.apiFilters = apiFilters();
     }
 
     // for mock module
@@ -67,7 +65,6 @@ public abstract class ApiAbstract {
         this.url = url;
         this.port = port;
         this.logger = logger;
-        this.apiFilters = apiFilters();
     }
 
 
@@ -97,7 +94,7 @@ public abstract class ApiAbstract {
             request.header("Authorization", "Bearer " + authToken);
         }
 
-        request.filters(apiFilters);
+        request.filters(apiFilters());
         request.then()
                 .spec(setMaxResponseTimeout());
 

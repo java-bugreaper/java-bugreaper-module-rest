@@ -99,7 +99,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    @Step("(API) Send OPTIONS {endpoint}")
+    @Step("(API) Send GET {endpoint}")
     public AssertableResponse sendGet(String endpoint) {
         return new AssertableResponse(buildRequest()
                 .when()
