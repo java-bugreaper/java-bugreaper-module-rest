@@ -96,12 +96,12 @@ public abstract class ApiAbstract {
 
         request.filters(apiFilters());
         request.then()
-                .spec(setMaxResponseTimeout());
+                .spec(setMaxResponseTimeAssert());
 
         return request;
     }
 
-    private ResponseSpecification setMaxResponseTimeout() {
+    private ResponseSpecification setMaxResponseTimeAssert() {
         return new ResponseSpecBuilder()
                 .expectResponseTime(lessThan(maxResponseMsAssert), TimeUnit.MILLISECONDS)
                 .build();

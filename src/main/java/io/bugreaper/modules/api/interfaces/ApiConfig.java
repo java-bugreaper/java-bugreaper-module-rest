@@ -23,7 +23,7 @@ public interface ApiConfig {
     Api withContentType(ContentType contentType);
 
     /**
-     * Set maxResponseTimeout
+     * Set maxResponseTimeout (does not break the connection - only assert)
      *
      * @param maxResponseMs assert ms for max response time
      * @return this instance {@link Api}
