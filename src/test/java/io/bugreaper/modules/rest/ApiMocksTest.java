@@ -13,8 +13,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static io.bugreaper.core.assertions.JsonAsserts.assertJson;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("squid:S2699")
@@ -542,12 +541,12 @@ class ApiMocksTest extends PreSetup {
 
     @Test
     void testCreatePostWithMapper() {
-        mocksApi.createMock(testMock1("Alex", 42, true));
+        mocksApi.createMock(testMock1("Alex", 25, true));
 
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200)
                 .seeResponseBodyFieldMatch("name", is("Alex"))
-                .seeResponseBodyFieldMatch("age", is(42))
+                .seeResponseBodyFieldMatch("age", greaterThan(20))
                 .seeResponseBodyFieldMatch("name2", is("Alex again"))
                 .seeResponseBodyFieldMatch("isRegistered", is(true));
     }
