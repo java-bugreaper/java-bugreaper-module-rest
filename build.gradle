@@ -21,15 +21,15 @@ java {
 
 repositories {
 
-    //mavenLocal()
     mavenCentral()
+    //mavenLocal()
 
 }
 
 def restAssuredVersion = "5.5.1"
 
 dependencies {
-    api 'io.gitlab.ambu550:bugreaper-core:0.0.8'
+    api 'io.gitlab.ambu550:bugreaper-core:0.0.9'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"
@@ -62,6 +62,12 @@ jacocoTestReport {
         csv.required = false
     }
 }
+
+// Compile main code with -parameters so reflection sees real parameter names
+tasks.named('compileJava') {
+    options.compilerArgs += ['-parameters']
+}
+
 
 sonar {
     properties {

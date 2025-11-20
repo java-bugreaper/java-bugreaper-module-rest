@@ -184,7 +184,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{} to{}")
+    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to}")
     public void assertAllMocksCount(int from, int to) {
         verifyMock(stringMapper("""
                         {
@@ -304,7 +304,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{} to{} with await")
+    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to} with await")
     public void assertMocksCountWithAwait(int from, int to) {
         try {
             await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
