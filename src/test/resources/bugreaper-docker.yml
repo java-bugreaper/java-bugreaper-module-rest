@@ -1,0 +1,16 @@
+modules:
+  api:
+    url: http://docker
+    port: 1082
+    username: user_1 # optional
+    password: pass123 # optional
+    token: my-token # optional more priority than base auth!
+    logging: true # optional
+    max-response-ms-assert: 2000 # optional
+  mocks:
+    url: http://docker
+    port: 1082
+    await: 440 # optional
+    logging: true # optional
+    enchanted-report: false # optional
+

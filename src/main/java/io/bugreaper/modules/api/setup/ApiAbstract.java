@@ -37,11 +37,8 @@ public abstract class ApiAbstract {
 
     protected Logger logger = LoggerFactory.getLogger("bugreaper-module-api");
 
-    private final String url;
-    private final int port;
-
-    protected Map<String, String> headers = new HashMap<>();
-    protected Map<String, String> queryParams = new HashMap<>();
+    protected String url;
+    protected int port;
 
     protected boolean useBasicAuth = false;
     protected String authToken;
@@ -49,11 +46,18 @@ public abstract class ApiAbstract {
     protected String username;
     protected String password;
 
-    protected ContentType contentType = ContentType.JSON;
     protected boolean enableLogging = false;
     //assert not break!!
     protected long maxResponseMsAssert = 5000;
 
+    protected Map<String, String> headers = new HashMap<>();
+    protected Map<String, String> queryParams = new HashMap<>();
+
+    protected ContentType contentType = ContentType.JSON;
+
+
+    protected ApiAbstract() {
+    }
 
     protected ApiAbstract(String url, int port) {
         this.url = url;

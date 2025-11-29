@@ -1,0 +1,7 @@
+modules:
+  api:
+    url: http://docker
+    port: 1082
+  mocks:
+    url: http://docker
+    port: 1082

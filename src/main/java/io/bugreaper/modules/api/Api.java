@@ -15,6 +15,8 @@
  */
 package io.bugreaper.modules.api;
 
+import io.bugreaper.core.config.ConfigLoader;
+import io.bugreaper.core.config.YamlUtils;
 import io.bugreaper.modules.api.assertable.AssertableResponse;
 import io.bugreaper.modules.api.interfaces.ApiConfig;
 import io.bugreaper.modules.api.interfaces.ApiInt;
@@ -36,6 +38,69 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
         super(url, port);
     }
 
+    /**
+     * Constructs api client configuration.
+     *
+     * <p>Loads configuration values from a YAML file.</p>
+     *
+     * <p><b>Default file:</b> {@code bugreaper.yml}</p>
+     * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
+     *
+     * <p><b>Required configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.api.url}</li>
+     *     <li>{@code modules.api.port}</li>
+     * </ul>
+     *
+     * <p><b>Optional configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.api.username}</li>
+     *     <li>{@code modules.api.password}</li>
+     *     <li>{@code modules.api.token}</li>
+     *     <li>{@code modules.api.logging}</li>
+     *     <li>{@code modules.api.max-response-ms-assert}</li>
+     * </ul>
+     *
+     * <p>Missing required keys will result in configuration errors.
+     * Missing optional keys will fall back to predefined defaults.</p>
+     */
+    public Api() {
+        loadFromYaml();
+    }
+
+
+    private void loadFromYaml() {
+        Map<String, Object> rawData = ConfigLoader.loadYaml();
+
+        //required config fields
+        this.url = YamlUtils.getStringValueByPath(rawData, "modules.api.url");
+        this.port = YamlUtils.getIntegerValueByPath(rawData, "modules.api.port");
+
+
+        //optional config fields
+        Object usernameVal = YamlUtils.getValueByPath(rawData, "modules.api.username", true);
+        Object passwordVal = YamlUtils.getValueByPath(rawData, "modules.api.password", true);
+        if (usernameVal instanceof String stringUser && passwordVal instanceof String stringPass) {
+            setBasicAuth(stringUser, stringPass);
+        }
+
+        Object tokenVal = YamlUtils.getValueByPath(rawData, "modules.api.token", true);
+        if (tokenVal instanceof String token) {
+            setBearerAuth(token);
+        }
+
+        Object loggingVal = YamlUtils.getValueByPath(rawData, "modules.api.logging", true);
+        if (loggingVal instanceof Boolean logging) {
+            withLogging(logging);
+        }
+
+        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(rawData, "modules.api.max-response-ms-assert", true);
+        if (maxResponseMsAssertVal instanceof Integer assertMs) {
+            withMaxResponseMsAssert(assertMs);
+        }
+    }
+
+    //setters
 
     @Override
     public Api withContentTypeXml() {
@@ -50,7 +115,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    public Api withMaxResponseMsAssert(long maxResponseMs) {
+    public Api withMaxResponseMsAssert(int maxResponseMs) {
         this.maxResponseMsAssert = maxResponseMs;
         return this;
     }
@@ -86,17 +151,53 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
         return this;
     }
 
+    @Override
     public Api setBasicAuth(String username, String password) {
         this.username = username;
         this.password = password;
         this.useBasicAuth = true;
+        this.authToken = null;
         return this;
     }
 
+    @Override
+    public Api setNoAuth() {
+        this.authToken = null;
+        this.username = null;
+        this.password = null;
+        this.useBasicAuth = false;
+        return this;
+    }
+
+    @Override
     public Api withLogging(boolean enable) {
         this.enableLogging = enable;
         return this;
     }
+
+    //getters
+
+    public String getConfigSummary() {
+        String info = String.format("""
+        %s:
+            url=%s
+            port=%d
+            username=%s
+            password=%s
+            useBasicAuth=%b
+            authToken=%s
+            contentType=%s
+            enableLogging=%b
+            maxResponseMsAssert=%s%n""",
+                this.getClass().getSimpleName(),
+                url, port, username, password, useBasicAuth, authToken,
+                contentType, enableLogging, maxResponseMsAssert);
+
+        logger.info(info);
+        return info;
+    }
+
+    // interactions
 
     @Override
     @Step("(API) Send GET {endpoint}")

@@ -1,9 +1,14 @@
 package testcontainers;
 
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 import io.bugreaper.modules.api.Api;
 import io.bugreaper.modules.mocks.MocksApi;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.utility.DockerImageName;
+
+import java.util.Objects;
 
 public class SetupMockserver {
 
@@ -13,6 +18,11 @@ public class SetupMockserver {
 
     public SetupMockserver() {
         mockServerContainer
+                .withCreateContainerCmdModifier(cmd -> {
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                            new PortBinding(Ports.Binding.bindPort(1082), new ExposedPort(1080))
+                    );
+                })
                 .start();
     }
 

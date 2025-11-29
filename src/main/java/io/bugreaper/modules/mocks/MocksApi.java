@@ -15,6 +15,8 @@
  */
 package io.bugreaper.modules.mocks;
 
+import io.bugreaper.core.config.ConfigLoader;
+import io.bugreaper.core.config.YamlUtils;
 import io.bugreaper.modules.api.setup.ApiAbstract;
 import io.bugreaper.modules.mocks.exceptions.MockEnchantedException;
 import io.bugreaper.modules.mocks.interfaces.MocksConfig;
@@ -73,6 +75,60 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         super(url, port, LoggerFactory.getLogger("bugreaper-module-mocks"));
     }
 
+    /**
+     * Constructs mock-server client configuration.
+     *
+     * <p>Loads configuration values from a YAML file.</p>
+     *
+     * <p><b>Default file:</b> {@code bugreaper.yml}</p>
+     * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
+     *
+     * <p><b>Required configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.mocks.url}</li>
+     *     <li>{@code modules.mocks.port}</li>
+     * </ul>
+     *
+     * <p><b>Optional configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.mocks.await}</li>
+     *     <li>{@code modules.mocks.logging}</li>
+     *     <li>{@code modules.mocks.enchanted-report}</li>
+     * </ul>
+     *
+     * <p>Missing required keys will result in configuration errors.
+     * Missing optional keys will fall back to predefined defaults.</p>
+     */
+    public MocksApi() {
+        loadFromYaml();
+    }
+
+    private void loadFromYaml() {
+        Map<String, Object> rawData = ConfigLoader.loadYaml();
+
+        //required config fields
+        this.url = YamlUtils.getStringValueByPath(rawData, "modules.mocks.url");
+        this.port = YamlUtils.getIntegerValueByPath(rawData, "modules.mocks.port");
+
+
+        //optional config fields
+        Object loggingVal = YamlUtils.getValueByPath(rawData, "modules.mocks.logging", true);
+        if (loggingVal instanceof Boolean logging) {
+            withLogging(logging);
+        }
+
+        Object enchantedReportVal = YamlUtils.getValueByPath(rawData, "modules.mocks.enchanted-report", true);
+        if (enchantedReportVal instanceof Boolean logging) {
+            withEnchantedReport(logging);
+        }
+
+        Object awaitVal = YamlUtils.getValueByPath(rawData, "modules.mocks.await", true);
+        if (awaitVal instanceof Integer assertMs) {
+            withAwaitMs(assertMs);
+        }
+
+    }
+
     @Override
     public MocksApi withAwaitMs(int awaitMs) {
         if (awaitMs < 200) {
@@ -83,11 +139,36 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
+    public MocksApi withLogging(boolean enable) {
+        this.enableLogging = enable;
+        return this;
+    }
+
+    @Override
     public MocksApi withEnchantedReport(boolean enchantedReport) {
         this.enchantedReport = enchantedReport;
         return this;
     }
 
+    //getters
+
+    public String getConfigSummary() {
+        String info = String.format("""
+        %s:
+            url=%s
+            port=%d
+            await=%d
+            enableLogging=%b
+            enchantedReport=%b%n""",
+                this.getClass().getSimpleName(),
+                url, port, awaitMs,
+               enableLogging, enchantedReport);
+
+        logger.info(info);
+        return info;
+    }
+
+    // interactions
 
     private Response sendPut(String endpoint, Object body) {
         return buildRequest()
