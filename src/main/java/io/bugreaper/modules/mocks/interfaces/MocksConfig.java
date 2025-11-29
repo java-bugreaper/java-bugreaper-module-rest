@@ -13,6 +13,13 @@ public interface MocksConfig {
      */
     MocksApi withAwaitMs(int awaitMs);
 
+    /**
+     * Enables or disables logging manually (debug log level will print logs anyway!)
+     *
+     * @param enable true=request/response logging (Allure on always!)
+     * @return this instance {@link MocksApi}
+     */
+    MocksApi withLogging(boolean enable);
 
     /**
      * Enabling or disabling enchanted mockVerify report

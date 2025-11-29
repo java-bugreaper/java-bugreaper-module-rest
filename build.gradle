@@ -29,7 +29,7 @@ repositories {
 def restAssuredVersion = "5.5.1"
 
 dependencies {
-    api 'io.gitlab.ambu550:bugreaper-core:0.0.9'
+    api 'io.gitlab.ambu550:bugreaper-core:0.1.0'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"

@@ -16,4 +16,9 @@ class AllureStepsValidationTest {
         validateAllSteps("io.bugreaper.modules.mocks.MocksApi");
     }
 
+    @Test
+    void testStepsAssertableResponse() {
+        validateAllSteps("io.bugreaper.modules.api.assertable.AssertableResponse");
+    }
+
 }

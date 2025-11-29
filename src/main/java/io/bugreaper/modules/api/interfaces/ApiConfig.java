@@ -29,7 +29,7 @@ public interface ApiConfig {
      * @return this instance {@link Api}
      * @throws AssertionError if response time greater
      */
-    Api withMaxResponseMsAssert(long maxResponseMs);
+    Api withMaxResponseMsAssert(int maxResponseMs);
 
     /**
      * Set content type absent
@@ -90,4 +90,5 @@ public interface ApiConfig {
     Api setBasicAuth(String username, String password);
 
 
+    Api setNoAuth();
 }
