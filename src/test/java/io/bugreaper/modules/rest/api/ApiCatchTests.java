@@ -33,6 +33,23 @@ class ApiCatchTests extends PreSetup {
 
     }
 
+
+    @Test
+    void testSeeResponseCodeIsSuccessfulCatch() {
+        mocksApi.resetMocks();
+
+        Api api = new SetupMockserver().getApi();
+
+        AssertableResponse result = api.sendGet("/api/test");
+
+        Throwable exception = assertThrows(AssertionError.class, result::seeResponseCodeIsSuccessful);
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("Expected SUCCESSFUL(2xx) status code, but got: 404"));
+
+    }
+
     @Test
     void testCatchXmlSchemaValidation() {
         var data = "some_data";

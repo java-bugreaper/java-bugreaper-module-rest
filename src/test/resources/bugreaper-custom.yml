@@ -1,0 +1,9 @@
+modules:
+  api-5:
+    url: http://my-host
+    port: 8085
+    username: user_5 # optional
+    password: pass_5 # optional
+    token: token_5 # optional more priority than base auth!
+    logging: true # optional
+    max-response-ms-assert: 777 # optional

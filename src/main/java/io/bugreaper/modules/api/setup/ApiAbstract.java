@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import static org.hamcrest.Matchers.lessThan;
 
@@ -48,7 +48,7 @@ public abstract class ApiAbstract {
 
     protected boolean enableLogging = false;
     //assert not break!!
-    protected long maxResponseMsAssert = 5000;
+    protected long maxResponseMsAssert = 0;
 
     protected Map<String, String> headers = new HashMap<>();
     protected Map<String, String> queryParams = new HashMap<>();
@@ -99,15 +99,19 @@ public abstract class ApiAbstract {
         }
 
         request.filters(apiFilters());
-        request.then()
-                .spec(setMaxResponseTimeAssert());
+
+        //response time pre-check
+        if (maxResponseMsAssert > 0 ) {
+            request.then()
+                    .spec(setMaxResponseTimeAssert());
+        }
 
         return request;
     }
 
     private ResponseSpecification setMaxResponseTimeAssert() {
         return new ResponseSpecBuilder()
-                .expectResponseTime(lessThan(maxResponseMsAssert), TimeUnit.MILLISECONDS)
+                .expectResponseTime(lessThan(maxResponseMsAssert), MILLISECONDS)
                 .build();
     }
 

@@ -28,6 +28,9 @@ import java.util.Map;
 
 public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
+    private static final String YML_KEY = "modules.api"
+;
+
     /**
      * This constructor initializes client for interaction with API
      *
@@ -65,36 +68,71 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * Missing optional keys will fall back to predefined defaults.</p>
      */
     public Api() {
-        loadFromYaml();
+        loadFromYaml("");
+    }
+
+    /**
+     * Constructs api client configuration.
+     *
+     * @param suffix concatenation of Api client (example Api("-2") keys will be "modules.api<b>-2</b>.*")
+     *
+     * <p>Loads configuration values from a YAML file.</p>
+     *
+     * <p><b>Default file:</b> {@code bugreaper.yml}</p>
+     * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
+     *
+     * <p><b>Required configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.api{$suffix}.url}</li>
+     *     <li>{@code modules.api{$suffix}.port}</li>
+     * </ul>
+     *
+     * <p><b>Optional configuration keys:</b></p>
+     * <ul>
+     *     <li>{@code modules.api{$suffix}.username}</li>
+     *     <li>{@code modules.api{$suffix}.password}</li>
+     *     <li>{@code modules.api{$suffix}.token}</li>
+     *     <li>{@code modules.api{$suffix}.logging}</li>
+     *     <li>{@code modules.api{$suffix}.max-response-ms-assert}</li>
+     * </ul>
+     *
+     * <p>Missing required keys will result in configuration errors.
+     * Missing optional keys will fall back to predefined defaults.</p>
+     */
+    public Api(String suffix) {
+        if (suffix == null || suffix.isBlank()) {
+            throw new IllegalArgumentException("suffix can`t be empty or null");
+        }
+        loadFromYaml(suffix);
     }
 
 
-    private void loadFromYaml() {
+    private void loadFromYaml(String num) {
         Map<String, Object> rawData = ConfigLoader.loadYaml();
 
         //required config fields
-        this.url = YamlUtils.getStringValueByPath(rawData, "modules.api.url");
-        this.port = YamlUtils.getIntegerValueByPath(rawData, "modules.api.port");
+        this.url = YamlUtils.getStringValueByPath(rawData, YML_KEY + num + ".url");
+        this.port = YamlUtils.getIntegerValueByPath(rawData, YML_KEY + num + ".port");
 
 
         //optional config fields
-        Object usernameVal = YamlUtils.getValueByPath(rawData, "modules.api.username", true);
-        Object passwordVal = YamlUtils.getValueByPath(rawData, "modules.api.password", true);
+        Object usernameVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".username", true);
+        Object passwordVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".password", true);
         if (usernameVal instanceof String stringUser && passwordVal instanceof String stringPass) {
             setBasicAuth(stringUser, stringPass);
         }
 
-        Object tokenVal = YamlUtils.getValueByPath(rawData, "modules.api.token", true);
+        Object tokenVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".token", true);
         if (tokenVal instanceof String token) {
             setBearerAuth(token);
         }
 
-        Object loggingVal = YamlUtils.getValueByPath(rawData, "modules.api.logging", true);
+        Object loggingVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".logging", true);
         if (loggingVal instanceof Boolean logging) {
             withLogging(logging);
         }
 
-        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(rawData, "modules.api.max-response-ms-assert", true);
+        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".max-response-ms-assert", true);
         if (maxResponseMsAssertVal instanceof Integer assertMs) {
             withMaxResponseMsAssert(assertMs);
         }
