@@ -7,7 +7,6 @@ import io.restassured.response.Response;
 import org.hamcrest.Matcher;
 
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 import static io.bugreaper.core.allurereporter.AllureReporter.*;
 import static io.bugreaper.core.assertions.JsonAsserts.*;
@@ -15,10 +14,10 @@ import static io.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static io.restassured.matcher.RestAssuredMatchers.matchesXsdInClasspath;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AssertableResponse implements ResponseAsserts, ResponseGrab {
@@ -44,15 +43,15 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
         int statusCode = response.getStatusCode();
 
         assertTrue(statusCode >= 200 && statusCode <= 299,
-                "Expected SUCCESSFUL status code, but got: " + statusCode);
+                "Expected SUCCESSFUL(2xx) status code, but got: " + statusCode);
 
         return this;
     }
 
     @Override
-    @Step("Response time less: {timeMs}")
-    public AssertableResponse seeResponseTimeLess(long timeMs) {
-        response.then().time(lessThan(timeMs), TimeUnit.MILLISECONDS);
+    @Step("Response time less: {maxResponseMs}")
+    public AssertableResponse seeResponseTimeLess(long maxResponseMs) {
+        response.then().time(lessThan(maxResponseMs), MILLISECONDS);
         return this;
     }
 
@@ -170,7 +169,6 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
 
         return this;
     }
-
 
     @Override
     @Step("Grab header <{header}> value")

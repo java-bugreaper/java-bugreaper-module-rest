@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class ConfigTests extends PreSetup {
@@ -61,6 +62,26 @@ class ConfigTests extends PreSetup {
     }
 
     @Test
+    void testConfigCustom5WithAllFields() {
+        System.setProperty(PROPERTY, "custom");
+        Api apiConf = new Api( "-5");
+
+        assertEquals("""
+                        Api:
+                            url=http://my-host
+                            port=8085
+                            username=user_5
+                            password=pass_5
+                            useBasicAuth=false
+                            authToken=token_5
+                            contentType=application/json
+                            enableLogging=true
+                            maxResponseMsAssert=777
+                        """,
+                apiConf.getConfigSummary());
+    }
+
+    @Test
     void testConfigWithRequiredFieldsOnly() {
         if(Objects.equals(CI, "true")){
             System.setProperty(PROPERTY, "docker-noopt");
@@ -85,7 +106,7 @@ class ConfigTests extends PreSetup {
                             authToken=null
                             contentType=application/json
                             enableLogging=false
-                            maxResponseMsAssert=5000
+                            maxResponseMsAssert=0
                         """, expectedHost),
                 apiConf.getConfigSummary());
     }
@@ -152,6 +173,30 @@ class ConfigTests extends PreSetup {
                             enchantedReport=true
                         """, expectedHost),
                 mocksConf.getConfigSummary());
+    }
+
+    @Test
+    void testConfigCustom5ValidationNull() {
+        System.setProperty(PROPERTY, "custom");
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
+                new Api( null));
+
+        assertEquals("suffix can`t be empty or null",
+                exception.getMessage());
+
+    }
+
+    @Test
+    void testConfigCustom5ValidationEmpty() {
+        System.setProperty(PROPERTY, "custom");
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
+                new Api( ""));
+
+        assertEquals("suffix can`t be empty or null",
+                exception.getMessage());
+
     }
 
 }
