@@ -1,5 +1,6 @@
 package io.bugreaper.modules.rest;
 
+import io.bugreaper.core.config.YamlUtils;
 import io.bugreaper.modules.api.Api;
 import io.bugreaper.modules.mocks.MocksApi;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ class ConfigTests extends PreSetup {
 
     @BeforeEach
     void addMockUniversal() {
+        YamlUtils.clearCache();
         if(Objects.equals(CI, "true")){
             this.expectedHost = "http://docker";
         }else {

@@ -15,7 +15,6 @@
  */
 package io.bugreaper.modules.api;
 
-import io.bugreaper.core.config.ConfigLoader;
 import io.bugreaper.core.config.YamlUtils;
 import io.bugreaper.modules.api.assertable.AssertableResponse;
 import io.bugreaper.modules.api.interfaces.ApiConfig;
@@ -28,8 +27,7 @@ import java.util.Map;
 
 public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
-    private static final String YML_KEY = "modules.api"
-;
+    private static final String YML_KEY = "modules.api";
 
     /**
      * This constructor initializes client for interaction with API
@@ -108,31 +106,30 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
 
     private void loadFromYaml(String num) {
-        Map<String, Object> rawData = ConfigLoader.loadYaml();
 
         //required config fields
-        this.url = YamlUtils.getStringValueByPath(rawData, YML_KEY + num + ".url");
-        this.port = YamlUtils.getIntegerValueByPath(rawData, YML_KEY + num + ".port");
+        this.url = YamlUtils.getStringValueByPath(YML_KEY + num + ".url");
+        this.port = YamlUtils.getIntegerValueByPath(YML_KEY + num + ".port");
 
 
         //optional config fields
-        Object usernameVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".username", true);
-        Object passwordVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".password", true);
+        Object usernameVal = YamlUtils.getValueByPath(YML_KEY + num + ".username", true);
+        Object passwordVal = YamlUtils.getValueByPath(YML_KEY + num + ".password", true);
         if (usernameVal instanceof String stringUser && passwordVal instanceof String stringPass) {
             setBasicAuth(stringUser, stringPass);
         }
 
-        Object tokenVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".token", true);
+        Object tokenVal = YamlUtils.getValueByPath(YML_KEY + num + ".token", true);
         if (tokenVal instanceof String token) {
             setBearerAuth(token);
         }
 
-        Object loggingVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".logging", true);
+        Object loggingVal = YamlUtils.getValueByPath(YML_KEY + num + ".logging", true);
         if (loggingVal instanceof Boolean logging) {
             withLogging(logging);
         }
 
-        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(rawData, YML_KEY + num + ".max-response-ms-assert", true);
+        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(YML_KEY + num + ".max-response-ms-assert", true);
         if (maxResponseMsAssertVal instanceof Integer assertMs) {
             withMaxResponseMsAssert(assertMs);
         }

@@ -15,7 +15,6 @@
  */
 package io.bugreaper.modules.mocks;
 
-import io.bugreaper.core.config.ConfigLoader;
 import io.bugreaper.core.config.YamlUtils;
 import io.bugreaper.modules.api.setup.ApiAbstract;
 import io.bugreaper.modules.mocks.exceptions.MockEnchantedException;
@@ -104,25 +103,24 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     private void loadFromYaml() {
-        Map<String, Object> rawData = ConfigLoader.loadYaml();
 
         //required config fields
-        this.url = YamlUtils.getStringValueByPath(rawData, "modules.mocks.url");
-        this.port = YamlUtils.getIntegerValueByPath(rawData, "modules.mocks.port");
+        this.url = YamlUtils.getStringValueByPath("modules.mocks.url");
+        this.port = YamlUtils.getIntegerValueByPath("modules.mocks.port");
 
 
         //optional config fields
-        Object loggingVal = YamlUtils.getValueByPath(rawData, "modules.mocks.logging", true);
+        Object loggingVal = YamlUtils.getValueByPath("modules.mocks.logging", true);
         if (loggingVal instanceof Boolean logging) {
             withLogging(logging);
         }
 
-        Object enchantedReportVal = YamlUtils.getValueByPath(rawData, "modules.mocks.enchanted-report", true);
+        Object enchantedReportVal = YamlUtils.getValueByPath("modules.mocks.enchanted-report", true);
         if (enchantedReportVal instanceof Boolean logging) {
             withEnchantedReport(logging);
         }
 
-        Object awaitVal = YamlUtils.getValueByPath(rawData, "modules.mocks.await", true);
+        Object awaitVal = YamlUtils.getValueByPath("modules.mocks.await", true);
         if (awaitVal instanceof Integer assertMs) {
             withAwaitMs(assertMs);
         }
