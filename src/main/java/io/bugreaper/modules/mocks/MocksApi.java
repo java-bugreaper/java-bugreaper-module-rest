@@ -36,11 +36,10 @@ import static io.bugreaper.core.allurereporter.AllureReporter.attachJson;
 import static io.bugreaper.core.assertions.JsonAsserts.assertLenientValidJson;
 import static io.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static io.bugreaper.core.mappers.StringMappers.*;
+import static io.bugreaper.core.utils.AwaitUtils.awaitCustom;
 import static io.bugreaper.modules.mocks.enchanted.GetActual.getActualMethodsAndPathsList;
 import static io.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer.enchantedReport;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
-import static java.time.Duration.ofMillis;
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -360,8 +359,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         assertLenientValidJson(verifySetup);
 
         try {
-        await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
-                .untilAsserted(
+            awaitCustom(awaitMs).untilAsserted(
                         () -> verifyMockSequenceNoLogs(verifySetup));
         } catch (ConditionTimeoutException e) {
                 verifyMockSequence(verifySetup);
@@ -374,8 +372,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         attachJson("Mock verify setup within" + formatMilliseconds(awaitMs), verifySetup);
         assertLenientValidJson(verifySetup);
         try {
-            await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
-                    .untilAsserted(
+            awaitCustom(awaitMs).untilAsserted(
                             () -> verifyMockNoLogs(verifySetup));
         } catch (ConditionTimeoutException e) {
             verifyMock(verifySetup);
@@ -386,8 +383,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to} with await")
     public void assertMocksCountWithAwait(int from, int to) {
         try {
-            await().pollDelay(ofMillis(0)).atMost(ofMillis(awaitMs))
-                    .untilAsserted(
+            awaitCustom(awaitMs).untilAsserted(
                             () -> assertAllMocksCountNoLogs(from, to));
         } catch (ConditionTimeoutException e) {
             assertAllMocksCount(from, to);
