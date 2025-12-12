@@ -10,15 +10,33 @@ public interface ApiConfig {
     /**
      * Set content type XML
      *
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api withContentTypeXml();
 
     /**
+     * Set content type JSON
+     *
+     * @return this instance for method chaining
+     */
+    Api withContentTypeJson();
+
+
+    /**
      * Set content type manually {@link ContentType}
      *
-     * @param contentType {@link ContentType}
-     * @return this instance {@link Api}
+     * @param contentType {@link ContentType}:
+     * <ul>
+     *   <li>{@link ContentType#ANY}</li>
+     *   <li>{@link ContentType#TEXT}</li>
+     *   <li>{@link ContentType#JSON}</li>
+     *   <li>{@link ContentType#XML}</li>
+     *   <li>{@link ContentType#HTML}</li>
+     *   <li>{@link ContentType#URLENC}</li>
+     *   <li>{@link ContentType#BINARY}</li>
+     *   <li>{@link ContentType#MULTIPART}</li>
+     * </ul>
+     * @return this instance for method chaining
      */
     Api withContentType(ContentType contentType);
 
@@ -26,7 +44,7 @@ public interface ApiConfig {
      * Set maxResponseTimeout (does not break the connection - only assert)
      *
      * @param maxResponseMs assert ms for max response time
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      * @throws AssertionError if response time greater
      */
     Api withMaxResponseMsAssert(int maxResponseMs);
@@ -34,7 +52,7 @@ public interface ApiConfig {
     /**
      * Set content type absent
      *
-     * @return this
+     * @return this instance for method chaining
      */
     Api withoutContentType();
 
@@ -42,7 +60,7 @@ public interface ApiConfig {
      * Enables or disables logging manually (debug log level will print logs anyway!)
      *
      * @param enable true=request/response logging (Allure on always!)
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api withLogging(boolean enable);
 
@@ -51,7 +69,7 @@ public interface ApiConfig {
      *
      * @param key header key
      * @param value header value
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api setHeader(String key, String value);
 
@@ -59,7 +77,7 @@ public interface ApiConfig {
      * Adds or updates a headers
      *
      * @param headers Map (key, value)
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api setHeaders(Map<String, String> headers);
 
@@ -68,7 +86,7 @@ public interface ApiConfig {
      * Adds or updates a query parameters
      *
      * @param queryParams Map (key, value)
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api setQueryParams(Map<String, String> queryParams);
 
@@ -76,7 +94,7 @@ public interface ApiConfig {
      * Adds or updates a query parameters
      *
      * @param token String with token
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api setBearerAuth(String token);
 
@@ -85,7 +103,7 @@ public interface ApiConfig {
      *
      * @param username String with username
      * @param password String with password
-     * @return this instance {@link Api}
+     * @return this instance for method chaining
      */
     Api setBasicAuth(String username, String password);
 

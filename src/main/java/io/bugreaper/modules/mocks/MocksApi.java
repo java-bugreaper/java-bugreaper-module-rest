@@ -355,7 +355,9 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("(MOCK)[VERIFY] Verify sequence with await")
     public void verifyMockSequenceWithAwait(@Param(mode = HIDDEN) String verifySetup) {
-        attachJson("Sequence within" + formatMilliseconds(awaitMs), verifySetup);
+
+        attachJson("Sequence within " + formatMilliseconds(awaitMs), verifySetup);
+
         assertLenientValidJson(verifySetup);
 
         try {
@@ -369,7 +371,9 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("(MOCK)[VERIFY] Verify mock with await")
     public void verifyMockWithAwait(@Param(mode = HIDDEN) String verifySetup) {
-        attachJson("Mock verify setup within" + formatMilliseconds(awaitMs), verifySetup);
+
+        attachJson("Mock verify setup within " + formatMilliseconds(awaitMs), verifySetup);
+
         assertLenientValidJson(verifySetup);
         try {
             awaitCustom(awaitMs).untilAsserted(
@@ -410,10 +414,8 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         assertEquals(
                 202,
-                buildRequest()
+                buildSimpleRequest() //no logs no attachments !!!!
                         .body(verifySetup)
-                        .when()
-                        .filters(List.of()) //no logs no attachments !!!!
                         .put("/mockserver/verifySequence")
                         .then()
                         .extract()
@@ -424,12 +426,11 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
     // for retry awaiting no steps/no logs!
     private void verifyMockNoLogs(String verifySetup) {
+
             assertEquals(
                     202,
-                    buildRequest()
+                    buildSimpleRequest() //no logs no attachments !!!!
                             .body(verifySetup)
-                            .when()
-                            .filters(List.of()) //no logs no attachments !!!!
                             .put("/mockserver/verify")
                             .then()
                             .extract()

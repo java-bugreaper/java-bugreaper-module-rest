@@ -138,6 +138,12 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     //setters
 
     @Override
+    public Api withContentTypeJson() {
+        this.contentType = ContentType.JSON;
+        return this;
+    }
+
+    @Override
     public Api withContentTypeXml() {
         this.contentType = ContentType.XML;
         return this;
