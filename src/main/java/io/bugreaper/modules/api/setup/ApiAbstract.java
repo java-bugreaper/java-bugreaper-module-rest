@@ -109,6 +109,18 @@ public abstract class ApiAbstract {
         return request;
     }
 
+    //use for await asserts (where no need to attach filters on every attempt)
+    protected RequestSpecification buildSimpleRequest() {
+
+        RequestSpecification request = RestAssured.given();
+
+        request.baseUri(url).port(port);
+
+        request.filters(List.of());
+
+        return request;
+    }
+
     private ResponseSpecification setMaxResponseTimeAssert() {
         return new ResponseSpecBuilder()
                 .expectResponseTime(lessThan(maxResponseMsAssert), MILLISECONDS)

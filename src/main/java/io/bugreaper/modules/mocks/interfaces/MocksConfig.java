@@ -9,7 +9,7 @@ public interface MocksConfig {
      * Configure await in asserts with await
      *
      * @param awaitMs await ms
-     * @return  this instance {@link MocksApi}
+     * @return this instance for method chaining
      */
     MocksApi withAwaitMs(int awaitMs);
 
@@ -17,7 +17,7 @@ public interface MocksConfig {
      * Enables or disables logging manually (debug log level will print logs anyway!)
      *
      * @param enable true=request/response logging (Allure on always!)
-     * @return this instance {@link MocksApi}
+     * @return this instance for method chaining
      */
     MocksApi withLogging(boolean enable);
 
@@ -25,7 +25,7 @@ public interface MocksConfig {
      * Enabling or disabling enchanted mockVerify report
      *
      * @param enchantedReport true=on/false=off
-     * @return  this instance {@link MocksApi}
+     * @return this instance for method chaining
      */
     MocksApi withEnchantedReport(boolean enchantedReport);
 

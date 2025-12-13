@@ -38,7 +38,7 @@ class ApiCatchTests extends PreSetup {
     void testSeeResponseCodeIsSuccessfulCatch() {
         mocksApi.resetMocks();
 
-        Api api = new SetupMockserver().getApi();
+        Api api = new SetupMockserver().getApi().withContentTypeJson();
 
         AssertableResponse result = api.sendGet("/api/test");
 
