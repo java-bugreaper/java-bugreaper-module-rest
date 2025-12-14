@@ -200,7 +200,6 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)[LOGS] Retrieve all requests methods/path's from MOCK")
     public void showBaseRequestsList() {
 
         final Response mockRequests = getRequestBody("{}");
@@ -288,7 +287,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
 
-    @Step("(MOCK)[LOGS] Retrieve list with requests to mock-server ({cnt})")
+    @Step("(MOCK)[LOGS] Retrieve list with requests methods/path's to mock-server ({cnt})")
     private void getBaseRequestsListReport(int cnt, @Param(mode = HIDDEN) List<String> list) {
 
         String content = listToString(list).replace("\\", "");
@@ -466,7 +465,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * @return Response
      */
     private Response getRequestBody(String mockSetup) {
-        return (Response) buildRequest()
+        return (Response) buildSimpleRequest() //no logs no attachments !!!!
                 .body(mockSetup)
                 .put("retrieve?type=REQUESTS")
                 .then()
