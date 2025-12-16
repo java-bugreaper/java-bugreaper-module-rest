@@ -234,7 +234,6 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
     @Override
     public void createMockCustom(String description, String path) {
-        sendPut("expectation", readJsonFromFile(path));
         //step
         Allure.step(String.format("(MOCK)[CREATE] custom mock: %s", description),
                 (Allure.ThrowableContextRunnableVoid<Allure.StepContext>) step ->
