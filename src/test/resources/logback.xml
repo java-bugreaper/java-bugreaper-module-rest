@@ -11,7 +11,7 @@
 
     <!--<logger name="org.apache.activemq.artemis.api.core" level="DEBUG" />-->
 
-    <logger name="io.bugreaper.core" level="DEBUG" />
+    <logger name="net.bugreaper.core" level="DEBUG" />
 
 
     <logger name="io.qameta.allure.AllureLifecycle" level="OFF"/>
