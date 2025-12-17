@@ -3,8 +3,8 @@ package testcontainers;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
-import io.bugreaper.modules.api.Api;
-import io.bugreaper.modules.mocks.MocksApi;
+import net.bugreaper.modules.api.Api;
+import net.bugreaper.modules.mocks.MocksApi;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.utility.DockerImageName;
 

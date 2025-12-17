@@ -9,7 +9,7 @@ plugins {
 
 description = 'BugReaper module for interaction with API and mocks'
 
-group = 'io.gitlab.ambu550'
+group = 'net.bugreaper'
 version = properties["VERSION_NAME"].toString()
 
 java {
@@ -29,7 +29,7 @@ repositories {
 def restAssuredVersion = "5.5.1"
 
 dependencies {
-    api 'io.gitlab.ambu550:bugreaper-core:0.2.2'
+    api 'net.bugreaper:core:1.0.0'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"
