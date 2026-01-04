@@ -5,8 +5,12 @@ import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.hamcrest.Matcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 import static net.bugreaper.core.allurereporter.AllureReporter.*;
 import static net.bugreaper.core.assertions.JsonAsserts.*;
@@ -22,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AssertableResponse implements ResponseAsserts, ResponseGrab {
 
+    private static final Logger logger = LoggerFactory.getLogger("bugreaper-module-api");
     private final Response response;
 
     public AssertableResponse(Response response) {
@@ -188,13 +193,77 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
         return result;
     }
 
+
     @Override
-    @Step("Grab response body field <{path}> value")
-    public String grabDataFromResponseByPath(String path) {
-        String result = response.then().extract().path(path);
+    @Step("Grab response body field <{path}> value as String")
+    public Object grabStringFromResponseByPath(String path) {
+        Object obj = response.then().extract().path(path);
+        String result = String.valueOf(obj);
+
+        if (logger.isInfoEnabled()) {
+            logger.info(MessageFormat.format("Grabbed data(String) from <{0}>:\n{1}", path, result));
+        }
 
         attachCanBeNull(path, result);
 
         return result;
     }
+
+
+    @Override
+    @Step("Grab response body field <{path}>")
+    public Object grabDataFromResponseByPath(String path) {
+        Object obj = response.then().extract().path(path);
+
+        attachObject(path, obj);
+
+        return obj;
+    }
+
+    private static void attachObject(String attachName, Object value) {
+
+        String type = "";
+        String attach;
+
+        if (value == null) {
+            attach = "null";
+        }
+        else if (value instanceof String string) {
+            type = "type=String";
+            attach = string;
+        }
+        else if (value instanceof ArrayList<?> array) {
+            type = "type=Array";
+            attach = String.valueOf(array);
+        }
+        else if (value instanceof Boolean bool) {
+            type = "type=Boolean";
+            attach =  (Boolean.TRUE.equals(bool)) ? "true" : "false";
+        }
+        else if (value instanceof Integer) {
+            type = "type=Integer";
+            attach =  value.toString();
+
+        }
+        else if (value instanceof Long) {
+            type = "type=Long";
+            attach = value.toString();
+        }
+        else if (value instanceof Float) {
+            type = "type=Float";
+            attach = String.valueOf(value);
+        }
+        else {
+            type = "type=Other";
+            attach = String.valueOf(value);
+        }
+
+        if (logger.isInfoEnabled()) {
+            logger.info(MessageFormat.format("Grabbed data from <{0}> {1}:\n{2}", attachName, type, attach));
+        }
+
+        Allure.addAttachment(MessageFormat.format("{0} {1}:", attachName, type),
+                "application/json", attach);
+    }
+
 }
