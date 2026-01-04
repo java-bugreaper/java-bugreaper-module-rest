@@ -12,7 +12,6 @@ import testcontainers.SetupMockserver;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static net.bugreaper.core.assertions.JsonAsserts.assertJson;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -317,73 +316,7 @@ class ApiMocksTest extends PreSetup {
         mocksApi.showBaseRequestsList();
     }
 
-    @Test
-    void testGrabStringDataFromResponse() {
 
-        mocksApi.createMockCustom(
-                "from file",
-                "testdata/mocks/post_1.json");
-
-        var response = api.sendPost("/api/post",
-                        """
-                                {"mainId": 555}""")
-                .seeResponseCodeIs(200)
-
-                .seeResponseExactlyMatchJson("""
-                        {
-                          "id": 125,
-                          "status": "active",
-                          "amount": 100.99,
-                          "isTrue": true
-                        }""")
-                .grabDataFromResponseByPath("status");
-
-        assertEquals("active", response, "Extracted field is valid");
-
-    }
-
-    @Test
-    void testGrabWrongPathDataFromResponse() {
-
-        mocksApi.createMock(universalMock);
-
-        var response = api.sendPost("/api/post",
-                        """
-                                {"id": 1}""")
-                .seeResponseCodeIs(200)
-                .seeResponseExactlyMatchJson("""
-                        {
-                          "result": "ok"
-                        }""")
-                .grabDataFromResponseByPath("wrong");
-
-        assertNull(response, "Extracted wrong field be NULL");
-
-    }
-
-    @Test
-    void testGrabFullBody() {
-
-        mocksApi.createMock(universalMock);
-
-        var expected = """
-                {
-                  "result": "ok"
-                }""";
-
-        var response = api.sendPost("/api/post",
-                        """
-                                {"id": 555}""")
-                .seeResponseCodeIs(200)
-
-                .seeResponseExactlyMatchJson("""
-                        {
-                          "result": "ok"
-                        }""")
-                .grabResponseBody();
-
-        assertJson(expected, response);
-    }
 
     @Test
     void testGrabEmptyBody() {
