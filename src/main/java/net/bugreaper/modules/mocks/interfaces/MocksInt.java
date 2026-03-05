@@ -24,6 +24,11 @@ public interface MocksInt {
     void showMockLogs();
 
     /**
+     * Add attachment with requests to mock-server
+     */
+    void showMockRequests();
+
+    /**
      * Add attachment with mock requests list
      * (only method and path)
      */

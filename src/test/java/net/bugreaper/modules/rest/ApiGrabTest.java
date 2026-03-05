@@ -109,7 +109,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals("active", status, "Extracted string field is valid");
 
-        var status2 = api.sendPost("/api/post")
+        String status2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("status");
 
@@ -172,7 +172,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(125, id, "Extracted int field is valid");
 
-        var id2 = api.sendPost("/api/post")
+        String id2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("id");
 
@@ -203,7 +203,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(125, id, "Extracted int field is valid");
 
-        var id2 = api.sendPost("/api/post")
+        String id2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("user.id");
 
@@ -238,7 +238,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(9223372036854775807L, id, "Extracted long field is valid");
 
-        var id2 = api.sendPost("/api/post")
+        String id2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("id");
 
@@ -272,7 +272,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(777.95f, amount, "Extracted decimal field is valid");
 
-        var amount2 = api.sendPost("/api/post")
+        String amount2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("amount");
 
@@ -306,7 +306,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(true, bool, "Extracted boolean field is valid");
 
-        var bool2 = api.sendPost("/api/post")
+        String bool2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("isAdmin");
 
@@ -340,7 +340,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(List.of(1, 2, 3), arr, "Extracted array field is valid");
 
-        var arr2 = api.sendPost("/api/post")
+        String arr2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("array");
 
@@ -369,7 +369,7 @@ class ApiGrabTest extends PreSetup {
 
         assertEquals(Map.of("id", 1), js, "Extracted JSON field is valid");
 
-        var js2 = api.sendPost("/api/post")
+        String js2 = api.sendPost("/api/post")
                 .seeResponseCodeIs(200)
                 .grabStringFromResponseByPath("js");
 

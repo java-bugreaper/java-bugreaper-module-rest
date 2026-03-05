@@ -196,7 +196,7 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
 
     @Override
     @Step("Grab response body field <{path}> value as String")
-    public Object grabStringFromResponseByPath(String path) {
+    public String grabStringFromResponseByPath(String path) {
         Object obj = response.then().extract().path(path);
         String result = String.valueOf(obj);
 

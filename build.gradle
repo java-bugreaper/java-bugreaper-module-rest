@@ -29,7 +29,7 @@ repositories {
 def restAssuredVersion = "5.5.1"
 
 dependencies {
-    api 'net.bugreaper:core:1.0.0'
+    api 'net.bugreaper:core:1.1.0'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"
@@ -44,8 +44,11 @@ test {
     useJUnitPlatform()
     systemProperty('allure.results.directory', project.buildDir.toString() + "/allure-results")
 
+    systemProperties(System.getProperties())
+
     testLogging {
         events("PASSED", "FAILED", "SKIPPED")
+//        showStandardStreams = true
         exceptionFormat = "full"
     }
 

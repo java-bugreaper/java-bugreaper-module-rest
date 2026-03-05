@@ -15,6 +15,7 @@ public abstract class PreSetup {
 
     protected MocksApi mocksApi = new SetupMockserver().getMocksApi();
     protected Api api = new SetupMockserver().getApi();
+    protected Api apiSet = new SetupMockserver().getApi();
     protected Api apiLogging = new SetupMockserver().getApi().withLogging(true);
     protected Api apiNoLogs = new SetupMockserver().getApi().withLogging(false);
 
@@ -23,7 +24,7 @@ public abstract class PreSetup {
     protected Api apiText = new SetupMockserver().getApi().withContentType(ContentType.TEXT);
     protected Api apiNoType = new SetupMockserver().getApi().withoutContentType();
 
-    protected MocksApi mocksApiAwait = new SetupMockserver().getMocksApi().withAwaitMs(400);
+    protected MocksApi mocksApiAwait = new SetupMockserver().getMocksApi().setAwaitMs(400);
 
     protected final String universalMock = """
             {

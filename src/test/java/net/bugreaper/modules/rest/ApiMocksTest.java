@@ -81,6 +81,8 @@ class ApiMocksTest extends PreSetup {
                    ]
                 }""");
 
+        mocksApi.showMockRequests();
+
     }
 
     @Test

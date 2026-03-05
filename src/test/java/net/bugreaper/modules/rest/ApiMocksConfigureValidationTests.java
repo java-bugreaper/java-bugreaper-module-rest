@@ -14,7 +14,7 @@ class ApiMocksConfigureValidationTests extends PreSetup {
 
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                mocksApi.withAwaitMs(-1));
+                mocksApi.setAwaitMs(-1));
 
         MatcherAssert.assertThat(
                 "Error on config .withAwaitMs negative validation",
@@ -27,7 +27,7 @@ class ApiMocksConfigureValidationTests extends PreSetup {
 
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                mocksApi.withAwaitMs(199));
+                mocksApi.setAwaitMs(199));
 
         MatcherAssert.assertThat(
                 "Error on config .withAwaitMs negative validation",

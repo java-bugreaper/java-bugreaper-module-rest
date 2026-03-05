@@ -7,84 +7,84 @@ public interface ApiInt {
     /**
      * Send GET request
      * 
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendGet(String endpoint);
+    AssertableResponse sendGet(String path);
 
     /**
      * Send HEAD request
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendHead(String endpoint);
+    AssertableResponse sendHead(String path);
 
     /**
      * Send OPTIONS request
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendOptions(String endpoint);
+    AssertableResponse sendOptions(String path);
 
     /**
      * Send POST request with body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @param body String with body
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendPost(String endpoint, Object body);
+    AssertableResponse sendPost(String path, Object body);
 
     /**
      * Send POST request without body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendPost(String endpoint);
+    AssertableResponse sendPost(String path);
 
     /**
      * Send PUT request with body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @param body String with body
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendPut(String endpoint, Object body);
+    AssertableResponse sendPut(String path, Object body);
 
     /**
      * Send PUT request without body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendPut(String endpoint);
+    AssertableResponse sendPut(String path);
 
     /**
      * Send PATCH request with body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @param body String with body
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendPatch(String endpoint, Object body);
+    AssertableResponse sendPatch(String path, Object body);
 
     /**
      * Send DELETE request with body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @param body String with body
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendDelete(String endpoint, Object body);
+    AssertableResponse sendDelete(String path, Object body);
 
     /**
      * Send DELETE request without body
      *
-     * @param endpoint String with endpoint (/api/user1)
+     * @param path String with path (/api/user1)
      * @return {@link AssertableResponse}
      */
-    AssertableResponse sendDelete(String endpoint);
+    AssertableResponse sendDelete(String path);
 }

@@ -25,6 +25,19 @@ import io.restassured.http.ContentType;
 
 import java.util.Map;
 
+/**
+ * Simple wrapper around RestAssured for sending HTTP requests.
+ *
+ * <p>This client provides a convenient fluent API for:</p>
+ * <ul>
+ *     <li>Sending GET, POST, PUT and DELETE requests</li>
+ *     <li>Configuring request headers/query params</li>
+ *     <li>Using Basic or Bearer authentication</li>
+ *     <li>Enabling request/response logging</li>
+ *     <li>Support BugReaper YML config</li>
+ * </ul>
+ *
+ */
 public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
     private static final String YML_KEY = "modules.api";
@@ -32,7 +45,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     /**
      * This constructor initializes client for interaction with API
      *
-     * @param url  service url ("http://my-service")
+     * @param url  service url ({@code "http://my-service"})
      * @param port service port
      */
     public Api(String url, int port) {
@@ -72,7 +85,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     /**
      * Constructs api client configuration.
      *
-     * @param suffix concatenation of Api client (example Api("-2") keys will be "modules.api<b>-2</b>.*")
+     * @param suffix concatenation of Api client (example Api("-2") keys will be "modules.api<b>-2</b>")
      *
      * <p>Loads configuration values from a YAML file.</p>
      *
@@ -168,20 +181,59 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    public Api setHeader(String key, String value) {
+    public Api setHeader(String key, Object value) {
         this.headers.put(key, value);
         return this;
     }
 
+
     @Override
-    public Api setHeaders(Map<String, String> headers) {
+    public Api setHeaders(Map<String, Object> headers) {
+        this.headers.clear();
         this.headers.putAll(headers);
         return this;
     }
 
     @Override
-    public Api setQueryParams(Map<String, String> queryParams) {
+    public Api cleanSetHeaders() {
+        this.headers.clear();
+        return this;
+    }
+
+    @Override
+    public Api requestHeader(String key, Object value) {
+        this.requestHeaders.get().put(key, value);
+        return this;
+    }
+
+    @Override
+    public Api requestHeaders(Map<String, Object> queryParams) {
+        this.requestHeaders.get().putAll(queryParams);
+        return this;
+    }
+
+    @Override
+    public Api setQueryParams(Map<String, Object> queryParams) {
+        this.queryParams.clear();
         this.queryParams.putAll(queryParams);
+        return this;
+    }
+
+    @Override
+    public Api cleanSetQueryParams() {
+        this.queryParams.clear();
+        return this;
+    }
+
+    @Override
+    public Api requestQueryParam(String key, Object value) {
+        this.requestQueryParams.get().put(key, value);
+        return this;
+    }
+
+    @Override
+    public Api requestQueryParams(Map<String, Object> queryParams) {
+        this.requestQueryParams.get().putAll(queryParams);
         return this;
     }
 
@@ -241,87 +293,87 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     // interactions
 
     @Override
-    @Step("(API) Send GET {endpoint}")
-    public AssertableResponse sendGet(String endpoint) {
+    @Step("(API) Send GET {path}")
+    public AssertableResponse sendGet(String path) {
         return new AssertableResponse(buildRequest()
                 .when()
-                .get(endpoint));
+                .get(path));
     }
 
     @Override
-    @Step("(API) Send HEAD {endpoint}")
-    public AssertableResponse sendHead(String endpoint) {
+    @Step("(API) Send HEAD {path}")
+    public AssertableResponse sendHead(String path) {
         return new AssertableResponse(buildRequest()
                 .when()
-                .head(endpoint));
+                .head(path));
     }
 
     @Override
-    @Step("(API) Send OPTIONS {endpoint}")
-    public AssertableResponse sendOptions(String endpoint) {
+    @Step("(API) Send OPTIONS {path}")
+    public AssertableResponse sendOptions(String path) {
         return new AssertableResponse(buildRequest()
                 .when()
-                .options(endpoint));
+                .options(path));
     }
 
     @Override
-    @Step("(API) Send POST {endpoint}")
-    public AssertableResponse sendPost(String endpoint, Object body) {
+    @Step("(API) Send POST {path}")
+    public AssertableResponse sendPost(String path, Object body) {
         return new AssertableResponse(buildRequest()
                 .body(body)
                 .when()
-                .post(endpoint));
+                .post(path));
     }
 
     @Override
-    @Step("(API) Send POST {endpoint}")
-    public AssertableResponse sendPost(String endpoint) {
+    @Step("(API) Send POST {path}")
+    public AssertableResponse sendPost(String path) {
         return new AssertableResponse(buildRequest()
                 .when()
-                .post(endpoint));
+                .post(path));
     }
 
     @Override
-    @Step("(API) Send PUT {endpoint}")
-    public AssertableResponse sendPut(String endpoint, Object body) {
-        return new AssertableResponse(buildRequest()
-                .body(body)
-                .when()
-                .put(endpoint));
-    }
-
-    @Override
-    @Step("(API) Send PUT {endpoint}")
-    public AssertableResponse sendPut(String endpoint) {
-        return new AssertableResponse(buildRequest()
-                .when()
-                .put(endpoint));
-    }
-
-    @Override
-    @Step("(API) Send PATCH {endpoint}")
-    public AssertableResponse sendPatch(String endpoint, Object body) {
+    @Step("(API) Send PUT {path}")
+    public AssertableResponse sendPut(String path, Object body) {
         return new AssertableResponse(buildRequest()
                 .body(body)
                 .when()
-                .patch(endpoint));
+                .put(path));
     }
 
     @Override
-    @Step("(API) Send DELETE {endpoint}")
-    public AssertableResponse sendDelete(String endpoint, Object body) {
+    @Step("(API) Send PUT {path}")
+    public AssertableResponse sendPut(String path) {
+        return new AssertableResponse(buildRequest()
+                .when()
+                .put(path));
+    }
+
+    @Override
+    @Step("(API) Send PATCH {path}")
+    public AssertableResponse sendPatch(String path, Object body) {
         return new AssertableResponse(buildRequest()
                 .body(body)
                 .when()
-                .delete(endpoint));
+                .patch(path));
     }
 
     @Override
-    @Step("(API) Send DELETE {endpoint}")
-    public AssertableResponse sendDelete(String endpoint) {
+    @Step("(API) Send DELETE {path}")
+    public AssertableResponse sendDelete(String path, Object body) {
+        return new AssertableResponse(buildRequest()
+                .body(body)
+                .when()
+                .delete(path));
+    }
+
+    @Override
+    @Step("(API) Send DELETE {path}")
+    public AssertableResponse sendDelete(String path) {
         return new AssertableResponse(buildRequest()
                 .when()
-                .delete(endpoint));
+                .delete(path));
     }
 
 }
