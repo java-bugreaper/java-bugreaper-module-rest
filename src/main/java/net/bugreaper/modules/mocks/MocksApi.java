@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * <p> Create @Step for every Created and Verified mock in your mock Class for allure report
  *
  * <p> Enchanted Report for mocks verify default:ON: {@link MocksApi#enchantedReport}, can be disabled by: {@link MocksApi#withEnchantedReport(boolean)})
- * <p> Await for some assert default: {@link MocksApi#awaitMs}, can be changed by: {@link MocksApi#withAwaitMs(int)}
+ * <p> Await for some assert default: {@link MocksApi#awaitMs}, can be changed by: {@link MocksApi#setAwaitMs(int)}
  */
 @SuppressWarnings("squid:S5960")
 public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
@@ -66,7 +66,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     /**
      * This constructor initializes client for interaction with mock-server
      *
-     * @param url  mock-server url ("http://localhost")
+     * @param url  mock-server url ({@code "http://localhost"})
      * @param port mock-server port
      */
     public MocksApi(String url, int port) {
@@ -121,13 +121,13 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         Object awaitVal = YamlUtils.getValueByPath("modules.mocks.await", true);
         if (awaitVal instanceof Integer assertMs) {
-            withAwaitMs(assertMs);
+            setAwaitMs(assertMs);
         }
 
     }
 
     @Override
-    public MocksApi withAwaitMs(int awaitMs) {
+    public MocksApi setAwaitMs(int awaitMs) {
         if (awaitMs < 200) {
             throw new IllegalArgumentException("awaitMs too small (can`t bee less 200ms)");
         }
@@ -194,9 +194,14 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)[LOGS] Retrieve all recorded log messages from MOCK")
+    @Step("(MOCK)[LOGS] Retrieve all recorded log messages from mock-server")
     public void showMockLogs() {
         sendPut("retrieve?type=LOGS");
+    }
+
+    @Override
+    @Step("(MOCK)[LOGS] Retrieve all requests to mock-server")
+    public void showMockRequests() {sendPut("retrieve?type=LOGS");
     }
 
     @Override

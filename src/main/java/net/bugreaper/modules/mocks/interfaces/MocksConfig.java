@@ -6,12 +6,12 @@ import net.bugreaper.modules.mocks.MocksApi;
 public interface MocksConfig {
 
     /**
-     * Configure await in asserts with await
+     * Configure global await in asserts with await
      *
      * @param awaitMs await ms
      * @return this instance for method chaining
      */
-    MocksApi withAwaitMs(int awaitMs);
+    MocksApi setAwaitMs(int awaitMs);
 
     /**
      * Enables or disables logging manually (debug log level will print logs anyway!)

@@ -21,4 +21,9 @@ class AllureStepsValidationTest {
         validateAllSteps("net.bugreaper.modules.api.assertable.AssertableResponse");
     }
 
+    @Test
+    void testStepsMockDiffer() {
+        validateAllSteps("net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer");
+    }
+
 }

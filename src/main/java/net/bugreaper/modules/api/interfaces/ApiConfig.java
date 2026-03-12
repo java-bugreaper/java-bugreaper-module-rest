@@ -65,33 +65,46 @@ public interface ApiConfig {
     Api withLogging(boolean enable);
 
     /**
-     * Adds or updates a header
+     * Add or updates header globally (add to previously set)
      *
      * @param key header key
      * @param value header value
      * @return this instance for method chaining
      */
-    Api setHeader(String key, String value);
+    Api setHeader(String key, Object value);
 
     /**
-     * Adds or updates a headers
+     * Set headers globally (overwrite previously set)
      *
      * @param headers Map (key, value)
      * @return this instance for method chaining
      */
-    Api setHeaders(Map<String, String> headers);
-
+    Api setHeaders(Map<String, Object> headers);
 
     /**
-     * Adds or updates a query parameters
+     * Remove global headers
+     *
+     * @return this instance for method chaining
+     */
+    Api cleanSetHeaders();
+
+    /**
+     * Set query parameters globally (overwrite previously set)
      *
      * @param queryParams Map (key, value)
      * @return this instance for method chaining
      */
-    Api setQueryParams(Map<String, String> queryParams);
+    Api setQueryParams(Map<String, Object> queryParams);
 
     /**
-     * Adds or updates a query parameters
+     * Remove global query parameters
+     *
+     * @return this instance for method chaining
+     */
+    Api cleanSetQueryParams();
+
+    /**
+     * Sets Bearer authentication
      *
      * @param token String with token
      * @return this instance for method chaining
@@ -107,6 +120,63 @@ public interface ApiConfig {
      */
     Api setBasicAuth(String username, String password);
 
-
+    /**
+     * Unset all authentications
+     *
+     * @return this instance for method chaining
+     */
     Api setNoAuth();
+
+
+    /**
+     * Add header for one next request (global headers will be ignored)
+     * <ul>
+     *     <li>use for specific request</li>
+     *     <li>can be used multiple times to add multiple headers</li>
+     *     <li>after request global headers are taken into account again</li>
+     * </ul>
+     *
+     * @param key header key
+     * @param value header value
+     * @return this instance for method chaining
+     */
+    Api requestHeader(String key, Object value);
+
+    /**
+     * Add headers for one next request (global headers will be ignored)
+     * <ul>
+     *     <li>use for specific request </li>
+     *     <li>after request global headers are taken into account again</li>
+     * </ul>
+     *
+     * @param queryParams Map (key, value)
+     * @return this instance for method chaining
+     */
+    Api requestHeaders(Map<String, Object> queryParams);
+
+
+    /**
+     * Add query parameter once for next request (global query parameters will be ignored)
+     * <ul>
+     *     <li>use before specific request</li>
+     *     <li>can be used multiple times to add multiple query parameters</li>
+     *     <li>after request global query parameter are taken into account again</li>
+     * </ul>
+     * @param key parameter key
+     * @param value parameter value
+     * @return this instance for method chaining
+     */
+    Api requestQueryParam(String key, Object value);
+
+    /**
+     * Add query parameters once for next request (global query parameters will be ignored)
+     * <ul>
+     *     <li>use before specific request</li>
+     *     <li>after request global query parameter are taken into account again</li>
+     * </ul>
+     * @param queryParams Map (key, value)
+     * @return this instance for method chaining
+     */
+    Api requestQueryParams(Map<String, Object> queryParams);
+
 }

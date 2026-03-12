@@ -2,10 +2,6 @@ package net.bugreaper.modules.mocks.exceptions;
 
 public class MockEnchantedException extends RuntimeException {
 
-    public MockEnchantedException(Throwable cause) {
-        super(cause);
-    }
-
     public MockEnchantedException(String message) {
         super(message);
     }

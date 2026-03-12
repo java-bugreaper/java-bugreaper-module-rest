@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import static org.hamcrest.Matchers.lessThan;
@@ -50,8 +51,10 @@ public abstract class ApiAbstract {
     //assert not break!!
     protected long maxResponseMsAssert = 0;
 
-    protected Map<String, String> headers = new HashMap<>();
-    protected Map<String, String> queryParams = new HashMap<>();
+    protected Map<String, Object> headers = new LinkedHashMap<>();
+    protected Map<String, Object> queryParams = new LinkedHashMap<>();
+    protected ThreadLocal<LinkedHashMap<String,Object>> requestQueryParams = ThreadLocal.withInitial(LinkedHashMap::new);
+    protected ThreadLocal<LinkedHashMap<String,Object>> requestHeaders = ThreadLocal.withInitial(LinkedHashMap::new);
 
     protected ContentType contentType = ContentType.JSON;
 
@@ -78,8 +81,15 @@ public abstract class ApiAbstract {
 
         request.baseUri(url).port(port);
 
-        if (!queryParams.isEmpty()) {
-            request.queryParams(queryParams);
+
+
+        // Use set or request query params
+        LinkedHashMap<String, Object> requestParams = requestQueryParams.get();
+        if (!requestParams.isEmpty()) {
+            request.queryParams(requestParams);
+            requestQueryParams.remove();
+        } else if (!queryParams.isEmpty()) {
+                request.queryParams(queryParams);
         }
 
         if (contentType != null) {
@@ -87,7 +97,12 @@ public abstract class ApiAbstract {
             request.accept(contentType);
         }
 
-        if (!headers.isEmpty()) {
+        // Use set or request headers
+        LinkedHashMap<String, Object> specificHeaders = requestHeaders.get();
+        if (!specificHeaders.isEmpty()) {
+            request.headers(specificHeaders);
+            requestHeaders.remove();
+        } else if (!headers.isEmpty()) {
             request.headers(headers);
         }
 
