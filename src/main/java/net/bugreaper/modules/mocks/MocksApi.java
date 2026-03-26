@@ -45,13 +45,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Class for API integration with <a href="https://www.mock-server.com/">mock-server</a>
+ *
+ * <p>For one instance run recommended: {@code MocksApi mockApi = MocksApi.getInstance()}</p>
+ *
  * <p> Create @Step for every Created and Verified mock in your mock Class for allure report
  *
- * <p> Enchanted Report for mocks verify default:ON: {@link MocksApi#enchantedReport}, can be disabled by: {@link MocksApi#withEnchantedReport(boolean)})
+ * <p> Enchanted Report for mocks verify default:ON: {@link MocksApi#enchantedReport}, can be disabled by: {@link MocksApi#setEnchantedReport(boolean)})
  * <p> Await for some assert default: {@link MocksApi#awaitMs}, can be changed by: {@link MocksApi#setAwaitMs(int)}
  */
 @SuppressWarnings("squid:S5960")
 public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
+
+    private static MocksApi instance;
 
     /**
      * enchanted report feature
@@ -64,6 +69,12 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     private int awaitMs = 2000;
 
     /**
+     * specific ms await in specific assert (configure with {@link #withAwaitMs(int)})
+     */
+    private final ThreadLocal<Integer> specificAwaitMs = ThreadLocal.withInitial(() -> 0);
+
+
+    /**
      * This constructor initializes client for interaction with mock-server
      *
      * @param url  mock-server url ({@code "http://localhost"})
@@ -71,6 +82,17 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      */
     public MocksApi(String url, int port) {
         super(url, port, LoggerFactory.getLogger("bugreaper-module-mocks"));
+    }
+
+    /**
+     * Run {@link #MocksApi()} from config in one instance
+     */
+    public static MocksApi getInstance() {
+        if (instance == null) {
+            instance = new MocksApi();
+        }
+
+        return instance;
     }
 
     /**
@@ -111,12 +133,12 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         //optional config fields
         Object loggingVal = YamlUtils.getValueByPath("modules.mocks.logging", true);
         if (loggingVal instanceof Boolean logging) {
-            withLogging(logging);
+            setLogging(logging);
         }
 
         Object enchantedReportVal = YamlUtils.getValueByPath("modules.mocks.enchanted-report", true);
         if (enchantedReportVal instanceof Boolean logging) {
-            withEnchantedReport(logging);
+            setEnchantedReport(logging);
         }
 
         Object awaitVal = YamlUtils.getValueByPath("modules.mocks.await", true);
@@ -136,19 +158,29 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    public MocksApi withLogging(boolean enable) {
+    public MocksApi withAwaitMs(int specificAwaitMs) {
+        if (specificAwaitMs < 200) {
+            throw new IllegalArgumentException("specificAwaitMs too small (can`t bee less 200ms)");
+        }
+        this.specificAwaitMs.set(specificAwaitMs);
+        return this;
+    }
+
+    @Override
+    public MocksApi setLogging(boolean enable) {
         this.enableLogging = enable;
         return this;
     }
 
     @Override
-    public MocksApi withEnchantedReport(boolean enchantedReport) {
+    public MocksApi setEnchantedReport(boolean enchantedReport) {
         this.enchantedReport = enchantedReport;
         return this;
     }
 
     //getters
 
+    @Override
     public String getConfigSummary() {
         String info = String.format("""
         %s:
@@ -324,7 +356,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
             }
 
             // if enchanted off
-            logger.warn("\nTurn on enchanted report for more info: .withEnchantedReport(true)");
+            logger.warn("\nTurn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true");
             fail("Count of expected mock request(s) not match");
         }
     }
@@ -358,29 +390,37 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("(MOCK)[VERIFY] Verify sequence with await")
     public void verifyMockSequenceWithAwait(@Param(mode = HIDDEN) String verifySetup) {
+        verifyMockSequenceWithAwait(verifySetup, await());
+    }
 
-        attachJson("Sequence within " + formatMilliseconds(awaitMs), verifySetup);
+    private void verifyMockSequenceWithAwait(String verifySetup, int providedAwaitMs) {
+
+        attachJson("Sequence within " + formatMilliseconds(providedAwaitMs), verifySetup);
 
         assertLenientValidJson(verifySetup);
 
         try {
-            awaitCustom(awaitMs).untilAsserted(
-                        () -> verifyMockSequenceNoLogs(verifySetup));
+            awaitCustom(providedAwaitMs).untilAsserted(
+                    () -> verifyMockSequenceNoLogs(verifySetup));
         } catch (ConditionTimeoutException e) {
-                verifyMockSequence(verifySetup);
+            verifyMockSequence(verifySetup);
         }
     }
 
     @Override
     @Step("(MOCK)[VERIFY] Verify mock with await")
     public void verifyMockWithAwait(@Param(mode = HIDDEN) String verifySetup) {
+        verifyMockWithAwaitMethod(verifySetup, await());
+    }
 
-        attachJson("Mock verify setup within " + formatMilliseconds(awaitMs), verifySetup);
+    private void verifyMockWithAwaitMethod(String verifySetup, int providedAwaitMs) {
+
+        attachJson("Mock verify setup within " + formatMilliseconds(providedAwaitMs), verifySetup);
 
         assertLenientValidJson(verifySetup);
         try {
-            awaitCustom(awaitMs).untilAsserted(
-                            () -> verifyMockNoLogs(verifySetup));
+            awaitCustom(providedAwaitMs).untilAsserted(
+                    () -> verifyMockNoLogs(verifySetup));
         } catch (ConditionTimeoutException e) {
             verifyMock(verifySetup);
         }
@@ -389,13 +429,18 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to} with await")
     public void assertMocksCountWithAwait(int from, int to) {
+        assertMocksCountWithAwaitMethod(from, to, await());
+    }
+
+    private void assertMocksCountWithAwaitMethod(int from, int to, int providedAwaitMs) {
         try {
-            awaitCustom(awaitMs).untilAsserted(
-                            () -> assertAllMocksCountNoLogs(from, to));
+            awaitCustom(providedAwaitMs).untilAsserted(
+                    () -> assertAllMocksCountNoLogs(from, to));
         } catch (ConditionTimeoutException e) {
             assertAllMocksCount(from, to);
         }
     }
+
 
     private void assertAllMocksCountNoLogs(int from, int to) {
         verifyMockNoLogs(stringMapper("""
@@ -475,6 +520,18 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                 .then()
                 .extract()
                 .body();
+    }
+
+    // private sub-methods
+
+    private int await() {
+        if (specificAwaitMs.get() != 0) {
+            int result = specificAwaitMs.get();
+            specificAwaitMs.remove();
+            return result;
+        } else {
+            return awaitMs;
+        }
     }
 
 }

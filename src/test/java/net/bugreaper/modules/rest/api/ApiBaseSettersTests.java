@@ -82,12 +82,12 @@ class ApiBaseSettersTests extends PreSetup {
     void testSetterHeaders() {
         mocksApi.createMock(universalMock);
         Api apiTest = api
-                .withoutContentType()
+                .setNoContentType()
                 .setHeaders(Map.of
                         ("par1", "data1",
                                 "par2", "data2")
                 )
-                .withLogging(true);
+                .setLogging(true);
 
         apiTest.sendPost("/api/test",
                         """
@@ -114,12 +114,12 @@ class ApiBaseSettersTests extends PreSetup {
     void testSetQueryParams() {
         mocksApi.createMock(universalMock);
         Api apiTest = api
-                .withoutContentType()
+                .setNoContentType()
                 .setQueryParams(Map.of
                         ("par1", "data1",
                                 "par2", "data2")
                 )
-                .withLogging(true);
+                .setLogging(true);
 
         apiTest.sendPost("/api/test",
                         """

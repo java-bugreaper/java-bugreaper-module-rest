@@ -12,14 +12,14 @@ public interface ApiConfig {
      *
      * @return this instance for method chaining
      */
-    Api withContentTypeXml();
+    Api setContentTypeXml();
 
     /**
      * Set content type JSON
      *
      * @return this instance for method chaining
      */
-    Api withContentTypeJson();
+    Api setContentTypeJson();
 
 
     /**
@@ -38,7 +38,7 @@ public interface ApiConfig {
      * </ul>
      * @return this instance for method chaining
      */
-    Api withContentType(ContentType contentType);
+    Api setContentType(ContentType contentType);
 
     /**
      * Set maxResponseTimeout (does not break the connection - only assert)
@@ -47,14 +47,14 @@ public interface ApiConfig {
      * @return this instance for method chaining
      * @throws AssertionError if response time greater
      */
-    Api withMaxResponseMsAssert(int maxResponseMs);
+    Api setMaxResponseMsAssert(int maxResponseMs);
 
     /**
      * Set content type absent
      *
      * @return this instance for method chaining
      */
-    Api withoutContentType();
+    Api setNoContentType();
 
     /**
      * Enables or disables logging manually (debug log level will print logs anyway!)
@@ -62,7 +62,7 @@ public interface ApiConfig {
      * @param enable true=request/response logging (Allure on always!)
      * @return this instance for method chaining
      */
-    Api withLogging(boolean enable);
+    Api setLogging(boolean enable);
 
     /**
      * Add or updates header globally (add to previously set)
@@ -140,7 +140,7 @@ public interface ApiConfig {
      * @param value header value
      * @return this instance for method chaining
      */
-    Api requestHeader(String key, Object value);
+    Api withHeader(String key, Object value);
 
     /**
      * Add headers for one next request (global headers will be ignored)
@@ -152,7 +152,7 @@ public interface ApiConfig {
      * @param queryParams Map (key, value)
      * @return this instance for method chaining
      */
-    Api requestHeaders(Map<String, Object> queryParams);
+    Api withHeaders(Map<String, Object> queryParams);
 
 
     /**
@@ -166,7 +166,7 @@ public interface ApiConfig {
      * @param value parameter value
      * @return this instance for method chaining
      */
-    Api requestQueryParam(String key, Object value);
+    Api withQueryParam(String key, Object value);
 
     /**
      * Add query parameters once for next request (global query parameters will be ignored)
@@ -177,6 +177,19 @@ public interface ApiConfig {
      * @param queryParams Map (key, value)
      * @return this instance for method chaining
      */
-    Api requestQueryParams(Map<String, Object> queryParams);
+    Api withQueryParams(Map<String, Object> queryParams);
+
+    /**
+     * Returns and logs (at INFO level) a human-readable summary of all resolved
+     * configuration values.
+     * <p>
+     * The summary includes values loaded from the YAML configuration file as well as
+     * any fields overridden programmatically after construction. Optional fields that
+     * were not present in the configuration and resolved via default values may also
+     * be included.
+     *
+     * @return String with summary
+     */
+    String getConfigSummary();
 
 }

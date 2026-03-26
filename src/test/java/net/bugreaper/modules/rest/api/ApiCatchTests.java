@@ -21,7 +21,7 @@ class ApiCatchTests extends PreSetup {
         mocksApi.resetMocks();
         mocksApi.createMock(withTimeout);
 
-        Api apiTime = new SetupMockserver().getApi().withMaxResponseMsAssert(100);
+        Api apiTime = new SetupMockserver().getApi().setMaxResponseMsAssert(100);
 
         Throwable exception = assertThrows(AssertionError.class, () ->
                 apiTime.sendGet("/api/test"));
@@ -38,7 +38,7 @@ class ApiCatchTests extends PreSetup {
     void testSeeResponseCodeIsSuccessfulCatch() {
         mocksApi.resetMocks();
 
-        Api api = new SetupMockserver().getApi().withContentTypeJson();
+        Api api = new SetupMockserver().getApi().setContentTypeJson();
 
         AssertableResponse result = api.sendGet("/api/test");
 

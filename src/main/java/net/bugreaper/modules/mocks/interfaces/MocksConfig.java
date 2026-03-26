@@ -6,12 +6,23 @@ import net.bugreaper.modules.mocks.MocksApi;
 public interface MocksConfig {
 
     /**
-     * Configure global await in asserts with await
+     * Configure global await for asserts with await
      *
      * @param awaitMs await ms
      * @return this instance for method chaining
+     * @throws IllegalArgumentException on invalid setup
      */
     MocksApi setAwaitMs(int awaitMs);
+
+    /**
+     * Configure await for next assert with await (than await rollback to global)
+     * global {@link #setAwaitMs(int)} will be ignored
+     *
+     * @param awaitMs ms await
+     * @return this instance for method chaining
+     * @throws IllegalArgumentException on invalid setup
+     */
+    MocksApi withAwaitMs(int awaitMs);
 
     /**
      * Enables or disables logging manually (debug log level will print logs anyway!)
@@ -19,7 +30,7 @@ public interface MocksConfig {
      * @param enable true=request/response logging (Allure on always!)
      * @return this instance for method chaining
      */
-    MocksApi withLogging(boolean enable);
+    MocksApi setLogging(boolean enable);
 
     /**
      * Enabling or disabling enchanted mockVerify report
@@ -27,6 +38,19 @@ public interface MocksConfig {
      * @param enchantedReport true=on/false=off
      * @return this instance for method chaining
      */
-    MocksApi withEnchantedReport(boolean enchantedReport);
+    MocksApi setEnchantedReport(boolean enchantedReport);
+
+    /**
+     * Returns and logs (at INFO level) a human-readable summary of all resolved
+     * configuration values.
+     * <p>
+     * The summary includes values loaded from the YAML configuration file as well as
+     * any fields overridden programmatically after construction. Optional fields that
+     * were not present in the configuration and resolved via default values may also
+     * be included.
+     *
+     * @return String with summary
+     */
+    String getConfigSummary();
 
 }

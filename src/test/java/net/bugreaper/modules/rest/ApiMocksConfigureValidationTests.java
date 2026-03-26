@@ -23,7 +23,7 @@ class ApiMocksConfigureValidationTests extends PreSetup {
     }
 
     @Test
-    void configLessAwaitTest() {
+    void configLessSetAwaitTest() {
 
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
@@ -33,6 +33,18 @@ class ApiMocksConfigureValidationTests extends PreSetup {
                 "Error on config .withAwaitMs negative validation",
                 exception.getMessage(),
                 StringContains.containsString("awaitMs too small (can`t bee less 200ms)"));
+    }
+
+    @Test
+    void configLessWithAwaitTest() {
+
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
+                mocksApi.withAwaitMs(199));
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("specificAwaitMs too small (can`t bee less 200ms)"));
     }
 
 }

@@ -14,7 +14,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
     @Test
     void testQueryParamsOverwrite() {
         Api apiSet = new SetupMockserver().getApi();
-        MocksApi mock = new SetupMockserver().getMocksApi().withEnchantedReport(true);
+        MocksApi mock = new SetupMockserver().getMocksApi().setEnchantedReport(true);
 
         mock.createMock(universalMock);
 
@@ -61,7 +61,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
 
         //send with specific
         mock.cleanMockLogs();
-        apiSet.requestQueryParams(Map.of("spec1", "data_sp1","spec2", "data_sp2")).sendGet(path)
+        apiSet.withQueryParams(Map.of("spec1", "data_sp1","spec2", "data_sp2")).sendGet(path)
                 .seeResponseCodeIs(200);
 
         mock.verifyMock("""
@@ -128,7 +128,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
         //specific two params
         mock.cleanMockLogs();
 
-        apiSet.requestQueryParam("spec3", "data_sp3").requestQueryParam("spec4", "data_sp4").sendGet(path)
+        apiSet.withQueryParam("spec3", "data_sp3").withQueryParam("spec4", "data_sp4").sendGet(path)
                 .seeResponseCodeIs(200);
 
         mock.verifyMock("""
@@ -234,7 +234,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
     @Test
     void testHeadersOverwrite() {
         Api apiSet = new SetupMockserver().getApi();
-        MocksApi mock = new SetupMockserver().getMocksApi().withEnchantedReport(true);
+        MocksApi mock = new SetupMockserver().getMocksApi().setEnchantedReport(true);
 
         mock.createMock(universalMock);
 
@@ -281,7 +281,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
 
         //send with specific
         mock.cleanMockLogs();
-        apiSet.requestHeaders(Map.of("spec1", "data_sp1","spec2", true)).sendGet(path)
+        apiSet.withHeaders(Map.of("spec1", "data_sp1","spec2", true)).sendGet(path)
                 .seeResponseCodeIs(200);
 
         mock.verifyMock("""
@@ -348,7 +348,7 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
         //specific two headers
         mock.cleanMockLogs();
 
-        apiSet.requestHeader("spec3", "data_sp3").requestHeader("spec4", 4).sendGet(path)
+        apiSet.withHeader("spec3", "data_sp3").withHeader("spec4", 4).sendGet(path)
                 .seeResponseCodeIs(200);
 
         mock.verifyMock("""
