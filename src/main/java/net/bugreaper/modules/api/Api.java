@@ -28,6 +28,8 @@ import java.util.Map;
 /**
  * Simple wrapper around RestAssured for sending HTTP requests.
  *
+ * <p>For one instance run recommended: {@code Api api = api.getInstance()}</p>
+ *
  * <p>This client provides a convenient fluent API for:</p>
  * <ul>
  *     <li>Sending GET, POST, PUT and DELETE requests</li>
@@ -40,6 +42,8 @@ import java.util.Map;
  */
 public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
+    private static Api instance;
+
     private static final String YML_KEY = "modules.api";
 
     /**
@@ -50,6 +54,17 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      */
     public Api(String url, int port) {
         super(url, port);
+    }
+
+    /**
+     * Run {@link #Api()} from config in one instance
+     */
+    public static Api getInstance() {
+        if (instance == null) {
+            instance = new Api();
+        }
+
+        return instance;
     }
 
     /**
@@ -139,43 +154,43 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
         Object loggingVal = YamlUtils.getValueByPath(YML_KEY + num + ".logging", true);
         if (loggingVal instanceof Boolean logging) {
-            withLogging(logging);
+            setLogging(logging);
         }
 
         Object maxResponseMsAssertVal = YamlUtils.getValueByPath(YML_KEY + num + ".max-response-ms-assert", true);
         if (maxResponseMsAssertVal instanceof Integer assertMs) {
-            withMaxResponseMsAssert(assertMs);
+            setMaxResponseMsAssert(assertMs);
         }
     }
 
     //setters
 
     @Override
-    public Api withContentTypeJson() {
+    public Api setContentTypeJson() {
         this.contentType = ContentType.JSON;
         return this;
     }
 
     @Override
-    public Api withContentTypeXml() {
+    public Api setContentTypeXml() {
         this.contentType = ContentType.XML;
         return this;
     }
 
     @Override
-    public Api withContentType(ContentType contentType) {
+    public Api setContentType(ContentType contentType) {
         this.contentType = contentType;
         return this;
     }
 
     @Override
-    public Api withMaxResponseMsAssert(int maxResponseMs) {
+    public Api setMaxResponseMsAssert(int maxResponseMs) {
         this.maxResponseMsAssert = maxResponseMs;
         return this;
     }
 
     @Override
-    public Api withoutContentType() {
+    public Api setNoContentType() {
         this.contentType = null;
         return this;
     }
@@ -201,13 +216,13 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    public Api requestHeader(String key, Object value) {
+    public Api withHeader(String key, Object value) {
         this.requestHeaders.get().put(key, value);
         return this;
     }
 
     @Override
-    public Api requestHeaders(Map<String, Object> queryParams) {
+    public Api withHeaders(Map<String, Object> queryParams) {
         this.requestHeaders.get().putAll(queryParams);
         return this;
     }
@@ -226,13 +241,13 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    public Api requestQueryParam(String key, Object value) {
+    public Api withQueryParam(String key, Object value) {
         this.requestQueryParams.get().put(key, value);
         return this;
     }
 
     @Override
-    public Api requestQueryParams(Map<String, Object> queryParams) {
+    public Api withQueryParams(Map<String, Object> queryParams) {
         this.requestQueryParams.get().putAll(queryParams);
         return this;
     }
@@ -263,13 +278,14 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     @Override
-    public Api withLogging(boolean enable) {
+    public Api setLogging(boolean enable) {
         this.enableLogging = enable;
         return this;
     }
 
     //getters
 
+    @Override
     public String getConfigSummary() {
         String info = String.format("""
         %s:

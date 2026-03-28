@@ -34,7 +34,7 @@ class LoggingTests extends PreSetup {
 
         System.setOut(new PrintStream(outContent));
 
-        apiNoLogs.withLogging(false).sendGet("api/test").seeResponseCodeIs(200);
+        apiNoLogs.setLogging(false).sendGet("api/test").seeResponseCodeIs(200);
 
         MatcherAssert.assertThat(
                 "Request printed",

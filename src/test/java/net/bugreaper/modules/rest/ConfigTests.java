@@ -91,7 +91,7 @@ class ConfigTests extends PreSetup {
             System.setProperty(PROPERTY, "noopt");
         }
 
-        Api apiConf = new Api();
+        Api apiConf = Api.getInstance();
 
         apiConf.sendGet(endpoint)
                 .seeResponseCodeIsSuccessful();
@@ -121,7 +121,7 @@ class ConfigTests extends PreSetup {
             System.clearProperty(PROPERTY);
         }
 
-        MocksApi mocksConf = new MocksApi();
+        MocksApi mocksConf = MocksApi.getInstance();
 
         api.sendGet(endpoint)
                 .seeResponseCodeIsSuccessful();

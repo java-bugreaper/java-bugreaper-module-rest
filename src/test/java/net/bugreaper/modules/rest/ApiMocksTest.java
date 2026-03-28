@@ -22,7 +22,7 @@ class ApiMocksTest extends PreSetup {
     @Test
     void testVerifyBaseMockCountNoRequestsNoEnchant() {
 
-        MocksApi mocksApiNoEnch = new SetupMockserver().getMocksApi().withEnchantedReport(false);
+        MocksApi mocksApiNoEnch = new SetupMockserver().getMocksApi().setEnchantedReport(false);
 
         Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApiNoEnch.assertAllMocksCount(1));

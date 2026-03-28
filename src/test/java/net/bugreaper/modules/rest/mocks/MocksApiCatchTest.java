@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
+@SuppressWarnings("java:S5778")
 class MocksApiCatchTest extends PreSetup {
 
     protected MocksApi mocksApi = new SetupMockserver().getMocksApi();
@@ -22,6 +22,59 @@ class MocksApiCatchTest extends PreSetup {
     void cleanMock() {
         mocksApi.resetMocks();
     }
+
+    @Test
+    void testWithAwaitAssertFailed() {
+
+        Throwable exception = assertThrows(AssertionError.class, () ->
+                mocksApi.withAwaitMs(600).verifyMockWithAwait("""
+                        {
+                            "httpRequest": {
+                                "method": "GET",
+                                "path": "/api/no-req"
+                            },
+                            "times": {
+                                "atLeast": 1
+                            }
+                        }"""));
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("No requests to mock-server in test"));
+    }
+
+    @Test
+    void testWithAwaitSequenceFailed() {
+
+        Throwable exception = assertThrows(AssertionError.class, () ->
+                mocksApi.withAwaitMs(400).verifyMockSequenceWithAwait("""
+                        {
+                           "httpRequests":[
+                              {
+                                 "method":"GET"
+                              },
+                              {
+                                 "method":"POST"
+                              }
+                           ]
+                        }"""));
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("Expected mock sequence not match"));
+    }
+
+    @Test
+    void testWithAwaitAssertCountFailed() {
+
+        Throwable exception = assertThrows(AssertionError.class, () ->
+                mocksApi.withAwaitMs(400).assertMocksCountWithAwait(1,2));
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("No requests to mock-server in test"));
+    }
+
 
     @Test
     void testBrokenMockCreate() {
@@ -50,7 +103,7 @@ class MocksApiCatchTest extends PreSetup {
                         }"""));
 
         MatcherAssert.assertThat(
-                "Broken JSON for mock vetify",
+                "Broken JSON for mock verify",
                 exception.getMessage(),
                 StringContains.containsString("Invalid lenient JSON/JSONArray"));
     }
