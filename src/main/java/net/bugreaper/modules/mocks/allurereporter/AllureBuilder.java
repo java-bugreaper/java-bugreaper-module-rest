@@ -21,6 +21,7 @@ public class AllureBuilder {
     private static final String CELL_END = "</td>";
     private static final Logger logger = LoggerFactory.getLogger(AllureBuilder.class);
 
+    @SuppressWarnings("java:S107")
     public static String reportSummaryTableBuilder(
             String expectedText,
             int actualRequestsCount,
@@ -28,6 +29,7 @@ public class AllureBuilder {
             String[][] baseCheckResult,
             String[][] bodyCheckResult,
             String[][] headerCheckResult,
+            String[][] queryParamsCheckResult,
             String[][] allCheckResults) {
 
         try {
@@ -51,17 +53,20 @@ public class AllureBuilder {
             columns.append("<th style=\"font-weight: normal;\">\n").append(summaryCell).append(HEADER_END);
 
             for (int i = 0; i < actualRequestsCount; i++) {
-                columns.append("<th>№").append(baseCheckResult[i][0]).append(HEADER_END);
+                columns.append("<th>n").append(baseCheckResult[i][0]).append(HEADER_END);
             }
 
-            //create body checks
+            //create method/path checks
             dataRows.append(assertRow("method/path", baseCheckResult));
 
             //create body checks
             dataRows.append(assertRow("body", bodyCheckResult));
 
-            //create body checks
+            //create headers checks
             dataRows.append(assertRow("headers", headerCheckResult));
+
+            //create headers checks
+            dataRows.append(assertRow("query params", queryParamsCheckResult));
 
             //create full assert summary
             dataRows.append(assertRow("Full assert", allCheckResults));

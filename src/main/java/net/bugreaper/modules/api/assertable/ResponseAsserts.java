@@ -58,11 +58,22 @@ public interface ResponseAsserts {
      */
     AssertableResponse seeResponseTimeLess(long timeMs);
 
+
     /**
      * Json assertion without strict array ordering
-     * <p> extensible fields will be skipped
+     * <p> extensible fields and <b>elements in array</b> will be skipped
      *
-     * @param expectedBody expected part of JSON (arrays can be not ordered)
+     * @param expectedBody expected part of JSON (arrays can be not ordered and have different count)
+     * @return this
+     * @throws AssertionError on assert fail
+     */
+    AssertableResponse seeResponseContainsJsonSubset(String expectedBody);
+
+    /**
+     * Json assertion without strict array ordering
+     * <p> extensible fields will be skipped. <b>But extensible elements in array cause AssertionError</b>
+     *
+     * @param expectedBody expected part of JSON (arrays can be not ordered but must have same count of elements)
      * @return this
      * @throws AssertionError on assert fail
      */

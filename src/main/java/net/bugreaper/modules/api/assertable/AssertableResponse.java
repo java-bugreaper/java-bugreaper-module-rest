@@ -1,43 +1,47 @@
 package net.bugreaper.modules.api.assertable;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.hamcrest.Matcher;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 
-import static net.bugreaper.core.allurereporter.AllureReporter.*;
-import static net.bugreaper.core.assertions.JsonAsserts.*;
-import static net.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
-import static io.restassured.matcher.RestAssuredMatchers.matchesXsdInClasspath;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.*;
 
-
-public class AssertableResponse implements ResponseAsserts, ResponseGrab {
-
-    private static final Logger logger = LoggerFactory.getLogger("bugreaper-module-api");
-    private final Response response;
+/**
+ * Provides a fluent API for asserting and extracting data from API responses.
+ * <p>
+ * This class is designed to be used in a chainable manner, allowing multiple
+ * assertions to be performed in a single readable statement.
+ * </p>
+ *
+ * <h2>Usage Example:</h2>
+ * <pre>{@code
+ * api.sendGet("/users/1")
+ *     .seeResponseCodeIs(200)
+ *     .seeResponseContainsJson(Paths.get("expected.json"));
+ * }</pre>
+ *
+ * <h2>Design Notes:</h2>
+ * <ul>
+ *     <li>All assertion methods return {@code this} to support fluent chaining.</li>
+ *     <li>Assertion logic is delegated to internal helper methods to keep steps readable.</li>
+ *     <li>Failures should throw assertion errors to immediately fail the test.</li>
+ * </ul>
+ */
+public class AssertableResponse extends AssertableResponseAbstract implements ResponseAsserts, ResponseGrab {
 
     public AssertableResponse(Response response) {
-        this.response = response;
+        super(response, LoggerFactory.getLogger("bugreaper-module-api"));
     }
 
 
     @Override
     @Step("Status code is: {statusCode}")
     public AssertableResponse seeResponseCodeIs(int statusCode) {
-        response.then().assertThat().statusCode(statusCode);
+        seeResponseCodeIsMethod(statusCode);
         return this;
     }
 
@@ -45,225 +49,130 @@ public class AssertableResponse implements ResponseAsserts, ResponseGrab {
     @Override
     @Step("Status code is: SUCCESSFUL(2xx)")
     public AssertableResponse seeResponseCodeIsSuccessful() {
-        int statusCode = response.getStatusCode();
-
-        assertTrue(statusCode >= 200 && statusCode <= 299,
-                "Expected SUCCESSFUL(2xx) status code, but got: " + statusCode);
-
+        seeResponseCodeIsSuccessfulMethod();
         return this;
     }
 
     @Override
     @Step("Response time less: {maxResponseMs}")
     public AssertableResponse seeResponseTimeLess(long maxResponseMs) {
-        response.then().time(lessThan(maxResponseMs), MILLISECONDS);
+        seeResponseTimeLessMethod(maxResponseMs);
         return this;
     }
 
     @Override
     @Step("Response body field: <{path}> {matcher}")
     public AssertableResponse seeResponseBodyFieldMatch(String path, Matcher<?> matcher) {
-        response.then().assertThat().body(path, matcher);
+        seeResponseBodyFieldMatchMethod(path, matcher);
         return this;
     }
 
     @Override
     @Step("Response header: <{header}> {matcher}")
     public AssertableResponse seeResponseHeaderMatch(String header, Matcher<?> matcher) {
-        response.then().assertThat().header(header, matcher);
+        seeResponseHeaderMatchMethod(header, matcher);
         return this;
     }
 
     @Override
     @Step("Response is JSON type")
     public AssertableResponse seeResponseIsJsonType() {
-
-        assertValidJson(response.getBody().asString());
+        seeResponseIsJsonTypeMethod();
         return this;
     }
-
 
     @Override
     @Step("Response body: CONTAINS JSON with non-strict order")
     public AssertableResponse seeResponseContainsJson(@Param(mode = HIDDEN) String expectedBody) {
-        attachJson("expected json part", expectedBody);
-
-        containsJson(expectedBody, response.getBody().asString());
+        seeResponseContainsJsonMethod(expectedBody);
         return this;
     }
 
     @Override
+    @Step("Response body: CONTAINS JSON with non-strict order (ignoring extensive array elements)")
+    public AssertableResponse seeResponseContainsJsonSubset(@Param(mode = HIDDEN) String expectedBody) {
+        seeResponseContainsJsonSubsetMethod(expectedBody);
+        return this;
+    }
+    @Override
     @Step("Response body: CONTAINS JSON with non-strict order")
     public AssertableResponse seeResponseContainsJson(Path path) {
-        String pathString = String.valueOf(path);
-
-        attachFromFileNoStep(pathString, pathString);
-
-        containsJson(readJsonFromFile(pathString), response.getBody().asString());
+        seeResponseContainsJsonMethod(path);
         return this;
     }
 
     @Override
     @Step("Response body: EQUAL to JSON with strict order")
     public AssertableResponse seeResponseExactlyMatchJson(@Param(mode = HIDDEN) String expectedBody) {
-
-        attachJson("expected json", expectedBody);
-
-        assertJson(expectedBody, response.getBody().asString());
+        seeResponseExactlyMatchJsonMethod(expectedBody);
         return this;
     }
 
     @Override
     @Step("Response body: EQUAL to JSON with strict order")
     public AssertableResponse seeResponseExactlyMatchJson(Path path) {
-        String pathString = String.valueOf(path);
-
-        attachFromFileNoStep(pathString, pathString);
-
-        assertJson(readJsonFromFile(pathString), response.getBody().asString());
+        seeResponseExactlyMatchJsonMethod(path);
         return this;
     }
 
     @Override
     @Step("Response body: CONTAINS JSON with strict order")
     public AssertableResponse seeResponseContainsJsonStrictOrder(@Param(mode = HIDDEN) String expectedBody) {
-        attachJson("expected part", expectedBody);
-
-        containsStrictOrderJson(expectedBody, response.getBody().asString());
+        seeResponseContainsJsonStrictOrderMethod(expectedBody);
         return this;
     }
 
     @Override
     @Step("Response body: EQUAL to JSON with non-strict order")
     public AssertableResponse seeResponseExactlyMatchJsonIgnoringOrder(@Param(mode = HIDDEN) String expectedBody) {
-        attachJson("expected part", expectedBody);
-
-        assertNoStrictOrderJson(expectedBody, response.getBody().asString());
+        seeResponseExactlyMatchJsonIgnoringOrderMethod(expectedBody);
         return this;
     }
 
     @Override
     @Step("Response body: has correct JSON schema")
     public AssertableResponse seeResponseMatchesJsonSchema(Path path) {
-        String pathString = String.valueOf(path);
-
-        attachFromFileNoStep(pathString, pathString);
-        response.then().assertThat().body(matchesJsonSchemaInClasspath(pathString));
+        seeResponseMatchesJsonSchemaMethod(path);
         return this;
     }
 
     @Override
     @Step("Response body: has correct XML schema")
     public AssertableResponse seeResponseMatchesXmlSchema(Path path) {
-        String pathString = String.valueOf(path);
-
-        attachFromFileNoStep(pathString, pathString);
-        try {
-            response.then().assertThat().body(matchesXsdInClasspath(pathString));
-        } catch (Exception e) {
-            fail("Response schema not match expected XML\n" + e.getMessage(), e);
-        }
-
+        seeResponseMatchesXmlSchemaMethod(path);
         return this;
     }
 
     @Step("Response body: has {expectedCount} elements")
     public AssertableResponse seeResponseBodyElementsCount(int expectedCount) {
-        response.then().assertThat()
-                .body("size()", is(expectedCount));
-
+        seeResponseBodyElementsCountMethod(expectedCount);
         return this;
     }
+
+    // Grab
 
     @Override
     @Step("Grab header <{header}> value")
     public String grabResponseHeader(String header) {
-        String result = response.header(header);
-        Allure.addAttachment(header + ":", "text/plain", result);
-        return result;
+        return grabResponseHeaderMethod(header);
     }
 
     @Override
     @Step("Grab response body")
     public String grabResponseBody() {
-        String result = response.getBody().asString();
-
-        attachCanBeNull("body:", result);
-
-        return result;
+        return  grabResponseBodyMethod();
     }
-
 
     @Override
     @Step("Grab response body field <{path}> value as String")
     public String grabStringFromResponseByPath(String path) {
-        Object obj = response.then().extract().path(path);
-        String result = String.valueOf(obj);
-
-        if (logger.isInfoEnabled()) {
-            logger.info(MessageFormat.format("Grabbed data(String) from <{0}>:\n{1}", path, result));
-        }
-
-        attachCanBeNull(path, result);
-
-        return result;
+        return grabStringFromResponseByPathMethod(path);
     }
-
 
     @Override
     @Step("Grab response body field <{path}>")
     public Object grabDataFromResponseByPath(String path) {
-        Object obj = response.then().extract().path(path);
-
-        attachObject(path, obj);
-
-        return obj;
-    }
-
-    private static void attachObject(String attachName, Object value) {
-
-        String type = "";
-        String attach;
-
-        if (value == null) {
-            attach = "null";
-        }
-        else if (value instanceof String string) {
-            type = "type=String";
-            attach = string;
-        }
-        else if (value instanceof ArrayList<?> array) {
-            type = "type=Array";
-            attach = String.valueOf(array);
-        }
-        else if (value instanceof Boolean bool) {
-            type = "type=Boolean";
-            attach =  (Boolean.TRUE.equals(bool)) ? "true" : "false";
-        }
-        else if (value instanceof Integer) {
-            type = "type=Integer";
-            attach =  value.toString();
-
-        }
-        else if (value instanceof Long) {
-            type = "type=Long";
-            attach = value.toString();
-        }
-        else if (value instanceof Float) {
-            type = "type=Float";
-            attach = String.valueOf(value);
-        }
-        else {
-            type = "type=Other";
-            attach = String.valueOf(value);
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info(MessageFormat.format("Grabbed data from <{0}> {1}:\n{2}", attachName, type, attach));
-        }
-
-        Allure.addAttachment(MessageFormat.format("{0} {1}:", attachName, type),
-                "application/json", attach);
+        return grabDataFromResponseByPathMethod(path);
     }
 
 }

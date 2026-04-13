@@ -7,6 +7,7 @@ modules:
     token: my-token # optional more priority than base auth!
     logging: true # optional
     max-response-ms-assert: 2000 # optional
+    max-timeout-ms: 1000 # optional
   mocks:
     url: http://localhost
     port: 1082

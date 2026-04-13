@@ -94,11 +94,11 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
 
         String expectedTable = """
                 Mock verify assertions:
-                №     method/path  body         headers      all asserts
-                ---   ----------   ----------   ----------   ----------
-                1     passed       failed       skipped      \u001B[31mfailed\u001B[0m
-                2     passed       failed       skipped      \u001B[31mfailed\u001B[0m
-                3     passed       passed       skipped      \u001B[32mpassed\u001B[0m""";
+                №     method/path  body         headers      queryParams  all asserts
+                ---   ----------   ----------   ----------   ----------   ----------
+                1     passed       failed       skipped      skipped      \u001B[31mfailed\u001B[0m
+                2     passed       failed       skipped      skipped      \u001B[31mfailed\u001B[0m
+                3     passed       passed       skipped      skipped      \u001B[32mpassed\u001B[0m""";
 
 
         assertThat(

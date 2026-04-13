@@ -146,28 +146,36 @@ public class GetExpected extends EnchantedSetup {
     }
 
     public static String getExpectedHeaders(JSONObject expectedMockSetup) {
+        return getExpected( expectedMockSetup, HEADERS_KEY);
+    }
+
+    public static String getExpectedQueryParams(JSONObject expectedMockSetup) {
+        return getExpected( expectedMockSetup, QUERY_PARAM_KEY);
+    }
+
+    private static String getExpected(JSONObject expectedMockSetup, String key) {
 
         JSONObject expectedJsonObject = new JSONObject();
 
         JSONObject httpRequest = getRequest(expectedMockSetup);
 
-        if (httpRequest.has(HEADERS_KEY)) {
+        if (httpRequest.has(key)) {
 
-            JSONObject expectedHeader = getObjectFromJsonObjectByKey(httpRequest, HEADERS_KEY);
-            expectedJsonObject = putObjectToJson(expectedJsonObject, HEADERS_KEY, expectedHeader);
+            JSONObject expectedHeader = getObjectFromJsonObjectByKey(httpRequest, key);
+            expectedJsonObject = putObjectToJson(expectedJsonObject, key, expectedHeader);
 
         } else {
             return null;
 
         }
 
-        String headers = jsonToStringBeautifier(expectedJsonObject);
+        String expected = jsonToStringBeautifier(expectedJsonObject);
 
         if (logger_mer.isDebugEnabled()) {
-            logger_mer.debug("Expected headers:\n{}", headers.replace("\\", ""));
+            logger_mer.debug("Expected {}:\n{}", key, expected.replace("\\", ""));
         }
 
-        return headers;
+        return expected;
     }
 
 

@@ -15,6 +15,8 @@
  */
 package net.bugreaper.modules.api.setup;
 
+import io.restassured.config.HttpClientConfig;
+import io.restassured.config.RestAssuredConfig;
 import net.bugreaper.modules.api.allurereporter.AllureRestAssuredCustom;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -47,6 +49,11 @@ public abstract class ApiAbstract {
     protected String username;
     protected String password;
 
+    /**
+     * Default timeout for http connection
+     */
+    protected int maxTimeoutMs = 5000;
+
     protected boolean enableLogging = false;
     //assert not break!!
     protected long maxResponseMsAssert = 0;
@@ -77,7 +84,13 @@ public abstract class ApiAbstract {
 
     protected RequestSpecification buildRequest() {
 
-        RequestSpecification request = RestAssured.given();
+        RestAssuredConfig config = RestAssuredConfig.config()
+                .httpClient(HttpClientConfig.httpClientConfig()
+                        .setParam("http.connection.timeout", maxTimeoutMs)
+                        .setParam("http.socket.timeout", maxTimeoutMs)
+                );
+
+        RequestSpecification request = RestAssured.given().config(config);
 
         request.baseUri(url).port(port);
 

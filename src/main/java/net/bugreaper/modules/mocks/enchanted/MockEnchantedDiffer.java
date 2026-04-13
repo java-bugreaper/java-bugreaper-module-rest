@@ -50,13 +50,14 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 /**
  * Work only for:
  * {@link MocksApi#verifyMock(String)}
- * {@link MocksApi#assertAllMocksCount(int)}
+ * {@link MocksApi#verifyMockWithAwait(String)}
  * <p>Supported:
- * <p> -Json contains\equal check
- * <p> -Json schema check
+ * <p> -Json body contains\equal check
+ * <p> -Json body schema check
  * <p> -Expected count exactly, from\to
+ * <p> -Headers, method, path
+ * <p> -QueryParams
  * <p>Not supported:
- * <p> -QueryParams (in progress)
  * <p> -Verify with awaiting on fail run verify with report
  * <p> -not JSON(string, array!, xml...)
  * <p> -Regex in Verify (method, path, body, header)
@@ -118,6 +119,12 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
         final String[][] headerCheckResult = checkHeaders(expectedMockSetup, allMockRequestsString, actualRequestsCount);
 
 
+        // Query params check
+
+        //check6 check query params
+        final String[][] queryParamsCheckResult  = checkQueryParams(expectedMockSetup, allMockRequestsString, actualRequestsCount);
+
+
         // SUMMARY report
 
 
@@ -126,6 +133,7 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
                 baseCheckResult,
                 bodyCheckResult,
                 headerCheckResult,
+                queryParamsCheckResult,
                 expectedMockSetup);
 
     }
@@ -217,6 +225,21 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
         List<String> actualHeadersList = getActualHeadersList(allMockRequestsString, actualRequestsCount);
 
         return assertObjectsVerify("headers", expectedHeaders, actualHeadersList, false);
+    }
+
+
+    private static String[][] checkQueryParams(
+            JSONObject expectedMockSetup,
+            String allMockRequestsString,
+            int actualRequestsCount) {
+
+        //data_6 get expected query pa
+        String expectedHeaders = getExpectedQueryParams(expectedMockSetup);
+
+        //data_6 get list with actual headers (if no expected part than only for info)
+        List<String> actualHeadersList = getQueryParamsList(allMockRequestsString, actualRequestsCount);
+
+        return assertObjectsVerify("query params", expectedHeaders, actualHeadersList, false);
     }
 
     /**

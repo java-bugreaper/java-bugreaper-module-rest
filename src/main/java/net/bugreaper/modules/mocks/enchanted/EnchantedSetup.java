@@ -23,6 +23,7 @@ public abstract class EnchantedSetup {
     protected static final String BODY_KEY = "body";
     protected static final String JSON_KEY = "json";
     protected static final String SCHEMA_KEY = "jsonSchema";
+    protected static final String QUERY_PARAM_KEY = "queryStringParameters";
 
     protected static final String PASS = "passed";
     protected static final String SKIP = "skipped";

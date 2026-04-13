@@ -114,12 +114,20 @@ public class GetActual extends EnchantedSetup {
         return body;
     }
 
-
     public static List<String> getActualHeadersList(String mockRequests, int allRequestsCount) {
+        return getActualList(mockRequests,allRequestsCount, HEADERS_KEY);
+    }
+
+    public static List<String> getQueryParamsList(String mockRequests, int allRequestsCount) {
+
+        return getActualList(mockRequests,allRequestsCount, QUERY_PARAM_KEY);
+    }
+
+    private static List<String> getActualList(String mockRequests, int allRequestsCount, String key) {
 
         JSONArray requestsArrayToMock = jsonArrayFromString(mockRequests);
 
-        List<String> actualHeadersList = new ArrayList<>();
+        List<String> actuaList = new ArrayList<>();
 
         for (int i = 0; i < allRequestsCount; i++) {
 
@@ -128,28 +136,28 @@ public class GetActual extends EnchantedSetup {
             requestsToMock = getObjectFromJsonArrayByNum(requestsArrayToMock, i);
 
             JSONObject jsonObject = new JSONObject();
-            if (requestsToMock.has(HEADERS_KEY)) {
+            if (requestsToMock.has(key)) {
 
 
-                JSONObject headers = getObjectFromJsonObjectByKey(requestsToMock, HEADERS_KEY);
+                JSONObject headers = getObjectFromJsonObjectByKey(requestsToMock, key);
 
-                jsonObject = putObjectToJson(jsonObject, HEADERS_KEY, headers);
+                jsonObject = putObjectToJson(jsonObject, key, headers);
 
                 String actualHeader = jsonToStringBeautifier(jsonObject);
 
                 if (logger_mer.isDebugEnabled()) {
-                    logger_mer.debug("Actual headers {}:\n{}", i + 1, actualHeader.replace("\\", ""));
+                    logger_mer.debug("Actual {} {}:\n{}", key, i + 1, actualHeader.replace("\\", ""));
                 }
 
-                actualHeadersList.add(actualHeader);
+                actuaList.add(actualHeader);
 
             } else {
                 //impossible to be empty
-                actualHeadersList.add(returnEmptyObject(HEADERS_KEY, i + 1));
+                actuaList.add(returnEmptyObject(key, i + 1));
             }
         }
 
-        return actualHeadersList;
+        return actuaList;
     }
 
     private static String returnEmptyObject(String key, int num) {
