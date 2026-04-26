@@ -262,6 +262,23 @@ class ApiMocksTest extends PreSetup {
                         }""");
     }
 
+    @Test
+    void testSeeResponseContainsJsonSubset() {
+        mocksApi.createMockCustom(
+                "from file",
+                "testdata/mocks/get_order.json");
+
+        api.sendGet("/api/get")
+                .seeResponseCodeIs(200)
+                .seeResponseContainsJsonSubset("""
+                        {
+                          "array": [
+                            {
+                              "id": 902
+                            }
+                          ]
+                        }""");
+    }
 
     @Test
     void testCreatePostMockStringBody() {

@@ -59,6 +59,7 @@ class ConfigTests extends PreSetup {
                             contentType=application/json
                             enableLogging=true
                             maxResponseMsAssert=2000
+                            maxTimeoutMs=1000
                         """, expectedHost),
                 apiConf.getConfigSummary());
     }
@@ -79,6 +80,7 @@ class ConfigTests extends PreSetup {
                             contentType=application/json
                             enableLogging=true
                             maxResponseMsAssert=777
+                            maxTimeoutMs=1000
                         """,
                 apiConf.getConfigSummary());
     }
@@ -109,6 +111,7 @@ class ConfigTests extends PreSetup {
                             contentType=application/json
                             enableLogging=false
                             maxResponseMsAssert=0
+                            maxTimeoutMs=5000
                         """, expectedHost),
                 apiConf.getConfigSummary());
     }

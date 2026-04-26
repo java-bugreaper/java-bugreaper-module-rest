@@ -4,6 +4,7 @@ import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Map;
 
 
@@ -136,6 +137,37 @@ class ApiBaseSettersTests extends PreSetup {
                         ],
                         "par2": [
                             "data2"
+                        ]
+                    }
+                  },
+                  "times": {
+                    "atLeast": 1,
+                    "atMost": 1
+                  }
+                }""");
+    }
+
+    @Test
+    void testSetQuerySameParams() {
+        mocksApi.createMock(universalMock);
+        Api apiTest = api
+                .setNoContentType()
+                .withQueryParam("test", Arrays.asList("one", "two"))
+                .setLogging(true);
+
+        apiTest.sendPost("/api/test",
+                        """
+                                {"id" : 1}""")
+                .seeResponseCodeIs(200);
+
+        mocksApi.verifyMock("""
+                {
+                  "httpRequest": {
+                    "method": "POST",
+                    "queryStringParameters": {
+                        "test": [
+                            "two",
+                            "one"
                         ]
                     }
                   },

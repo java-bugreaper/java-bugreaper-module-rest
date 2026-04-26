@@ -161,6 +161,11 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
         if (maxResponseMsAssertVal instanceof Integer assertMs) {
             setMaxResponseMsAssert(assertMs);
         }
+
+        Object maxTimeoutMsVal = YamlUtils.getValueByPath(YML_KEY + num + ".max-timeout-ms", true);
+        if (maxTimeoutMsVal instanceof Integer timeoutMs) {
+            setTimeoutMs(timeoutMs);
+        }
     }
 
     //setters
@@ -188,6 +193,13 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
         this.maxResponseMsAssert = maxResponseMs;
         return this;
     }
+
+    @Override
+    public Api setTimeoutMs(int maxTimeoutMs) {
+        this.maxTimeoutMs = maxTimeoutMs;
+        return this;
+    }
+
 
     @Override
     public Api setNoContentType() {
@@ -297,10 +309,11 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
             authToken=%s
             contentType=%s
             enableLogging=%b
-            maxResponseMsAssert=%s%n""",
+            maxResponseMsAssert=%d
+            maxTimeoutMs=%d%n""",
                 this.getClass().getSimpleName(),
                 url, port, username, password, useBasicAuth, authToken,
-                contentType, enableLogging, maxResponseMsAssert);
+                contentType, enableLogging, maxResponseMsAssert, maxTimeoutMs);
 
         logger.info(info);
         return info;

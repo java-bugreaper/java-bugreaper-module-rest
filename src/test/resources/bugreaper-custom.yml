@@ -7,3 +7,4 @@ modules:
     token: token_5 # optional more priority than base auth!
     logging: true # optional
     max-response-ms-assert: 777 # optional
+    max-timeout-ms: 1000 # optional

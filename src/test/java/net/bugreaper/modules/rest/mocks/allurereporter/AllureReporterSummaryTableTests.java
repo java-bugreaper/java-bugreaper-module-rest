@@ -36,6 +36,10 @@ class AllureReporterSummaryTableTests {
         allCheckResults[0] = new String[]{"1", "passed"};
         allCheckResults[1] = new String[]{"2", "failed"};
 
+        String[][] queryParamsCheckResult = new String[actualRequestsCount][];
+        queryParamsCheckResult[0] = new String[]{"1", "passed"};
+        queryParamsCheckResult[1] = new String[]{"2", "passed"};
+
         assertEquals(readString(Path.of(filePath + "allure/summary_report.html")),
                 reportSummaryTableBuilder(
                         expectedText,
@@ -44,6 +48,7 @@ class AllureReporterSummaryTableTests {
                         baseCheckResult,
                         bodyCheckResult,
                         headerCheckResult,
+                        queryParamsCheckResult,
                         allCheckResults),
                 "HTML summary report");
 
@@ -61,6 +66,7 @@ class AllureReporterSummaryTableTests {
                         new String[1][],
                         new String[1][],
                         new String[1][],
+                        new String[1][],
                         new String[1][]),
                 "HTML summary report on failed");
 
@@ -75,9 +81,9 @@ class AllureReporterSummaryTableTests {
         baseCheckResult[0] = new String[]{"1", "passed"};
         baseCheckResult[1] = new String[]{"2", "passed"};
 
-        String[][] bodyCheckResult = new String[actualRequestsCount][];
-        bodyCheckResult[0] = null;
-        bodyCheckResult[1] = new String[]{"2", "failed"};
+        String[][] allCheckResult = new String[actualRequestsCount][];
+        allCheckResult[0] = null;
+        allCheckResult[1] = new String[]{"2", "failed"};
 
         assertEquals("Error while create attachment",
                 reportSummaryTableBuilder(
@@ -85,9 +91,10 @@ class AllureReporterSummaryTableTests {
                         2,
                         2,
                         baseCheckResult,
-                        bodyCheckResult,
-                        bodyCheckResult,
-                        bodyCheckResult),
+                        allCheckResult,
+                        allCheckResult,
+                        allCheckResult,
+                        allCheckResult),
                 "HTML summary report on failed");
 
     }

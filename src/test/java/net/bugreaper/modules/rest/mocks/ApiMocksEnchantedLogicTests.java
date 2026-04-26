@@ -6,6 +6,8 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -408,6 +410,44 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                 "Exception for verify by headers failed",
                 exception.getMessage(),
                 StringContains.containsString("Assert is actual requests CONTAINS expected headers FAILED"));
+    }
+
+    @Test
+    void testVerifyMockAssertQueryParamsOnce() {
+        mocksApi.createMock(universalMock);
+
+        apiJsonPlus.withQueryParam("test1", "single").withQueryParam("test_list", Arrays.asList("one", "two"))
+                .sendPost("/api/post",
+                        """
+                                {
+                                  "id": 1
+                                }""")
+                .seeResponseCodeIs(200);
+
+        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+                mocksApi.verifyMock("""
+                        {
+                          "httpRequest": {
+                            "method": "POST",
+                            "path": "/api/post",
+                            "queryStringParameters": {
+                                "test1" : ["single"],
+                                "test_list" : ["wrong"]
+                            },
+                            "body" : {
+                                  "id": 1
+                                }
+                          },
+                          "times": {
+                            "atLeast": 1,
+                            "atMost": 1
+                          }
+                        }"""));
+
+        MatcherAssert.assertThat(
+                "Exception for verify by query params failed",
+                exception.getMessage(),
+                StringContains.containsString("Assert is actual requests CONTAINS expected query params FAILED"));
     }
 
     @Test

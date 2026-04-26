@@ -50,6 +50,15 @@ public interface ApiConfig {
     Api setMaxResponseMsAssert(int maxResponseMs);
 
     /**
+     * Set max request timeout(connection/read)
+     * <p> Drop connection on timeout is up
+     *
+     * @param maxTimeoutMs max ms for connection/read
+     * @return this instance for method chaining
+     */
+    Api setTimeoutMs(int maxTimeoutMs);
+
+    /**
      * Set content type absent
      *
      * @return this instance for method chaining

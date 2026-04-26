@@ -38,10 +38,11 @@ public class SummaryReportForVerify extends EnchantedSetup {
                                      String[][] baseCheckResult,
                                      String[][] bodyCheckResult,
                                      String[][] headerCheckResult,
+                                     String[][] queryParamsCheckResult,
                                      JSONObject expectedMockSetup) {
 
 
-        String[][] allCheckResults = createAllChecksResult(actualRequestsCount, baseCheckResult, bodyCheckResult, headerCheckResult);
+        String[][] allCheckResults = createAllChecksResult(actualRequestsCount, baseCheckResult, bodyCheckResult, headerCheckResult, queryParamsCheckResult);
         int passNum = getAllPassedCount(actualRequestsCount, allCheckResults);
 
         String expectedText = assertRequestsCountText(expectedMockSetup);
@@ -54,6 +55,7 @@ public class SummaryReportForVerify extends EnchantedSetup {
                 baseCheckResult,
                 bodyCheckResult,
                 headerCheckResult,
+                queryParamsCheckResult,
                 allCheckResults);
 
         // assertion table to log
@@ -61,6 +63,7 @@ public class SummaryReportForVerify extends EnchantedSetup {
             logFormatter(baseCheckResult,
                     bodyCheckResult,
                     headerCheckResult,
+                    queryParamsCheckResult,
                     allCheckResults,
                     actualRequestsCount);
         }
@@ -76,7 +79,8 @@ public class SummaryReportForVerify extends EnchantedSetup {
             int cnt,
             String[][] baseCheckResult,
             String[][] bodyCheckResult,
-            String[][] headerCheckResult) {
+            String[][] headerCheckResult,
+            String[][] queryParamsCheckResult) {
 
         String[][] allResult = new String[cnt][];
 
@@ -89,6 +93,8 @@ public class SummaryReportForVerify extends EnchantedSetup {
                             (Objects.equals(bodyCheckResult[i][1], PASS) || Objects.equals(bodyCheckResult[i][1], SKIP))
                             &&
                             (Objects.equals(headerCheckResult[i][1], PASS) || Objects.equals(headerCheckResult[i][1], SKIP))
+                            &&
+                            (Objects.equals(queryParamsCheckResult[i][1], PASS) || Objects.equals(queryParamsCheckResult[i][1], SKIP))
             ) {
                 add = new String[]{String.valueOf(i + 1), PASS};
             } else {
@@ -117,22 +123,26 @@ public class SummaryReportForVerify extends EnchantedSetup {
     private static void logFormatter(String[][] baseCheckResult,
                                      String[][] bodyCheckResult,
                                      String[][] headerCheckResult,
+                                     String[][] queryParamsCheckResult,
                                      String[][] allCheckResults,
                                      int actualRequestsCount) {
 
         try {
 
-            String format = "%-5s %-12s %-12s %-12s %-10s%n";
+            String format = "%-5s %-12s %-12s %-12s %-12s %-10s%n";
             String space = "----------";
 
-            String head = String.format(format, "№", "method/path", BODY_KEY, HEADERS_KEY, "all asserts");
+            String head = String.format(format, "№", "method/path", BODY_KEY, HEADERS_KEY, "queryParams", "all asserts");
 
-            String separator = String.format(format, "---", space, space, space, space);
+            String separator = String.format(format, "---", space, space, space, space, space);
 
             StringBuilder tableLogBody = new StringBuilder();
             for (int i = 0; i < actualRequestsCount; i++) {
 
-                tableLogBody.append(String.format(format, bodyCheckResult[i][0], baseCheckResult[i][1], bodyCheckResult[i][1], headerCheckResult[i][1],
+                tableLogBody.append(String.format(format,
+                        bodyCheckResult[i][0],
+                        baseCheckResult[i][1], bodyCheckResult[i][1],
+                        headerCheckResult[i][1], queryParamsCheckResult[i][1],
                         getFinalAssertColored(allCheckResults[i][1])));
             }
 
