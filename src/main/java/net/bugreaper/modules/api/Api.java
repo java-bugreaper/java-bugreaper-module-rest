@@ -57,9 +57,13 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     /**
-     * Run {@link #Api()} from config in one instance
+     * Returns the instance of {@link Api} with config builder {@link #Api()}.
+     * <p>
+     * This implementation is thread-safe using method-level synchronization.
+     *
+     * @return the singleton instance of {@link Api}
      */
-    public static Api getInstance() {
+    public static synchronized Api getInstance() {
         if (instance == null) {
             instance = new Api();
         }

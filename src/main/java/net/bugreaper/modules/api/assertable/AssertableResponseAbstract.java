@@ -75,6 +75,13 @@ public class AssertableResponseAbstract{
         return this;
     }
 
+    protected AssertableResponseAbstract seeResponseContainsExtendedJsonMethod(String expectedSetup) {
+        attachJson("expected json with options", expectedSetup);
+
+        assertJsonsExtended(expectedSetup, response.getBody().asString());
+        return this;
+    }
+
     protected AssertableResponseAbstract seeResponseContainsJsonSubsetMethod(String expectedBody) {
         attachJson("expected json part", expectedBody);
 

@@ -2,6 +2,10 @@ package net.bugreaper.modules.api.interfaces;
 
 import net.bugreaper.modules.api.assertable.AssertableResponse;
 
+/**
+ * Interface defines methods for facilitating helper interactions and assertions.
+ * Validates that all required methods are implemented.
+ */
 public interface ApiInt {
 
     /**

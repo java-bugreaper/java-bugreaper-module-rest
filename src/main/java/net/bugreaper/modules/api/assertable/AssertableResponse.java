@@ -123,6 +123,13 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     }
 
     @Override
+    @Step("Response body: CONTAINS extended JSON (with options)")
+    public AssertableResponse seeResponseContainsExtendedJson(@Param(mode = HIDDEN) String expectedSetup) {
+        seeResponseContainsExtendedJsonMethod(expectedSetup);
+        return this;
+    }
+
+    @Override
     @Step("Response body: EQUAL to JSON with non-strict order")
     public AssertableResponse seeResponseExactlyMatchJsonIgnoringOrder(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseExactlyMatchJsonIgnoringOrderMethod(expectedBody);

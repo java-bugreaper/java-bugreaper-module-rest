@@ -3,6 +3,10 @@ package net.bugreaper.modules.mocks.interfaces;
 
 import net.bugreaper.modules.mocks.MocksApi;
 
+/**
+ * Interface that defines helper configuration methods for helper operations.
+ * Validates that all required methods are implemented.
+ */
 public interface MocksConfig {
 
     /**

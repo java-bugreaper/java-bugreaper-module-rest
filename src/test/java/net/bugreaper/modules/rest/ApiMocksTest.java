@@ -211,6 +211,26 @@ class ApiMocksTest extends PreSetup {
                 "testdata/mocks/verify_get_1.json");
     }
 
+    @Test
+    void testSeeResponseContainsJsonExtended() {
+        mocksApi.createMockCustom(
+                "from file",
+                "testdata/mocks/get_1.json");
+
+        api.sendGet("/api/get")
+
+                .seeResponseContainsExtendedJson("""
+                        {
+                          "status": 11,
+                          "statusName": "Something"
+                        }""")
+                .seeResponseContainsExtendedJson("""
+                        {
+                          "status:>=": 10,
+                          "statusName:regex": ".*thing"
+                        }""")
+                .seeResponseCodeIsSuccessful();
+    }
 
     @Test
     void testCreateGetMockFromFileDoRequestCheckResponseEqualJsonFromFile() {

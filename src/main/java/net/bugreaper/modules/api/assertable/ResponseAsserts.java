@@ -1,5 +1,6 @@
 package net.bugreaper.modules.api.assertable;
 
+import net.bugreaper.core.assertions.JsonAsserts;
 import net.bugreaper.core.exceptions.FileReaderException;
 import org.hamcrest.Matcher;
 
@@ -11,7 +12,7 @@ public interface ResponseAsserts {
      * Assert response StatusCode
      *
      * @param statusCode expected StatusCode
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseCodeIs(int statusCode);
@@ -26,7 +27,7 @@ public interface ResponseAsserts {
      *
      * @param path    path to field (data.user.id)
      * @param matcher <a href="https://hamcrest.org/JavaHamcrest/javadoc/3.0/org/hamcrest/Matchers.html">Matcher</a>
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseBodyFieldMatch(String path, Matcher<?> matcher);
@@ -36,7 +37,7 @@ public interface ResponseAsserts {
      *
      * @param header  header name
      * @param matcher <a href="https://hamcrest.org/JavaHamcrest/javadoc/3.0/org/hamcrest/Matchers.html">Matcher</a>
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseHeaderMatch(String header, Matcher<?> matcher);
@@ -44,7 +45,7 @@ public interface ResponseAsserts {
     /**
      * Assert response is Json/JsonArray type
      *
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseIsJsonType();
@@ -53,7 +54,7 @@ public interface ResponseAsserts {
      * Assert response time less then maximum expected
      *
      * @param timeMs maximum expected response time in MS
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseTimeLess(long timeMs);
@@ -64,7 +65,7 @@ public interface ResponseAsserts {
      * <p> extensible fields and <b>elements in array</b> will be skipped
      *
      * @param expectedBody expected part of JSON (arrays can be not ordered and have different count)
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseContainsJsonSubset(String expectedBody);
@@ -74,7 +75,7 @@ public interface ResponseAsserts {
      * <p> extensible fields will be skipped. <b>But extensible elements in array cause AssertionError</b>
      *
      * @param expectedBody expected part of JSON (arrays can be not ordered but must have same count of elements)
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseContainsJson(String expectedBody);
@@ -84,18 +85,28 @@ public interface ResponseAsserts {
      * <p> extensible fields will be skipped
      *
      * @param path path to file in resources with expected part of JSON  (arrays can be not ordered)
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError      on assert fail
      * @throws FileReaderException on read file error
      */
     AssertableResponse seeResponseContainsJson(Path path);
 
     /**
+     * Json assertion contains and/or optional checks
+     * <p>Same behavior as {@link JsonAsserts#assertJsonsExtended(String, String)}.
+     *
+     * @param expectedSetup expected part of JSON and/or optional checks
+     * @return this instance for method chaining
+     * @throws AssertionError on assert fail
+     */
+    AssertableResponse seeResponseContainsExtendedJson(String expectedSetup);
+    
+    /**
      * Json assertion with strict array ordering
      * <p> extensible fields not expected
      *
      * @param expectedBody expected full JSON with strict ordered arrays
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseExactlyMatchJson(String expectedBody);
@@ -105,7 +116,7 @@ public interface ResponseAsserts {
      * <p> extensible fields not expected
      *
      * @param path path to file in resources with expected full JSON with strict ordered arrays
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError      on assert fail
      * @throws FileReaderException on read file error
      */
@@ -116,7 +127,7 @@ public interface ResponseAsserts {
      * <p> extensible fields will be skipped
      *
      * @param expectedBody expected part of JSON with strict ordered arrays
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseContainsJsonStrictOrder(String expectedBody);
@@ -134,7 +145,7 @@ public interface ResponseAsserts {
      * Validate that the response matches the JSON schema
      *
      * @param path path to file in resources with Json schema
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError      on assert fail
      * @throws FileReaderException on read file error
      */
@@ -144,7 +155,7 @@ public interface ResponseAsserts {
      * Validate that the response matches the XML schema
      *
      * @param path path to file in resources with XML schema
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError      on assert fail
      * @throws FileReaderException on read file error
      */
@@ -154,7 +165,7 @@ public interface ResponseAsserts {
      * Assert that response body(JsonArray) has exactly count elements
      *
      * @param expectedCount expected count of elements
-     * @return this
+     * @return this instance for method chaining
      * @throws AssertionError on assert fail
      */
     AssertableResponse seeResponseBodyElementsCount(int expectedCount);
