@@ -3,6 +3,10 @@ package net.bugreaper.modules.mocks.interfaces;
 
 import org.opentest4j.AssertionFailedError;
 
+/**
+ * Interface defines methods for facilitating helper interactions and assertions.
+ * Validates that all required methods are implemented.
+ */
 public interface MocksInt {
 
     /**

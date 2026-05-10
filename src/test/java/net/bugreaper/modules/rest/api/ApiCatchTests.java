@@ -117,4 +117,28 @@ class ApiCatchTests extends PreSetup {
                         """));
     }
 
+    @Test
+    void testSeeResponseContainsJsonExtended() {
+        mocksApi.createMockCustom(
+                "from file",
+                "testdata/mocks/get_1.json");
+
+        AssertableResponse result = api.sendGet("/api/get")
+                .seeResponseCodeIs(200);
+
+        Throwable exception = assertThrows(AssertionError.class, () ->
+                result.seeResponseContainsExtendedJson("""
+                        {
+                          "status:>": 11,
+                          "statusName:regex": ".*ening"
+                        }"""));
+
+        MatcherAssert.assertThat(
+                exception.getMessage(),
+                StringContains.containsString("""
+                        JSON comparison failed:
+                        • status: expected >[11] but was [11]
+                        • statusName: expected regex [.*ening] but was [Something]"""));
+    }
+
 }

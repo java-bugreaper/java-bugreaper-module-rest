@@ -5,6 +5,10 @@ import io.restassured.http.ContentType;
 
 import java.util.Map;
 
+/**
+ * Interface that defines helper configuration methods for helper operations.
+ * Validates that all required methods are implemented.
+ */
 public interface ApiConfig {
 
     /**

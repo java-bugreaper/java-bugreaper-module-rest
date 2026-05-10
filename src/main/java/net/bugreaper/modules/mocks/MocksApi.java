@@ -85,9 +85,13 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     /**
-     * Run {@link #MocksApi()} from config in one instance
+     * Returns the instance of {@link MocksApi} with config builder {@link #MocksApi()}.
+     * <p>
+     * This implementation is thread-safe using method-level synchronization.
+     *
+     * @return the singleton instance of {@link MocksApi}
      */
-    public static MocksApi getInstance() {
+    public static synchronized MocksApi getInstance() {
         if (instance == null) {
             instance = new MocksApi();
         }
