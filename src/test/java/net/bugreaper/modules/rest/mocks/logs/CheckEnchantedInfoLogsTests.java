@@ -1,39 +1,39 @@
 package net.bugreaper.modules.rest.mocks.logs;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 
-import helpers.MemoryAppender;
+import com.fasterxml.jackson.databind.JsonNode;
+import net.bugreaper.core.utils.AllureAssert;
+import net.bugreaper.core.utils.AllureResultLoader;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.opentest4j.AssertionFailedError;
-import org.slf4j.LoggerFactory;
 
 
-import static net.bugreaper.core.assertions.Asserts.assertBooleans;
+import static net.bugreaper.core.filereaders.FileReader.readTextFromFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CheckEnchantedInfoLogsTests extends PreSetup {
 
-    private static final MemoryAppender memoryAppender = new MemoryAppender();
-    private static final String LOGGER_NAME = "MockEnchantedReport";
 
-
+    private LogWatcher logWatcher;
     @BeforeEach
     void setup() {
-        Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
-        logger.setLevel(Level.INFO);
-        logger.addAppender(memoryAppender);
-
-        memoryAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-        memoryAppender.start();
+        logWatcher = new LogWatcher("MockEnchantedReport", Level.INFO);
     }
 
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
+
+
     @Test
+    @Order(1)
     void SummaryTableInfoLogTest() {
         mocksApi.createMock(universalMock);
 
@@ -93,20 +93,104 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
                         Check report for more info"""));
 
         String expectedTable = """
+                [INFO]\s
                 Mock verify assertions:
                 №     method/path  body         headers      queryParams  all asserts
                 ---   ----------   ----------   ----------   ----------   ----------
                 1     passed       failed       skipped      skipped      \u001B[31mfailed\u001B[0m
                 2     passed       failed       skipped      skipped      \u001B[31mfailed\u001B[0m
-                3     passed       passed       skipped      skipped      \u001B[32mpassed\u001B[0m""";
+                3     passed       passed       skipped      skipped      \u001B[32mpassed\u001B[0m
+                ]""";
 
 
         assertThat(
                 "Check INFO log table",
-                memoryAppender.getLoggedEvents().toString(),
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
                 StringContains.containsString(expectedTable));
 
-        assertBooleans(memoryAppender.contains(expectedTable, Level.INFO), true);
+
+        assertThat(
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
+                StringContains.containsString("[INFO] No <headers> in verify setup : this check will be skipped"));
+
+        assertThat(
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
+                StringContains.containsString("[INFO] No <query params> in verify setup : this check will be skipped"));
+    }
+
+    @Test
+    @Order(2)
+    void allureForListCheck() {
+        JsonNode result = AllureResultLoader.loadByTestName("SummaryTableInfoLogTest");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasSubStep("Check assert for method and/or path")
+
+                .hasAttachment("Expected CONTAINS method and/or path")
+                .hasAttachment("Expected CONTAINS method and/or path", """
+                        {
+                          "path": "/api/post",
+                          "method": "POST"
+                        }""")
+
+                .hasAttachment("Actual list: method and/or path")
+
+                .hasAttachment("CONTAINS method and/or path №1 passed:","""
+                        
+                        Actual method and/or path
+                        {
+                          "path": "/api/post",
+                          "method": "POST"
+                        }
+                        ========================
+                        """)
+                .hasAttachment("CONTAINS method and/or path №2 passed:")
+                .hasAttachment("CONTAINS method and/or path №3 passed:")
+
+
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasSubStep("Check assert for jsonSchema")
+                .hasAttachment("jsonSchema validate №1 failed:","""
+                        
+                        Actual body
+                        {
+                          "id": 3,
+                          "text": "some text"
+                        }
+                        ========================
+                        $.id: is not defined in the schema and the schema does not allow additional properties
+                        $.text: is not defined in the schema and the schema does not allow additional properties
+                        """)
+                .hasAttachment("jsonSchema validate №2 failed:","""
+                        
+                        Actual body
+                        {"id_wrong": "text"}
+                        ========================
+                        $.id_wrong: string found, integer expected
+                        """)
+
+                .hasAttachment("jsonSchema validate №3 passed:","""
+                        
+                        Actual body
+                        {"id_wrong": 4}
+                        ========================
+                        Schema check passed""")
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasSubStep("No <headers> in verify setup : this check will be skipped")
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasSubStep("No <query params> in verify setup : this check will be skipped")
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasAttachment("Summary Table", readTextFromFile("allure/SummaryTableInfoLogTest.html"));
     }
 
 }

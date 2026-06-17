@@ -2,11 +2,15 @@ package net.bugreaper.modules.rest.api;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import helpers.MemoryAppender;
+import com.fasterxml.jackson.databind.JsonNode;
+import net.bugreaper.core.utils.AllureAssert;
+import net.bugreaper.core.utils.AllureResultLoader;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -15,9 +19,9 @@ import java.io.PrintStream;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LoggingTests extends PreSetup {
 
-    private static final MemoryAppender memoryAppender = new MemoryAppender();
     private static final String LOGGER_NAME = "bugreaper-module-api";
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -29,8 +33,6 @@ class LoggingTests extends PreSetup {
         Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
         logger.setLevel(Level.DEBUG);
 
-        memoryAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-        memoryAppender.start();
 
         System.setOut(new PrintStream(outContent));
 
@@ -81,6 +83,7 @@ class LoggingTests extends PreSetup {
     }
 
     @Test
+    @Order(1)
     void testLoggingOnDefaultInfoOff() {
         mocksApi.createMock(universalMock);
         Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
@@ -104,5 +107,19 @@ class LoggingTests extends PreSetup {
 
         System.setOut(originalOut);
     }
+
+    @Test
+    @Order(2)
+    void allureForListCheck() {
+        JsonNode result = AllureResultLoader.loadByTestName("testLoggingOnDefaultInfoOff");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(API) Send GET api/test")
+                .hasAttachment("Request")
+                .hasAttachment("HTTP/1.1 200 OK")
+
+                .hasStep("Status code is: 200");
+    }
+
 
 }

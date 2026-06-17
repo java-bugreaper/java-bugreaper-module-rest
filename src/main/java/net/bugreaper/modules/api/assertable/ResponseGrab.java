@@ -4,7 +4,7 @@ package net.bugreaper.modules.api.assertable;
 public interface ResponseGrab {
 
     /**
-     * Grab response header data
+     * Return response header data
      *
      * @param header header name
      * @return String with response header value
@@ -12,7 +12,7 @@ public interface ResponseGrab {
     String grabResponseHeader(String header);
 
     /**
-     * Grab response body
+     * Return response body
      *
      * @return String with response body
      */
@@ -20,7 +20,7 @@ public interface ResponseGrab {
 
 
     /**
-     * Grab response body field data (converted to String)
+     * Return response body field data (converted to String)
      *
      * @param path path to field (example: {@code data.user.id})
      * @return String with response body field data
@@ -28,7 +28,7 @@ public interface ResponseGrab {
     String grabStringFromResponseByPath(String path);
 
     /**
-     * Grab response body field data (any type)
+     * Return response body field data (any type)
      *
      * @param path path to field (example: {@code data.user.id})
      * @return Object with response body field data

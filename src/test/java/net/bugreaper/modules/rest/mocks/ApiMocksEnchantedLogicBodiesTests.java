@@ -1,14 +1,34 @@
 package net.bugreaper.modules.rest.mocks;
 
+import ch.qos.logback.classic.Level;
+import com.fasterxml.jackson.databind.JsonNode;
+import net.bugreaper.core.utils.AllureAssert;
+import net.bugreaper.core.utils.AllureResultLoader;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.opentest4j.AssertionFailedError;
 
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
+
+
+    private LogWatcher logWatcher;
+    @BeforeEach
+    void setup() {
+        logWatcher = new LogWatcher("MockEnchantedReport", Level.DEBUG);
+    }
+
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
 
 
     @Test
@@ -210,6 +230,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
     }
 
     @Test
+    @Order(1)
     void testVerifyMockAssertBodyNotStrictNoMatchType() {
         mocksApi.createMock(universalMock);
 
@@ -242,6 +263,28 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                 "Exception for verify by NOT STRICT body failed",
                 exception.getMessage(),
                 StringContains.containsString("Assert is actual requests CONTAINS expected body FAILED"));
+
+
+        assertEquals("[[INFO] matchType not found]",
+                logWatcher.getLoggedEvents(Level.INFO).toString());
+    }
+
+    @Test
+    @Order(2)
+    void testVerifyMockAssertBodyNotStrictNoMatchTypeAllure() {
+        JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockAssertBodyNotStrictNoMatchType");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+
+                .hasSubStep("Check assert for body")
+
+                .hasAttachment("Expected CONTAINS body","""
+                        {
+                          "json": {"id": 8888},
+                          "type": "JSON"
+                        }""");
     }
 
 
@@ -284,6 +327,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
 
 
     @Test
+    @Order(3)
     void testVerifyMockAssertBodyStrict() {
         mocksApi.createMock(universalMock);
 
@@ -320,6 +364,34 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                 "Exception for verify by STRICT body failed",
                 exception.getMessage(),
                 StringContains.containsString("Assert is actual requests EQUAL expected body FAILED"));
+
+    }
+
+    @Test
+    @Order(4)
+    void testVerifyMockAssertBodyStrictAllure() {
+        JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockAssertBodyStrict");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+
+                .hasSubStep("Check assert for body")
+
+                .hasAttachment("Expected EQUAL body","""
+                        {"id": 8888}""")
+                .hasAttachment("EQUAL body №1 failed:","""
+                        
+                        Actual body
+                        {
+                          "id": 8888,
+                          "text": "test"
+                        }
+                        ========================
+                                                
+                        Extensive data in Actual Result (for strict match):
+                        /text: test
+                        """);
     }
 
 }

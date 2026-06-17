@@ -15,6 +15,7 @@
  */
 package net.bugreaper.modules.mocks.enchanted;
 
+import io.qameta.allure.Allure;
 import net.bugreaper.modules.mocks.MocksApi;
 import io.qameta.allure.Param;
 import io.qameta.allure.Step;
@@ -52,16 +53,19 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
  * {@link MocksApi#verifyMock(String)}
  * {@link MocksApi#verifyMockWithAwait(String)}
  * <p>Supported:
- * <p> -Json body contains\equal check
- * <p> -Json body schema check
- * <p> -Expected count exactly, from\to
- * <p> -Headers, method, path
- * <p> -QueryParams
+ * <pre>
+ *  - Json body contains\equal check
+ *  - Json body schema check
+ *  - Expected count exactly, from\to
+ *  - Headers, method, path
+ *  - QueryParams
+ * </pre>
  * <p>Not supported:
- * <p> -Verify with awaiting on fail run verify with report
- * <p> -not JSON(string, array!, xml...)
- * <p> -Regex in Verify (method, path, body, header)
- * <p> -Not expected (like "!header")
+ * <pre>
+ *  - not JSON(string, array!, xml...)
+ *  - Regex in Verify (method, path, body, header)
+ *  - Not expected (like "!header")
+ * </pre>
  *
  * @since 0.0.1
  */
@@ -338,7 +342,7 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
 
         //allure ER AR report
         String expectedAllureName = "Expected schema";
-        String actualListAllureName = "Actual list: ";
+        String actualListAllureName = "Actual list: body";
         logger_mer.debug("\n{}{}", expectedAllureName, expectedSchema);
 
         attachJson(expectedAllureName, expectedSchema);
@@ -361,7 +365,8 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
 
     private static String[][] skippedAssert(int actualRequestsCount, String[][] bodyCheckResult, String assertKey) {
 
-        reporter(SKIPPED_MESSAGE.formatted(assertKey)); //allure vs allure log info
+        logReporter(SKIPPED_MESSAGE.formatted(assertKey));
+
 
         for (int i = 0; i < actualRequestsCount; i++) {
 
@@ -372,6 +377,11 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
 
         }
         return bodyCheckResult;
+    }
+
+    private static void logReporter(String message){
+        logger_mer.info(message);
+        Allure.step(message);
     }
 
 }

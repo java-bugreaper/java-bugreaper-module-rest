@@ -62,6 +62,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * This implementation is thread-safe using method-level synchronization.
      *
      * @return the singleton instance of {@link Api}
+     * @see #Api() config setup
      */
     public static synchronized Api getInstance() {
         if (instance == null) {
