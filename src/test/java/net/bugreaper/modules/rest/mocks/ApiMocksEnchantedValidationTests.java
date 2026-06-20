@@ -1,16 +1,31 @@
 package net.bugreaper.modules.rest.mocks;
 
-import net.bugreaper.modules.mocks.exceptions.MockEnchantedException;
+import ch.qos.logback.classic.Level;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class ApiMocksEnchantedValidationTests extends PreSetup {
+
+    private LogWatcher logWatcher;
+    @BeforeEach
+    void setup() {
+        logWatcher = new LogWatcher("bugreaper-module-mocks", Level.INFO);
+    }
+
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
 
     @Test
     void testWrongSetup() {
@@ -61,6 +76,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                 StringContains.containsString("No requests to mock-server in test"));
     }
 
+
     @Test
     void verifyValidation_bodyArray() {
         mocksApi.createMock(universalMock);
@@ -72,7 +88,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                                 ]""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(MockEnchantedException.class, () ->
+        Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -89,11 +105,25 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                           }
                         }"""));
 
-        MatcherAssert.assertThat(
-                "Exception for expected verify body JSONArray (not supported)",
+        assertEquals(
+                "Count of expected mock request(s) not match (enchanted report not finished)",
                 exception.getMessage(),
-                StringContains.containsString("Expected verify body is not JSON: JSONArray"));
+                "Exception for expected verify body String (not supported)");
+
+        assertEquals(
+                "Expected verify body is not JSON: JSONArray",
+                exception.getCause().getMessage(),
+                "Caused by");
+
+
+        assertEquals(
+                """
+                        [[INFO]\s
+                        Mock verify assertion FAILED, start mock verify enchanted report build]""",
+                logWatcher.getLoggedEvents(Level.INFO).toString());
     }
+
+
 
     @Test
     void verifyValidation_bodyString() {
@@ -104,7 +134,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                                 {"id": 3}""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(MockEnchantedException.class, () ->
+        Throwable exception = assertThrows(AssertionFailedError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -118,10 +148,15 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                           }
                         }"""));
 
-        MatcherAssert.assertThat(
-                "Exception for expected verify body String (not supported)",
+        assertEquals(
+                "Count of expected mock request(s) not match (enchanted report not finished)",
                 exception.getMessage(),
-                StringContains.containsString("Expected verify body is not JSON: String"));
+                "Exception for expected verify body String (not supported)");
+
+        assertEquals(
+                "Expected verify body is not JSON: String",
+                exception.getCause().getMessage(),
+                "Caused by");
     }
 
 }

@@ -28,23 +28,26 @@ public final class MapDifferenceReporter {
 
         StringBuilder diffResult = new StringBuilder();
 
-        diffResult.append("\nMissing data in Actual Result:\n");
-
         Map<String, Object> entriesOnlyOnLeft = difference.entriesOnlyOnLeft();
 
-        for (var entry : entriesOnlyOnLeft.entrySet()) {
-            diffResult.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+
+        if(!entriesOnlyOnLeft.isEmpty()) {
+            diffResult.append("\nMissing data in Actual Result:\n");
+
+            for (var entry : entriesOnlyOnLeft.entrySet()) {
+                diffResult.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
         }
 
         //check what is difference in existing data
-        diffResult.append("\nNot expected values in Actual Result:\n");
-
         Map<String, MapDifference.ValueDifference<Object>> entriesDiffering = difference.entriesDiffering();
 
-        for (var entry : entriesDiffering.entrySet()) {
-            diffResult.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        if(!entriesDiffering.isEmpty()) {
+            diffResult.append("\nNot expected values in Actual Result:\n");
+            for (var entry : entriesDiffering.entrySet()) {
+                diffResult.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
         }
-
 
         //check what is not expected exist in actual result (only for STRICT verify
         if (isStrict) {

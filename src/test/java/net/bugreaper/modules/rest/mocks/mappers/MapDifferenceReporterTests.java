@@ -37,9 +37,9 @@ class MapDifferenceReporterTests {
         String result = jsonDifLogic(er, er, false);
 
         assertEquals(
-                readTextFromFile("expectedReports/checkNotStrictPass"),
+                "",
                 result,
-                "Report for not strict PASS");
+                "Report for not strict PASS (now empty)");
     }
 
     @Test
@@ -56,9 +56,9 @@ class MapDifferenceReporterTests {
         String result = jsonDifLogic(er, ar, false);
 
         assertEquals(
-                readTextFromFile("expectedReports/checkNotStrictPass"),
+                "",
                 result,
-                "Report for not strict extensive PASS");
+                "Report for not strict extensive PASS (now empty)");
     }
 
     @Test
@@ -94,9 +94,9 @@ class MapDifferenceReporterTests {
         String result = jsonDifLogic(er, er, false);
 
         assertEquals(
-                readTextFromFile("expectedReports/checkNotStrictPass"),
+                "",
                 result,
-                "Report for not strict with array PASS");
+                "Report for not strict with array PASS (now empty)");
     }
 
     @Test
@@ -115,9 +115,9 @@ class MapDifferenceReporterTests {
         String result = jsonDifLogic(er, ar, false);
 
         assertEquals(
-                readTextFromFile("expectedReports/checkNotStrictPass"),
+                "",
                 result,
-                "Report for not strict with array extensive PASS");
+                "Report for not strict with array extensive PASS (now empty)");
     }
 
     @Test

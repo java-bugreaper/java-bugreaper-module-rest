@@ -159,9 +159,9 @@ class MockEnchantedDifferReportTests {
         String result = differenceContent("body", expectedObject, actualContent, false);
 
         assertEquals(
-                readTextFromFile("diffContentExpected/contentContainsJsonDiffsPass"),
+                "",
                 result,
-                "Content with: contains check pass");
+                "Content with: contains check pass - now empty!");
 
     }
 }

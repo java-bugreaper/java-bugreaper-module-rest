@@ -39,6 +39,8 @@ public interface MocksConfig {
     /**
      * Enabling or disabling enchanted mockVerify report
      *
+     * <p>Same behavior as {@link net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer}.
+     *
      * @param enchantedReport true=on/false=off
      * @return this instance for method chaining
      */

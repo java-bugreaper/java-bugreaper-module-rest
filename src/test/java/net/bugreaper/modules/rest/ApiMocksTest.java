@@ -1,10 +1,14 @@
 package net.bugreaper.modules.rest;
 
 
+import ch.qos.logback.classic.Level;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import testcontainers.SetupMockserver;
@@ -19,6 +23,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class ApiMocksTest extends PreSetup {
 
 
+    private LogWatcher logWatcher;
+    @BeforeEach
+    void setup() {
+        logWatcher = new LogWatcher("bugreaper-module-mocks", Level.INFO);
+    }
+
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
+
+
     @Test
     void testVerifyBaseMockCountNoRequestsNoEnchant() {
 
@@ -31,6 +47,12 @@ class ApiMocksTest extends PreSetup {
                 "Exception for Count verify when no requests found",
                 exception.getMessage(),
                 StringContains.containsString("Count of expected mock request(s) not match"));
+
+        assertEquals(
+                """
+                        [[WARN]\s
+                        Turn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true]""",
+                logWatcher.getLoggedEvents(Level.WARN).toString());
     }
 
     @Test

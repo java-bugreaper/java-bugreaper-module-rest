@@ -1,40 +1,37 @@
 package net.bugreaper.modules.rest.mocks.logs;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 
-import helpers.MemoryAppender;
+import com.fasterxml.jackson.databind.JsonNode;
+import net.bugreaper.core.utils.AllureAssert;
+import net.bugreaper.core.utils.AllureResultLoader;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.opentest4j.AssertionFailedError;
-import org.slf4j.LoggerFactory;
 
 
-import static net.bugreaper.core.assertions.Asserts.assertBooleans;
+import static net.bugreaper.core.filereaders.FileReader.readTextFromFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CheckEnchantedDebugLogsTests extends PreSetup {
 
-    private static final MemoryAppender memoryAppender = new MemoryAppender();
-    private static final String LOGGER_NAME = "MockEnchantedReport";
-
-
+    private LogWatcher logWatcher;
     @BeforeEach
     void setup() {
-        Logger logger = (Logger) LoggerFactory.getLogger(LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-        logger.addAppender(memoryAppender);
-
-        memoryAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-        memoryAppender.start();
+        logWatcher = new LogWatcher("MockEnchantedReport", Level.DEBUG);
     }
 
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
 
     @Test
+    @Order(1)
     void ActualBodyListInfoLogTest() {
         mocksApi.createMock(universalMock);
 
@@ -169,11 +166,84 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
                 ]""";
 
         assertThat(
-                "Check Actual list log table",
-                memoryAppender.getLoggedEvents().toString(),
+                logWatcher.getLoggedEvents(Level.DEBUG).toString(),
                 StringContains.containsString(expectedLog));
 
-        assertBooleans(memoryAppender.contains(expectedLog, Level.DEBUG), true);
+
+        //INFO part
+
+        assertThat(
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
+                StringContains.containsString("[INFO] Actual body will be replaced because it's not JSON type: STRING"));
+
+        assertThat(
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
+                StringContains.containsString("[INFO] Actual body will be replaced because it's not JSON type: XML"));
+    }
+
+    @Test
+    @Order(2)
+    void allureForListCheck() {
+        JsonNode result = AllureResultLoader.loadByTestName("ActualBodyListInfoLogTest");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+
+                .hasSubStep("Check assert for method and/or path")
+                .hasAttachment("CONTAINS method and/or path №3 failed:","""
+                        
+                        Actual method and/or path
+                        {
+                          "path": "/api/get",
+                          "method": "GET"
+                        }
+                        ========================
+                                                
+                        Not expected values in Actual Result:
+                        /path: (/api/post, /api/get)
+                        /method: (POST, GET)
+                        """)
+                .hasAttachment("CONTAINS method and/or path №6 passed:")
+                .hasAttachment("CONTAINS method and/or path №8 failed:")
+
+
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasSubStep("Check assert for jsonSchema")
+                .hasAttachment("Expected schema","""
+                        {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {"id_wrong": {"type": "integer"}}
+                        }""")
+
+                .hasAttachment("Actual list: body")
+                .hasAttachment("jsonSchema validate №3 failed:","""
+                        
+                        Actual body
+                        {"ABSENT_JSON_REPLACED": "true"}
+                        ========================
+                        Schema assert failed (Actual body absent)""")
+
+                .hasAttachment("jsonSchema validate №6 passed:","""
+                        
+                        Actual body
+                        {}
+                        ========================
+                        Schema check passed""")
+
+                .hasAttachment("jsonSchema validate №8 failed:","""
+                        
+                        Actual body
+                        {"NOT_JSON_BODY_REPLACED": "true"}
+                        ========================
+                        Schema assert failed (Actual body not JSON)""")
+
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+                .hasAttachment("Summary Table", readTextFromFile("allure/ActualBodyListInfoLogTest.html"));
     }
 
 }

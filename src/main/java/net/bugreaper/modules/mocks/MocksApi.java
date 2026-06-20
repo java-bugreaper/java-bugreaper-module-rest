@@ -90,6 +90,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * This implementation is thread-safe using method-level synchronization.
      *
      * @return the singleton instance of {@link MocksApi}
+     * @see #MocksApi() config setup
      */
     public static synchronized MocksApi getInstance() {
         if (instance == null) {
