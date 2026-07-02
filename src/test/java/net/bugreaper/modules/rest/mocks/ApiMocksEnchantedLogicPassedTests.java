@@ -2,9 +2,11 @@ package net.bugreaper.modules.rest.mocks;
 
 import net.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 
 @SuppressWarnings({"squid:S2699", "squid:S5976"})
+@Isolated
 class ApiMocksEnchantedLogicPassedTests extends PreSetup {
 
 

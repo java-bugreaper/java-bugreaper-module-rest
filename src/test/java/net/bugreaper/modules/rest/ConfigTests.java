@@ -5,6 +5,7 @@ import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Isolated
 class ConfigTests extends PreSetup {
 
     final String endpoint = "/api/test";

@@ -3,8 +3,10 @@ package net.bugreaper.modules.rest.api;
 import net.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 
+@Isolated
 class ApiBaseMethodsTests extends PreSetup {
 
     final String endpoint = "/api/test";

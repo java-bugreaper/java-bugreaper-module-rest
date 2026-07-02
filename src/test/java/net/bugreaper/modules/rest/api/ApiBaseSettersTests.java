@@ -3,11 +3,13 @@ package net.bugreaper.modules.rest.api;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import java.util.Arrays;
 import java.util.Map;
 
 
+@Isolated
 class ApiBaseSettersTests extends PreSetup {
 
 

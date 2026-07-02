@@ -9,13 +9,15 @@ import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.*;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.parallel.Isolated;
 
 
 import static net.bugreaper.core.filereaders.FileReader.readTextFromFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+@Isolated
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CheckEnchantedDebugLogsTests extends PreSetup {
 
@@ -97,7 +99,7 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
                 .seeResponseCodeIs(200);
 
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {

@@ -27,7 +27,6 @@ import java.util.*;
 import static net.bugreaper.core.mappers.JsonMappers.jsonToStringBeautifier;
 import static net.bugreaper.core.mappers.JsonMappers.putObjectToJson;
 import static net.bugreaper.modules.mocks.mappers.JsonMappersRest.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("squid:S5960")
 public class GetExpected extends EnchantedSetup {
@@ -272,7 +271,7 @@ public class GetExpected extends EnchantedSetup {
         try {
             result = getObjectFromJsonObjectByKey(verifyJSON, BODY_KEY);
         } catch (MockEnchantedException err){
-            fail("Count of expected mock request(s) not match (enchanted report not finished)", err);
+            throw new AssertionError("Count of expected mock request(s) not match (enchanted report not finished)", err);
         }
 
         return result;

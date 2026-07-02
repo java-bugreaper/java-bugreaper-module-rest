@@ -5,10 +5,13 @@ import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 @SuppressWarnings("squid:S5778")
+@Isolated
 class ApiCatchConditionsTests extends PreSetup {
 
 

@@ -6,14 +6,17 @@ import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import testcontainers.SetupMockserver;
 
 import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Isolated
 class ApiCatchTests extends PreSetup {
 
 
@@ -54,17 +57,23 @@ class ApiCatchTests extends PreSetup {
     @Test
     void testSeeResponseCodeIsSuccessfulCatch() {
         mocksApi.resetMocks();
-
+        mocksApi.createMock("""
+            {
+              "httpRequest": {
+              },
+              "httpResponse": {
+                "statusCode": 404
+              }
+            }""");
         Api api = new SetupMockserver().getApi().setContentTypeJson();
 
         AssertableResponse result = api.sendGet("/api/test");
 
         Throwable exception = assertThrows(AssertionError.class, result::seeResponseCodeIsSuccessful);
 
-        MatcherAssert.assertThat(
-                exception.getMessage(),
-                StringContains.containsString("Expected SUCCESSFUL(2xx) status code, but got: 404"));
-
+            assertEquals(
+                    "Expected SUCCESSFUL(2xx) status code, but got: 404",
+                    exception.getMessage());
     }
 
     @Test

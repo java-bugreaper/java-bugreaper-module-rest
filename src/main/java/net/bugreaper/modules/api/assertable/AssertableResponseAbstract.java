@@ -17,8 +17,6 @@ import static net.bugreaper.core.assertions.JsonAsserts.*;
 import static net.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class AssertableResponseAbstract{
@@ -40,9 +38,9 @@ public class AssertableResponseAbstract{
     protected AssertableResponseAbstract seeResponseCodeIsSuccessfulMethod() {
         int statusCode = response.getStatusCode();
 
-        assertTrue(statusCode >= 200 && statusCode <= 299,
-                "Expected SUCCESSFUL(2xx) status code, but got: " + statusCode);
-
+        if (statusCode < 200 || statusCode > 299) {
+            throw new AssertionError("Expected SUCCESSFUL(2xx) status code, but got: " + statusCode);
+        }
         return this;
     }
 
@@ -144,7 +142,7 @@ public class AssertableResponseAbstract{
         try {
             response.then().assertThat().body(matchesXsdInClasspath(pathString));
         } catch (Exception e) {
-            fail("Response schema not match expected XML\n" + e.getMessage(), e);
+            throw new AssertionError("Response schema not match expected XML\n" + e.getMessage(), e);
         }
 
         return this;

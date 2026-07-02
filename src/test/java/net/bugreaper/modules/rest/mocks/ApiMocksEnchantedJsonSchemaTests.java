@@ -3,12 +3,13 @@ package net.bugreaper.modules.rest.mocks;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Isolated
 class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
 
     @Test
@@ -37,7 +38,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -109,7 +110,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         apiJsonPlus.sendPost("/api/post", "{}")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -153,7 +154,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -208,7 +209,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                                 """)
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -288,7 +289,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
         apiText.sendPost("/api/post", "103")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -335,7 +336,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                 .seeResponseCodeIs(200);
 
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {
@@ -375,7 +376,7 @@ class ApiMocksEnchantedJsonSchemaTests extends PreSetup {
                                 {"id": 3}""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {

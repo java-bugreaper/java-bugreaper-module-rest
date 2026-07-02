@@ -5,7 +5,6 @@ import net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 
 import java.lang.reflect.Constructor;
@@ -108,7 +107,7 @@ class MockEnchantedDifferTests {
 
         String mocksRequests = "[ ]";
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 noRequestsCheck(mocksRequests));
 
         MatcherAssert.assertThat(

@@ -7,10 +7,8 @@ import net.bugreaper.core.utils.AllureAssert;
 import net.bugreaper.core.utils.AllureResultLoader;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -19,6 +17,8 @@ import java.io.PrintStream;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
+
+@Isolated
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LoggingTests extends PreSetup {
 
@@ -26,6 +26,11 @@ class LoggingTests extends PreSetup {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
+
+    @BeforeAll
+    static void clean(){
+        AllureResultLoader.cleanResultsDir();
+    }
 
     @Test
     void testLoggingOnDebugFlagOff() {
@@ -118,7 +123,7 @@ class LoggingTests extends PreSetup {
                 .hasAttachment("Request")
                 .hasAttachment("HTTP/1.1 200 OK")
 
-                .hasStep("Status code is: 200");
+                .hasStep("↑(API)[ASSERT] Status code is: 200");
     }
 
 

@@ -8,12 +8,13 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Isolated
 class ApiMocksEnchantedValidationTests extends PreSetup {
 
     private LogWatcher logWatcher;
@@ -54,7 +55,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
     @Test
     void testVerifyMockAssertBodyComaNowWork() {
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -88,7 +89,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                                 ]""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -134,7 +135,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
                                 {"id": 3}""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {

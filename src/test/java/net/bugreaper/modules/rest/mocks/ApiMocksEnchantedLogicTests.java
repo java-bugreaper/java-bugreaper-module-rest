@@ -1,23 +1,42 @@
 package net.bugreaper.modules.rest.mocks;
 
+import ch.qos.logback.classic.Level;
+import com.fasterxml.jackson.databind.JsonNode;
+import net.bugreaper.core.utils.AllureAssert;
+import net.bugreaper.core.utils.AllureResultLoader;
+import net.bugreaper.core.utils.LogWatcher;
 import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+@Isolated
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ApiMocksEnchantedLogicTests extends PreSetup {
 
+    private LogWatcher logWatcher;
+    @BeforeEach
+    void setup() {
+        logWatcher = new LogWatcher("MockEnchantedReport", Level.DEBUG);
+    }
+
+    @AfterEach
+    void teardown() {
+        logWatcher.detach();
+    }
 
     @Test
     void testVerifyBaseMockCountNoRequests() {
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(1));
 
         MatcherAssert.assertThat(
@@ -37,7 +56,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(3));
 
         MatcherAssert.assertThat(
@@ -58,7 +77,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(2, 3));
 
         MatcherAssert.assertThat(
@@ -78,7 +97,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(3, 1));
 
         MatcherAssert.assertThat(
@@ -105,7 +124,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {},
@@ -131,7 +150,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                             "httpRequest": {},
@@ -157,7 +176,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(2, 3));
 
         MatcherAssert.assertThat(
@@ -178,7 +197,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.assertAllMocksCount(0));
 
         MatcherAssert.assertThat(
@@ -192,7 +211,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
 
         mocksApi.createMock(universalMock);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -222,7 +241,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -255,7 +274,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -287,7 +306,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -319,7 +338,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -355,7 +374,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -387,7 +406,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                 .seeResponseCodeIs(200);
 
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -424,7 +443,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -464,7 +483,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -505,7 +524,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -531,6 +550,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
     }
 
     @Test
+    @Order(1)
     void testVerifyMockNoBodyAndHeadersExpected() {
         mocksApi.createMock(universalMock);
 
@@ -542,7 +562,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                 .seeResponseCodeIs(200);
 
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -562,9 +582,30 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                         Count of expected mock request(s) not match.
                         Expected Exactly <2> with AR <1>
                         Check report for more info"""));
+
+
+        MatcherAssert.assertThat(
+                logWatcher.getLoggedEvents(Level.INFO).toString(),
+                StringContains.containsString("[INFO] No <body> in verify setup : this check will be skipped"));
     }
 
     @Test
+    @Order(2)
+    void testVerifyMockNoBodyAndHeadersExpectedAllure() {
+        JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockNoBodyAndHeadersExpected");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+
+                .hasSubStepLeft("No <body> in verify setup : this check will be skipped")
+                .hasSubStepLeft("No <headers> in verify setup : this check will be skipped")
+                .hasSubStepLeft("No <query params> in verify setup : this check will be skipped");
+
+    }
+
+    @Test
+    @Order(3)
     void testVerifyMockNoMethodAndPathExpected() {
         mocksApi.createMock(universalMock);
 
@@ -576,7 +617,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                 .seeResponseCodeIs(200);
 
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -594,7 +635,22 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
                 "Exception for verify assertion (no method & Path in verify setup - skipped)",
                 exception.getMessage(),
                 StringContains.containsString("Assert is actual requests CONTAINS expected body FAILED"));
+
+        assertEquals("[[INFO] No <method and/or path> in verify setup : this check will be skipped]",
+                logWatcher.getLoggedEvents(Level.INFO).toString());
     }
 
+    @Test
+    @Order(4)
+    void testVerifyMockNoMethodAndPathExpectedAllure() {
+        JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockNoMethodAndPathExpected");
+
+        AllureAssert.assertThat(result)
+                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
+
+                .hasSubStepLeft("No <method and/or path> in verify setup : this check will be skipped")
+                .hasSubStep("Check assert for body");
+    }
 
 }

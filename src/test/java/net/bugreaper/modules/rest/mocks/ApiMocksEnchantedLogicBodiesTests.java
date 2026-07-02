@@ -9,17 +9,25 @@ import net.bugreaper.modules.rest.PreSetup;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.*;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.parallel.Isolated;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+@Isolated
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
 
 
     private LogWatcher logWatcher;
+
+    @BeforeAll
+    static void clean(){
+        AllureResultLoader.cleanResultsDir();
+    }
+
     @BeforeEach
     void setup() {
         logWatcher = new LogWatcher("MockEnchantedReport", Level.DEBUG);
@@ -43,7 +51,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -73,7 +81,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         apiText.sendPost("/api/post", "103")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -128,7 +136,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 """)
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -164,7 +172,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         apiText.sendPost("/api/post", "some_string")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -206,7 +214,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                            "httpRequest": {
@@ -240,7 +248,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                   "id": 8889
                                 }""")
                 .seeResponseCodeIs(200);
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -299,7 +307,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {
@@ -339,7 +347,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
                                 }""")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMock("""
                         {
                           "httpRequest": {

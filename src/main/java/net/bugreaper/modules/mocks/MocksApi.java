@@ -25,7 +25,6 @@ import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.awaitility.core.ConditionTimeoutException;
-import org.opentest4j.AssertionFailedError;
 import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
@@ -41,7 +40,6 @@ import static net.bugreaper.modules.mocks.enchanted.GetActual.getActualMethodsAn
 import static net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer.enchantedReport;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Class for API integration with <a href="https://www.mock-server.com/">mock-server</a>
@@ -61,12 +59,12 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     /**
      * enchanted report feature
      */
-    private boolean enchantedReport = true;
+    private volatile boolean enchantedReport = true;
 
     /**
      * default ms await in tests
      */
-    private int awaitMs = 2000;
+    private volatile int awaitMs = 2000;
 
     /**
      * specific ms await in specific assert (configure with {@link #withAwaitMs(int)})
@@ -108,18 +106,15 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * <p><b>Default file:</b> {@code bugreaper.yml}</p>
      * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
      *
-     * <p><b>Required configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.mocks.url}</li>
-     *     <li>{@code modules.mocks.port}</li>
-     * </ul>
-     *
-     * <p><b>Optional configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.mocks.await}</li>
-     *     <li>{@code modules.mocks.logging}</li>
-     *     <li>{@code modules.mocks.enchanted-report}</li>
-     * </ul>
+     * <pre>
+     * modules:
+     *   mocks:
+     *     url: http://localhost
+     *     port: 1082
+     *     await: 440 # optional
+     *     logging: true # optional
+     *     enchanted-report: false # optional
+     * </pre>
      *
      * <p>Missing required keys will result in configuration errors.
      * Missing optional keys will fall back to predefined defaults.</p>
@@ -268,7 +263,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .then()
                             .extract()
                             .statusCode());
-        } catch (AssertionFailedError e) {
+        } catch (AssertionError e) {
             logger.error("Mock creation failed:", e);
             throw new IllegalArgumentException("Wrong mock creation setup");
         }
@@ -349,7 +344,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .then()
                             .extract()
                             .statusCode());
-        } catch (AssertionFailedError e) {
+        } catch (AssertionError e) {
             if (e.toString().contains("<202> but was: <400>")) {
                 logger.error("Wrong mock verify setup:\n{}", verifySetup);
                 throw new MockEnchantedException("Wrong mock verify setup");
@@ -362,7 +357,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
             // if enchanted off
             logger.warn("\nTurn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true");
-            fail("Count of expected mock request(s) not match");
+            throw new AssertionError("Count of expected mock request(s) not match");
         }
     }
 
@@ -493,14 +488,14 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     //Grab
 
     @Override
-    @Step("[MOCK]: Get value from request body {extractPath}")
-    public String getRequestBodyValue(String mockSetup, String extractPath) {
+    @Step("[MOCK]: Get value from request {extractPath}")
+    public Object getRequestValue(String mockSetup, String extractPath) {
         return buildRequest()
                 .body(mockSetup)
                 .put("retrieve?type=REQUESTS")
                 .then()
                 .extract()
-                .path(extractPath).toString();
+                .path(extractPath);
     }
 
 
