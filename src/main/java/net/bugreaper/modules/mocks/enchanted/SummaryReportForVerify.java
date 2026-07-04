@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import static net.bugreaper.modules.mocks.allurereporter.AllureBuilder.reportSummaryTableBuilder;
 import static net.bugreaper.modules.mocks.enchanted.GetExpected.assertRequestsCountText;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 @SuppressWarnings("squid:S5960")
@@ -68,7 +67,7 @@ public class SummaryReportForVerify extends EnchantedSetup {
                     actualRequestsCount);
         }
 
-        fail(MessageFormat.format("""
+        throw new AssertionError(MessageFormat.format("""
                 Count of expected mock request(s) not match.
                 Expected {0} with AR <{1}>
                 Check report for more info""", expectedText, passNum));

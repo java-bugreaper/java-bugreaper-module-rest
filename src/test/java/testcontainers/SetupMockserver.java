@@ -13,7 +13,7 @@ import java.util.Objects;
 public class SetupMockserver {
 
     static MockServerContainer mockServerContainer = new MockServerContainer(
-            DockerImageName.parse("mockserver/mockserver:5.13.2")
+            DockerImageName.parse("mockserver/mockserver:7.2.0")
     );
 
     public SetupMockserver() {

@@ -10,7 +10,7 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
+import org.junit.jupiter.api.parallel.Isolated;
 import testcontainers.SetupMockserver;
 
 import java.nio.file.Path;
@@ -19,7 +19,9 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @SuppressWarnings("squid:S2699")
+@Isolated
 class ApiMocksTest extends PreSetup {
 
 
@@ -40,7 +42,7 @@ class ApiMocksTest extends PreSetup {
 
         MocksApi mocksApiNoEnch = new SetupMockserver().getMocksApi().setEnchantedReport(false);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApiNoEnch.assertAllMocksCount(1));
 
         MatcherAssert.assertThat(
@@ -58,7 +60,7 @@ class ApiMocksTest extends PreSetup {
     @Test
     void testVerifySequenceFailed() {
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApi.verifyMockSequence("""
                         {
                            "httpRequests":[
@@ -119,7 +121,7 @@ class ApiMocksTest extends PreSetup {
         api.sendGet("/api/get")
                 .seeResponseCodeIs(200);
 
-        Throwable exception = assertThrows(AssertionFailedError.class, () ->
+        Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApiAwait.verifyMockSequenceWithAwait("""
                         {
                            "httpRequests":[
@@ -439,7 +441,7 @@ class ApiMocksTest extends PreSetup {
                                 {"testNum": "111"}""")
                 .seeResponseCodeIs(505);
 
-        var num = mocksApi.getRequestBodyValue("""
+        var num = mocksApi.getRequestValue("""
                         {
                             "method": "POST",
                             "path": "/api/post"
@@ -459,7 +461,7 @@ class ApiMocksTest extends PreSetup {
                                 {"testNum": 555}""")
                 .seeResponseCodeIs(200);
 
-        var num = mocksApi.getRequestBodyValue("""
+        var num = mocksApi.getRequestValue("""
                         {
                             "method": "POST",
                             "path": "/api/post"
@@ -467,7 +469,7 @@ class ApiMocksTest extends PreSetup {
                         """,
                 "[0].body.json.testNum");
 
-        assertEquals("555", num, "value(int) grabbed successfully");
+        assertEquals(555, num, "value(int) grabbed successfully");
     }
 
     @Test
@@ -479,7 +481,7 @@ class ApiMocksTest extends PreSetup {
                                 {"testNum": true}""")
                 .seeResponseCodeIs(200);
 
-        var num = mocksApi.getRequestBodyValue("""
+        var num = mocksApi.getRequestValue("""
                         {
                             "method": "POST",
                             "path": "/api/post"
@@ -487,7 +489,7 @@ class ApiMocksTest extends PreSetup {
                         """,
                 "[0].body.json.testNum");
 
-        assertEquals("true", num, "value(bool) grabbed successfully");
+        assertEquals(true, num, "value(bool) grabbed successfully");
     }
 
 
@@ -502,7 +504,7 @@ class ApiMocksTest extends PreSetup {
                                 {"text": "test text"}""")
                 .seeResponseCodeIs(200);
 
-        var value = mocksApi.getRequestBodyValue("""
+        var value = mocksApi.getRequestValue("""
                         {
                             "method": "POST",
                             "path": "/api/post"
@@ -513,6 +515,49 @@ class ApiMocksTest extends PreSetup {
         assertEquals(text, value, "value grabbed successfully");
     }
 
+    @Test
+    void testCreatePostMockDoRequestGrabHeader() {
+        var text = "my HeaderValue";
+
+        mocksApi.createMock(universalMock);
+
+        apiJsonPlus.withHeaders(Map.of("header_key", text)).sendPost("/api/post",
+                        """
+                                {"text": "test text"}""")
+                .seeResponseCodeIs(200);
+
+        var value = mocksApi.getRequestValue("""
+                        {
+                            "method": "POST",
+                            "path": "/api/post"
+                          }
+                        """,
+                "[0].headers.header_key");
+
+        assertEquals("[" + text + "]", value.toString(), "header value grabbed successfully");
+    }
+
+    @Test
+    void testCreatePostMockDoRequestGraQueryParam() {
+        var text = "my query Value";
+
+        mocksApi.createMock(universalMock);
+
+        apiJsonPlus.withQueryParams(Map.of("query_key", text)).sendPost("/api/post",
+                        """
+                                {"text": "test text"}""")
+                .seeResponseCodeIs(200);
+
+        var value = mocksApi.getRequestValue("""
+                        {
+                            "method": "POST",
+                            "path": "/api/post"
+                          }
+                        """,
+                "[0].queryStringParameters.query_key");
+
+        assertEquals("[" + text + "]", value.toString(), "header value grabbed successfully");
+    }
 
     @Test
     void testCreatePostXmlDoRequestCheckXmlVerifyWithAwaiting() {

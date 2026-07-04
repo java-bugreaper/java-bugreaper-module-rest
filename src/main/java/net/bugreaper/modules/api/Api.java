@@ -80,20 +80,18 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * <p><b>Default file:</b> {@code bugreaper.yml}</p>
      * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
      *
-     * <p><b>Required configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.api.url}</li>
-     *     <li>{@code modules.api.port}</li>
-     * </ul>
-     *
-     * <p><b>Optional configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.api.username}</li>
-     *     <li>{@code modules.api.password}</li>
-     *     <li>{@code modules.api.token}</li>
-     *     <li>{@code modules.api.logging}</li>
-     *     <li>{@code modules.api.max-response-ms-assert}</li>
-     * </ul>
+     * <pre>
+     * modules:
+     *   api:
+     *     url: http://localhost
+     *     port: 1082
+     *     username: user_1 # optional
+     *     password: pass123 # optional
+     *     token: my-token # optional more priority than base auth!
+     *     logging: true # optional
+     *     max-response-ms-assert: 2000 # optional
+     *     max-timeout-ms: 1000 # optional
+     * </pre>
      *
      * <p>Missing required keys will result in configuration errors.
      * Missing optional keys will fall back to predefined defaults.</p>
@@ -112,20 +110,18 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * <p><b>Default file:</b> {@code bugreaper.yml}</p>
      * <p><b>Custom file:</b> using {@code -DbugreaperEnv=test} loads {@code bugreaper-test.yml}</p>
      *
-     * <p><b>Required configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.api${suffix}.url}</li>
-     *     <li>{@code modules.api${suffix}.port}</li>
-     * </ul>
-     *
-     * <p><b>Optional configuration keys:</b></p>
-     * <ul>
-     *     <li>{@code modules.api${suffix}.username}</li>
-     *     <li>{@code modules.api${suffix}.password}</li>
-     *     <li>{@code modules.api${suffix}.token}</li>
-     *     <li>{@code modules.api${suffix}.logging}</li>
-     *     <li>{@code modules.api${suffix}.max-response-ms-assert}</li>
-     * </ul>
+     * <pre>
+     * modules:
+     *   api{suffix}: # example new Api("-2") key will be "api-2"
+     *     url: http://localhost
+     *     port: 8080
+     *     username: user_2 # optional
+     *     password: pass123 # optional
+     *     token: my-token # optional more priority than base auth!
+     *     logging: true # optional
+     *     max-response-ms-assert: 2000 # optional
+     *     max-timeout-ms: 1000 # optional
+     * </pre>
      *
      * <p>Missing required keys will result in configuration errors.
      * Missing optional keys will fall back to predefined defaults.</p>
@@ -221,8 +217,10 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
     @Override
     public Api setHeaders(Map<String, Object> headers) {
-        this.headers.clear();
-        this.headers.putAll(headers);
+        synchronized (this.headers) {
+            this.headers.clear();
+            this.headers.putAll(headers);
+        }
         return this;
     }
 
@@ -246,8 +244,10 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
     @Override
     public Api setQueryParams(Map<String, Object> queryParams) {
-        this.queryParams.clear();
-        this.queryParams.putAll(queryParams);
+        synchronized (this.queryParams) {
+            this.queryParams.clear();
+            this.queryParams.putAll(queryParams);
+        }
         return this;
     }
 

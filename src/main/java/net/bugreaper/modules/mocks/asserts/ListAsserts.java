@@ -2,7 +2,6 @@ package net.bugreaper.modules.mocks.asserts;
 
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import org.opentest4j.AssertionFailedError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,7 @@ public final class ListAsserts {
         StringBuilder trace = listJsonSchemaBuilder(expectedSchema, actualBodiesList);
 
         if (trace != null) {
-            throw new AssertionFailedError(
+            throw new AssertionError(
                     String.format("There is no elements in the list with valid JSON Schema:%n%s%n%s", trace, expectedSchema));
         }
 

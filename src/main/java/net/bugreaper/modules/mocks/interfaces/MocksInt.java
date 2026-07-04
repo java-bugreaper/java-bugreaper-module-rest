@@ -1,8 +1,6 @@
 package net.bugreaper.modules.mocks.interfaces;
 
 
-import org.opentest4j.AssertionFailedError;
-
 /**
  * Interface defines methods for facilitating helper interactions and assertions.
  * Validates that all required methods are implemented.
@@ -58,7 +56,7 @@ public interface MocksInt {
      * Verify requests to mock-server by verify setup
      *
      * @param verifySetup - String with mock verify Json
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMock(String verifySetup);
@@ -69,7 +67,7 @@ public interface MocksInt {
      * @param description - description part for step
      * @param path - path to file in resources
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMockCustom(String description, String path);
@@ -79,7 +77,7 @@ public interface MocksInt {
      *
      * @param verifySetup - String with mock verify Json
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMockSequence(String verifySetup);
@@ -90,7 +88,7 @@ public interface MocksInt {
      *
      * @param verifySetup - String with mock verify Json
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMockWithAwait(String verifySetup);
@@ -102,7 +100,7 @@ public interface MocksInt {
      * @param description - description part for step
      * @param path - path to file in resources
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMockCustomWithAwait(String description, String path);
@@ -113,7 +111,7 @@ public interface MocksInt {
      *
      * @param verifySetup - String with mock verify Json
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void verifyMockSequenceWithAwait(String verifySetup);
@@ -125,7 +123,7 @@ public interface MocksInt {
      * @param from int minimum expected requests
      * @param to int maximum expected requests
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void assertMocksCountWithAwait(int from, int to);
@@ -135,7 +133,7 @@ public interface MocksInt {
      *
      * @param receivedCount - expected EXACTLY count of requests
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void assertAllMocksCount(int receivedCount);
@@ -146,28 +144,28 @@ public interface MocksInt {
      * @param from int expected from
      * @param to int expected to
      *
-     * @throws AssertionFailedError an assert fail
+     * @throws AssertionError an assert fail
      * @throws IllegalArgumentException on wrong JSON type
      */
     void assertAllMocksCount(int from, int to);
 
     /**
-     * Return value from request body
-     * <p> Can be used to get some info (id, hash, base64...) for next check
+     * Return value from request (can be body, header, other)
+     * <p> Can be used to get some info (id, hash, base64...) for next check</p>
      *
      * <pre>{@code
-     * var value = mocksApi.getRequestBodyValue(
+     * var value = mocksApi.getRequestValue(
      *      """
      *      {
      *           "method": "POST",
      *           "path": "/api/user"
      *      }""",
-     *      "[0].body.name");
+     *      "[0].body.name"); //grab value from key "name" from body of first request by condition
      * }</pre>
      * @param mockSetup   - setup for request
-     * @param extractPath - json path in body (example: "[0].body.parameters.name")
-     * @return String (other types converted to String)
+     * @param extractPath - json path in request to mock (example: "[0].body.parameters.name")
+     * @return Object (any types)
      */
-    String getRequestBodyValue(String mockSetup, String extractPath);
+    Object getRequestValue(String mockSetup, String extractPath);
 
 }

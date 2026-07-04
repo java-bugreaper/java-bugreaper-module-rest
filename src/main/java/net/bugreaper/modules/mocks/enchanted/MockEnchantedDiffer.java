@@ -21,7 +21,6 @@ import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.json.JSONObject;
-import org.opentest4j.AssertionFailedError;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -43,7 +42,6 @@ import static net.bugreaper.modules.mocks.enchanted.SummaryReportForVerify.summa
 import static net.bugreaper.core.mappers.JsonMappers.getObjectFromJsonByKey;
 import static net.bugreaper.core.mappers.JsonMappers.jsonObjectFromString;
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
@@ -146,14 +144,14 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
         try {
             assertJsonNotEqual("[]", requestsString);
         } catch (AssertionError s2) {
-            fail("No requests to mock-server in test");
+            throw new AssertionError("No requests to mock-server in test");
         }
     }
 
     private static void assertRequestsCount(JSONObject verifyJSON, int allRequestsCount) {
         if (getObjectFromJsonByKey(verifyJSON, REQUEST_KEY).length() == 0) {
 
-            fail(MessageFormat.format("Failed assert all mocks count: expected {0} with AR <{1}>",
+            throw new AssertionError(MessageFormat.format("Failed assert all mocks count: expected {0} with AR <{1}>",
                     assertRequestsCountText(verifyJSON), allRequestsCount));
         }
     }
@@ -315,14 +313,14 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
         if (Boolean.TRUE.equals(isStrict)) {
             try {
                 equalsJsonInList(expectedObject, actualObjectsList);
-            } catch (AssertionFailedError e) {
-                fail("Assert is actual requests EQUAL expected " + assertKey + " FAILED");
+            } catch (AssertionError e) {
+                throw new AssertionError("Assert is actual requests EQUAL expected " + assertKey + " FAILED");
             }
         } else {
             try {
                 containsJsonInList(expectedObject, actualObjectsList);
-            } catch (AssertionFailedError e) {
-                fail("Assert is actual requests CONTAINS expected " + assertKey + " FAILED");
+            } catch (AssertionError e) {
+                throw new AssertionError("Assert is actual requests CONTAINS expected " + assertKey + " FAILED");
             }
         }
         return assertResult;
@@ -357,8 +355,8 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
 
         try {
             schemaCheckInList(expectedSchema, actualBodiesList);
-        } catch (AssertionFailedError e) {
-            fail("Schema check in actual requests FAILED" + e);
+        } catch (AssertionError e) {
+            throw new AssertionError("Schema check in actual requests FAILED" + e);
         }
         return assertResult;
     }

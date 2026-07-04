@@ -39,7 +39,7 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
 
 
     @Override
-    @Step("Status code is: {statusCode}")
+    @Step("↑(API)[ASSERT] Status code is: {statusCode}")
     public AssertableResponse seeResponseCodeIs(int statusCode) {
         seeResponseCodeIsMethod(statusCode);
         return this;
@@ -47,76 +47,76 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
 
 
     @Override
-    @Step("Status code is: SUCCESSFUL(2xx)")
+    @Step("↑(API)[ASSERT] Status code is: SUCCESSFUL(2xx)")
     public AssertableResponse seeResponseCodeIsSuccessful() {
         seeResponseCodeIsSuccessfulMethod();
         return this;
     }
 
     @Override
-    @Step("Response time less: {maxResponseMs}")
+    @Step("↑(API)[ASSERT] Response time less: {maxResponseMs}")
     public AssertableResponse seeResponseTimeLess(long maxResponseMs) {
         seeResponseTimeLessMethod(maxResponseMs);
         return this;
     }
 
     @Override
-    @Step("Response body field: <{path}> {matcher}")
+    @Step("↑(API)[ASSERT] Response body field: <{path}> {matcher}")
     public AssertableResponse seeResponseBodyFieldMatch(String path, Matcher<?> matcher) {
         seeResponseBodyFieldMatchMethod(path, matcher);
         return this;
     }
 
     @Override
-    @Step("Response header: <{header}> {matcher}")
+    @Step("↑(API)[ASSERT] Response header: <{header}> {matcher}")
     public AssertableResponse seeResponseHeaderMatch(String header, Matcher<?> matcher) {
         seeResponseHeaderMatchMethod(header, matcher);
         return this;
     }
 
     @Override
-    @Step("Response is JSON type")
+    @Step("↑(API)[ASSERT] Response is JSON type")
     public AssertableResponse seeResponseIsJsonType() {
         seeResponseIsJsonTypeMethod();
         return this;
     }
 
     @Override
-    @Step("Response body: CONTAINS JSON with non-strict order")
+    @Step("↑(API)[ASSERT] Response body: CONTAINS JSON with non-strict order")
     public AssertableResponse seeResponseContainsJson(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseContainsJsonMethod(expectedBody);
         return this;
     }
 
     @Override
-    @Step("Response body: CONTAINS JSON with non-strict order (ignoring extensive array elements)")
+    @Step("↑(API)[ASSERT] Response body: CONTAINS JSON with non-strict order (ignoring extensive array elements)")
     public AssertableResponse seeResponseContainsJsonSubset(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseContainsJsonSubsetMethod(expectedBody);
         return this;
     }
     @Override
-    @Step("Response body: CONTAINS JSON with non-strict order")
+    @Step("↑(API)[ASSERT] Response body: CONTAINS JSON with non-strict order")
     public AssertableResponse seeResponseContainsJson(Path path) {
         seeResponseContainsJsonMethod(path);
         return this;
     }
 
     @Override
-    @Step("Response body: EQUAL to JSON with strict order")
+    @Step("↑(API)[ASSERT] Response body: EQUAL to JSON with strict order")
     public AssertableResponse seeResponseExactlyMatchJson(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseExactlyMatchJsonMethod(expectedBody);
         return this;
     }
 
     @Override
-    @Step("Response body: EQUAL to JSON with strict order")
+    @Step("↑(API)[ASSERT] Response body: EQUAL to JSON with strict order")
     public AssertableResponse seeResponseExactlyMatchJson(Path path) {
         seeResponseExactlyMatchJsonMethod(path);
         return this;
     }
 
     @Override
-    @Step("Response body: CONTAINS JSON with strict order")
+    @Step("↑(API)[ASSERT] Response body: CONTAINS JSON with strict order")
     public AssertableResponse seeResponseContainsJsonStrictOrder(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseContainsJsonStrictOrderMethod(expectedBody);
         return this;
@@ -130,27 +130,27 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     }
 
     @Override
-    @Step("Response body: EQUAL to JSON with non-strict order")
+    @Step("↑(API)[ASSERT] Response body: EQUAL to JSON with non-strict order")
     public AssertableResponse seeResponseExactlyMatchJsonIgnoringOrder(@Param(mode = HIDDEN) String expectedBody) {
         seeResponseExactlyMatchJsonIgnoringOrderMethod(expectedBody);
         return this;
     }
 
     @Override
-    @Step("Response body: has correct JSON schema")
+    @Step("↑(API)[ASSERT] Response body: has correct JSON schema")
     public AssertableResponse seeResponseMatchesJsonSchema(Path path) {
         seeResponseMatchesJsonSchemaMethod(path);
         return this;
     }
 
     @Override
-    @Step("Response body: has correct XML schema")
+    @Step("↑(API)[ASSERT] Response body: has correct XML schema")
     public AssertableResponse seeResponseMatchesXmlSchema(Path path) {
         seeResponseMatchesXmlSchemaMethod(path);
         return this;
     }
 
-    @Step("Response body: has {expectedCount} elements")
+    @Step("↑(API)[ASSERT] Response body: has {expectedCount} elements")
     public AssertableResponse seeResponseBodyElementsCount(int expectedCount) {
         seeResponseBodyElementsCountMethod(expectedCount);
         return this;
@@ -159,25 +159,25 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     // Grab
 
     @Override
-    @Step("Grab header <{header}> value")
+    @Step("↑(API) Grab header <{header}> value")
     public String grabResponseHeader(String header) {
         return grabResponseHeaderMethod(header);
     }
 
     @Override
-    @Step("Grab response body")
+    @Step("↑(API) Grab response body")
     public String grabResponseBody() {
         return  grabResponseBodyMethod();
     }
 
     @Override
-    @Step("Grab response body field <{path}> value as String")
+    @Step("↑(API) Grab response body field <{path}> value as String")
     public String grabStringFromResponseByPath(String path) {
         return grabStringFromResponseByPathMethod(path);
     }
 
     @Override
-    @Step("Grab response body field <{path}>")
+    @Step("↑(API) Grab response body field <{path}>")
     public Object grabDataFromResponseByPath(String path) {
         return grabDataFromResponseByPathMethod(path);
     }

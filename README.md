@@ -10,7 +10,7 @@ for interaction with API and mocks
 ### Requirements:
 
     JAVA >= 17
-    Allure server >= 2.15
+    Allure server >= 2.15 (only if push reports)
 
 ### Logging:
 
@@ -21,7 +21,7 @@ for interaction with API and mocks
 
 ### Tested with:
 
-    mockserver/mockserver:5.13.2
+    mockserver/mockserver:7.2.0
 
 ## Real examples here:
 - ### [Report-api](https://bug-reaper.gitlab.io/java-bugreaper-sandbox/#behaviors)

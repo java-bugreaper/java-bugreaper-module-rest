@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -43,27 +44,30 @@ public abstract class ApiAbstract {
     protected String url;
     protected int port;
 
-    protected boolean useBasicAuth = false;
-    protected String authToken;
+    protected volatile boolean useBasicAuth = false;
+    protected volatile String authToken;
 
-    protected String username;
-    protected String password;
+    protected volatile String username;
+    protected volatile String password;
 
     /**
      * Default timeout for http connection
      */
-    protected int maxTimeoutMs = 5000;
+    protected volatile int maxTimeoutMs = 5000;
 
-    protected boolean enableLogging = false;
+    protected volatile boolean enableLogging = false;
     //assert not break!!
-    protected long maxResponseMsAssert = 0;
+    protected volatile long maxResponseMsAssert = 0;
 
-    protected Map<String, Object> headers = new LinkedHashMap<>();
-    protected Map<String, Object> queryParams = new LinkedHashMap<>();
+    protected final Map<String, Object> headers = new ConcurrentHashMap<>();
+
+    protected final Map<String, Object> queryParams = new ConcurrentHashMap<>();
+
+
     protected ThreadLocal<LinkedHashMap<String,Object>> requestQueryParams = ThreadLocal.withInitial(LinkedHashMap::new);
     protected ThreadLocal<LinkedHashMap<String,Object>> requestHeaders = ThreadLocal.withInitial(LinkedHashMap::new);
 
-    protected ContentType contentType = ContentType.JSON;
+    protected volatile ContentType contentType = ContentType.JSON;
 
 
     protected ApiAbstract() {
@@ -97,12 +101,16 @@ public abstract class ApiAbstract {
 
 
         // Use set or request query params
-        LinkedHashMap<String, Object> requestParams = requestQueryParams.get();
+        Map<String, Object> requestParams = requestQueryParams.get();
         if (!requestParams.isEmpty()) {
             request.queryParams(requestParams);
             requestQueryParams.remove();
-        } else if (!queryParams.isEmpty()) {
-                request.queryParams(queryParams);
+        } else {
+            synchronized (queryParams) {
+                if (!queryParams.isEmpty()) {
+                    request.queryParams(queryParams);
+                }
+            }
         }
 
         if (contentType != null) {
@@ -111,12 +119,16 @@ public abstract class ApiAbstract {
         }
 
         // Use set or request headers
-        LinkedHashMap<String, Object> specificHeaders = requestHeaders.get();
+        Map<String, Object> specificHeaders = requestHeaders.get();
         if (!specificHeaders.isEmpty()) {
             request.headers(specificHeaders);
             requestHeaders.remove();
-        } else if (!headers.isEmpty()) {
-            request.headers(headers);
+        } else {
+            synchronized (headers) {
+                if (!headers.isEmpty()) {
+                    request.headers(new LinkedHashMap<>(headers));
+                }
+            }
         }
 
         // Apply authentication

@@ -1,6 +1,7 @@
 package net.bugreaper.modules.rest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.Map;
 import static net.bugreaper.core.assertions.JsonAsserts.assertJson;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @SuppressWarnings("squid:S2699")
+@Isolated
 class ApiGrabTest extends PreSetup {
 
     //body

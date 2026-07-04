@@ -3,10 +3,13 @@ package net.bugreaper.modules.rest;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import testcontainers.SetupMockserver;
 
 import java.util.Map;
 
+
+@Isolated
 class ApiGlobalAndSpecificSettersTests extends PreSetup {
 
     final String path = "/api/test";

@@ -3,9 +3,11 @@ package net.bugreaper.modules.rest.api;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.rest.PreSetup;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import testcontainers.SetupMockserver;
 
 
+@Isolated
 class ApiAuthTests extends PreSetup {
 
     final String endpoint = "/api/test";
