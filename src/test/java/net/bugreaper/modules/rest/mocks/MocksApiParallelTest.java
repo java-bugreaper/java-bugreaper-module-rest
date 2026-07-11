@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import testcontainers.SetupMockserver;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +15,7 @@ import static java.lang.Thread.sleep;
 @Execution(ExecutionMode.CONCURRENT)
 class MocksApiParallelTest extends PreSetup {
 
-    private static final MocksApi mocksApi = new SetupMockserver().getMocksApi().setAwaitMs(200);
+    private static final MocksApi mocksApi = getMocksApi().setAwaitMs(200);
 
     @BeforeAll
     static void cleanMock() {

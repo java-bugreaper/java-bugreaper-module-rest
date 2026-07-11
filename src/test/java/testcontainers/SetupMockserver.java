@@ -5,37 +5,34 @@ import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
-import org.testcontainers.containers.MockServerContainer;
+import org.testcontainers.mockserver.MockServerContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Objects;
 
 public class SetupMockserver {
 
-    static MockServerContainer mockServerContainer = new MockServerContainer(
-            DockerImageName.parse("mockserver/mockserver:7.2.0")
-    );
+    private static final MockServerContainer MOCKSERVER_CONTAINER = new MockServerContainer(
+            DockerImageName.parse("mockserver/mockserver:7.2.0"))
+            .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                    new PortBinding(Ports.Binding.bindPort(1082), new ExposedPort(1080))
+            ));
 
-    public SetupMockserver() {
-        mockServerContainer
-                .withCreateContainerCmdModifier(cmd -> {
-                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
-                            new PortBinding(Ports.Binding.bindPort(1082), new ExposedPort(1080))
-                    );
-                })
-                .start();
+
+    static {
+        MOCKSERVER_CONTAINER.start();
     }
 
-    public Api getApi() {
+    public static Api getApi() {
         return new Api(
-                "http://" + mockServerContainer.getHost(),
-                mockServerContainer.getMappedPort(1080));
+                "http://" + MOCKSERVER_CONTAINER.getHost(),
+                MOCKSERVER_CONTAINER.getMappedPort(1080));
     }
 
-    public MocksApi getMocksApi() {
+    public static MocksApi getMocksApi() {
         return new MocksApi(
-                "http://" + mockServerContainer.getHost(),
-                mockServerContainer.getMappedPort(1080));
+                "http://" + MOCKSERVER_CONTAINER.getHost(),
+                MOCKSERVER_CONTAINER.getMappedPort(1080));
 
     }
 

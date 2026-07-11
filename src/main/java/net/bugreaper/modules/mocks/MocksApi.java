@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static net.bugreaper.core.allurereporter.AllureReporter.attachJson;
+import static net.bugreaper.core.allurereporter.AllureReporter.attachObject;
 import static net.bugreaper.core.assertions.JsonAsserts.assertLenientValidJson;
 import static net.bugreaper.core.filereaders.FileReader.readJsonFromFile;
 import static net.bugreaper.core.mappers.StringMappers.*;
@@ -44,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Class for API integration with <a href="https://www.mock-server.com/">mock-server</a>
  *
- * <p>For one instance run recommended: {@code MocksApi mockApi = MocksApi.getInstance()}</p>
+ * <p>For one instance run recommended: {@code MocksApi mockApi = MocksApi.getInstance();}</p>
  *
  * <p> Create @Step for every Created and Verified mock in your mock Class for allure report
  *
@@ -490,12 +491,16 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("[MOCK]: Get value from request {extractPath}")
     public Object getRequestValue(String mockSetup, String extractPath) {
-        return buildRequest()
+        Object obj = buildRequest()
                 .body(mockSetup)
                 .put("retrieve?type=REQUESTS")
                 .then()
                 .extract()
                 .path(extractPath);
+
+        attachObject(extractPath, obj);
+
+        return obj;
     }
 
 
