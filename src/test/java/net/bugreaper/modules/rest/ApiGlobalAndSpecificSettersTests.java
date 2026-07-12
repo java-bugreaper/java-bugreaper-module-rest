@@ -4,7 +4,6 @@ import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import testcontainers.SetupMockserver;
 
 import java.util.Map;
 
@@ -16,8 +15,8 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
 
     @Test
     void testQueryParamsOverwrite() {
-        Api apiSet = new SetupMockserver().getApi();
-        MocksApi mock = new SetupMockserver().getMocksApi().setEnchantedReport(true);
+        Api apiSet = getApi();
+        MocksApi mock = getMocksApi().setEnchantedReport(true);
 
         mock.createMock(universalMock);
 
@@ -236,8 +235,8 @@ class ApiGlobalAndSpecificSettersTests extends PreSetup {
 
     @Test
     void testHeadersOverwrite() {
-        Api apiSet = new SetupMockserver().getApi();
-        MocksApi mock = new SetupMockserver().getMocksApi().setEnchantedReport(true);
+        Api apiSet = getApi();
+        MocksApi mock = getMocksApi().setEnchantedReport(true);
 
         mock.createMock(universalMock);
 

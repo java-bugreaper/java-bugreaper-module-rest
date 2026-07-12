@@ -11,7 +11,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import testcontainers.SetupMockserver;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -40,7 +39,7 @@ class ApiMocksTest extends PreSetup {
     @Test
     void testVerifyBaseMockCountNoRequestsNoEnchant() {
 
-        MocksApi mocksApiNoEnch = new SetupMockserver().getMocksApi().setEnchantedReport(false);
+        MocksApi mocksApiNoEnch = getMocksApi().setEnchantedReport(false);
 
         Throwable exception = assertThrows(AssertionError.class, () ->
                 mocksApiNoEnch.assertAllMocksCount(1));
@@ -669,7 +668,7 @@ class ApiMocksTest extends PreSetup {
     void testAuthorization() {
         mocksApi.createMock(universalMock);
 
-        Api apiAuth = new SetupMockserver().getApi().setBasicAuth("user1", "password2");
+        Api apiAuth = getApi().setBasicAuth("user1", "password2");
 
         apiAuth.sendGet("/api/get")
                 .seeResponseCodeIs(200);

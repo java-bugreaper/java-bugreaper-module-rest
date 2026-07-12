@@ -7,7 +7,6 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import testcontainers.SetupMockserver;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Isolated
 class MocksApiCatchTest extends PreSetup {
 
-    protected MocksApi mocksApi = new SetupMockserver().getMocksApi();
+    protected MocksApi mocksApi = getMocksApi();
 
     @BeforeEach
     void cleanMock() {

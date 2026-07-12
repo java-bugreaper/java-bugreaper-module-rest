@@ -11,20 +11,20 @@ import java.util.Map;
 import static net.bugreaper.core.mappers.StringMappers.stringMapper;
 import static net.bugreaper.modules.mocks.MocksApi.baseAuthGenerate;
 
-public abstract class PreSetup {
 
-    protected MocksApi mocksApi = new SetupMockserver().getMocksApi();
-    protected Api api = new SetupMockserver().getApi();
-    protected Api apiSet = new SetupMockserver().getApi();
-    protected Api apiLogging = new SetupMockserver().getApi().setLogging(true);
-    protected Api apiNoLogs = new SetupMockserver().getApi().setLogging(false);
+public abstract class PreSetup extends SetupMockserver {
 
-    protected Api apiJsonPlus = new SetupMockserver().getApi().setHeader("Content-Type", "application/json; charset=utf-8");
-    protected Api apiXml = new SetupMockserver().getApi().setContentTypeXml();
-    protected Api apiText = new SetupMockserver().getApi().setContentType(ContentType.TEXT);
-    protected Api apiNoType = new SetupMockserver().getApi().setNoContentType();
+    protected MocksApi mocksApi = getMocksApi();
+    protected Api api = getApi();
+    protected Api apiLogging = getApi().setLogging(true);
+    protected Api apiNoLogs = getApi().setLogging(false);
 
-    protected MocksApi mocksApiAwait = new SetupMockserver().getMocksApi().setAwaitMs(400);
+    protected Api apiJsonPlus = getApi().setHeader("Content-Type", "application/json; charset=utf-8");
+    protected Api apiXml = getApi().setContentTypeXml();
+    protected Api apiText = getApi().setContentType(ContentType.TEXT);
+    protected Api apiNoType = getApi().setNoContentType();
+
+    protected MocksApi mocksApiAwait = getMocksApi().setAwaitMs(400);
 
     protected final String universalMock = """
             {

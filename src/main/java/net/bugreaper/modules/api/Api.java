@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Simple wrapper around RestAssured for sending HTTP requests.
  *
- * <p>For one instance run recommended: {@code Api api = api.getInstance()}</p>
+ * <p>For one instance run recommended: {@code Api api = api.getInstance();}</p>
  *
  * <p>This client provides a convenient fluent API for:</p>
  * <ul>

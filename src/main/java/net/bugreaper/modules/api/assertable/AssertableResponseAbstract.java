@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 
 import static io.restassured.matcher.RestAssuredMatchers.matchesXsdInClasspath;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -189,52 +188,6 @@ public class AssertableResponseAbstract{
         attachObject(path, obj);
 
         return obj;
-    }
-
-    private void attachObject(String attachName, Object value) {
-
-        String type = "";
-        String attach;
-
-        if (value == null) {
-            attach = "null";
-        }
-        else if (value instanceof String string) {
-            type = "type=String";
-            attach = string;
-        }
-        else if (value instanceof ArrayList<?> array) {
-            type = "type=Array";
-            attach = String.valueOf(array);
-        }
-        else if (value instanceof Boolean bool) {
-            type = "type=Boolean";
-            attach =  (Boolean.TRUE.equals(bool)) ? "true" : "false";
-        }
-        else if (value instanceof Integer) {
-            type = "type=Integer";
-            attach =  value.toString();
-
-        }
-        else if (value instanceof Long) {
-            type = "type=Long";
-            attach = value.toString();
-        }
-        else if (value instanceof Float) {
-            type = "type=Float";
-            attach = String.valueOf(value);
-        }
-        else {
-            type = "type=Other";
-            attach = String.valueOf(value);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("Grabbed data from <{0}> {1}:\n{2}", attachName, type, attach));
-        }
-
-        Allure.addAttachment(MessageFormat.format("{0} {1}:", attachName, type),
-                "application/json", attach);
     }
 
 }

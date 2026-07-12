@@ -7,7 +7,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import testcontainers.SetupMockserver;
 
 import java.net.SocketTimeoutException;
 import java.nio.file.Path;
@@ -25,7 +24,7 @@ class ApiCatchTests extends PreSetup {
         mocksApi.resetMocks();
         mocksApi.createMock(withTimeout);
 
-        Api apiTime = new SetupMockserver().getApi().setMaxResponseMsAssert(100);
+        Api apiTime = getApi().setMaxResponseMsAssert(100);
         Throwable exception = assertThrows(AssertionError.class, () ->
                 apiTime.sendGet("/api/test"));
 
@@ -41,7 +40,7 @@ class ApiCatchTests extends PreSetup {
         mocksApi.resetMocks();
         mocksApi.createMock(withTimeout);
 
-        Api apiTime = new SetupMockserver().getApi().setTimeoutMs(100);
+        Api apiTime = getApi().setTimeoutMs(100);
 
         Throwable exception = assertThrows(SocketTimeoutException.class, () ->
                 apiTime.sendGet("/api/test"));
@@ -65,7 +64,7 @@ class ApiCatchTests extends PreSetup {
                 "statusCode": 404
               }
             }""");
-        Api api = new SetupMockserver().getApi().setContentTypeJson();
+        Api api = getApi().setContentTypeJson();
 
         AssertableResponse result = api.sendGet("/api/test");
 
