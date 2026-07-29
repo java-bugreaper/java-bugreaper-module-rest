@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
-import org.json.JSONException;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,25 +14,14 @@ import java.util.Set;
 import static net.bugreaper.modules.mocks.enchanted.EnchantedSetup.BODY_ABSENT_KEY;
 import static net.bugreaper.modules.mocks.enchanted.EnchantedSetup.BODY_WRONG_KEY;
 
-public class JsonAsserts {
+public class JsonSchemaAsserts {
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonAsserts.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonSchemaAsserts.class);
 
-    private JsonAsserts() {
+    private JsonSchemaAsserts() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void assertJsonNotEqual(String expectedAct, String actualJson) {
-        assertJsonNotEqualMethod(expectedAct, actualJson, false);
-    }
-
-    private static void assertJsonNotEqualMethod(String expectedAct, String actualJson, Boolean strict) {
-        try {
-            JSONAssert.assertNotEquals(expectedAct, actualJson, strict);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 
     // use for enchanted report for mocks (used enums)
     // if no assert error will be null

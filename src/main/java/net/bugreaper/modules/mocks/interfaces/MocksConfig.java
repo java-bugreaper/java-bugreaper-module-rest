@@ -10,26 +10,26 @@ import net.bugreaper.modules.mocks.MocksApi;
 public interface MocksConfig {
 
     /**
-     * Configure global await for asserts with await
+     * Configures the global await timeout for assertions and operations that use await.
      *
-     * @param awaitMs await ms
-     * @return this instance for method chaining
-     * @throws IllegalArgumentException on invalid setup
+     * @param awaitMs await timeout in milliseconds
+     * @return this
+     * @throws IllegalArgumentException if the provided timeout is invalid or less than 200 milliseconds
      */
     MocksApi setAwaitMs(int awaitMs);
 
     /**
-     * Configure await for next assert with await (than await rollback to global)
-     * global {@link #setAwaitMs(int)} will be ignored
+     * Configure await for next assert with await (than await rollback to global).
+     * <p>global {@link #setAwaitMs(int)} will be ignored</p>
      *
      * @param awaitMs ms await
      * @return this instance for method chaining
-     * @throws IllegalArgumentException on invalid setup
+     * @throws IllegalArgumentException if the setup is invalid
      */
     MocksApi withAwaitMs(int awaitMs);
 
     /**
-     * Enables or disables logging manually (debug log level will print logs anyway!)
+     * Enables or disables logging manually (debug log level will print logs anyway!).
      *
      * @param enable true=request/response logging (Allure on always!)
      * @return this instance for method chaining
@@ -37,7 +37,7 @@ public interface MocksConfig {
     MocksApi setLogging(boolean enable);
 
     /**
-     * Enabling or disabling enchanted mockVerify report
+     * Enabling or disabling enchanted mockVerify report.
      *
      * <p>Same behavior as {@link net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer}.
      *

@@ -43,14 +43,18 @@ import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Class for API integration with <a href="https://www.mock-server.com/">mock-server</a>
+ * API helper that provides a common API for operating with  <a href="https://www.mock-server.com/">mock-server</a> using RestAssured.
  *
- * <p>For one instance run recommended: {@code MocksApi mockApi = MocksApi.getInstance();}</p>
- *
- * <p> Create @Step for every Created and Verified mock in your mock Class for allure report
+ * <p>It is recommended to use a single instance:
+ * {@code MocksApi mockApi = MocksApi.getInstance();}
+ * </p>
  *
  * <p> Enchanted Report for mocks verify default:ON: {@link MocksApi#enchantedReport}, can be disabled by: {@link MocksApi#setEnchantedReport(boolean)})
- * <p> Await for some assert default: {@link MocksApi#awaitMs}, can be changed by: {@link MocksApi#setAwaitMs(int)}
+ * <p>Default await timeout for assertions with await is configured by {@link #awaitMs}.
+ * It can be changed using {@link #setAwaitMs(int)} or configuration.</p>
+ *
+ * @author Oleksii Betin "ambu550"
+ * @since 1.0.0
  */
 @SuppressWarnings("squid:S5960")
 public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
@@ -88,8 +92,10 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * <p>
      * This implementation is thread-safe using method-level synchronization.
      *
-     * @return the singleton instance of {@link MocksApi}
+     * @return the shared instance of {@link MocksApi}
      * @see #MocksApi() config setup
+     *
+     * @throws IllegalArgumentException if the configuration contains invalid values
      */
     public static synchronized MocksApi getInstance() {
         if (instance == null) {
@@ -100,7 +106,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     /**
-     * Constructs mock-server client configuration.
+     * Constructs a mock-server Api client using YAML configuration.
      *
      * <p>Loads configuration values from a YAML file.</p>
      *
@@ -112,13 +118,15 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      *   mocks:
      *     url: http://localhost
      *     port: 1082
-     *     await: 440 # optional
-     *     logging: true # optional
-     *     enchanted-report: false # optional
+     *     await: 440 # (optional)
+     *     logging: true # (optional)
+     *     enchanted-report: false # (optional)
      * </pre>
      *
      * <p>Missing required keys will result in configuration errors.
      * Missing optional keys will fall back to predefined defaults.</p>
+     *
+     * @throws IllegalArgumentException if the configuration contains invalid values
      */
     public MocksApi() {
         loadFromYaml();
@@ -215,7 +223,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
 
     @Override
-    @Step("(MOCK)[RESET]: reset Mocks")
+    @Step("(MOCK)[RESET]: reset mock-server")
     public void resetMocks() {
         sendPut("reset");
     }
@@ -254,7 +262,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     //Create
 
     @Override
-    @Step("(MOCK)[CREATE] Create Mock")
+    @Step("(MOCK)[CREATE] Create mock-server expectation")
     public void createMock(@Param(mode = HIDDEN) String mockExpectation) {
 
         try {
@@ -265,15 +273,15 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .extract()
                             .statusCode());
         } catch (AssertionError e) {
-            logger.error("Mock creation failed:", e);
-            throw new IllegalArgumentException("Wrong mock creation setup");
+            logger.error("Expectation creation failed:", e);
+            throw new IllegalArgumentException("Failed to create mock-server expectation");
         }
     }
 
     @Override
     public void createMockCustom(String description, String path) {
         //step
-        Allure.step(String.format("(MOCK)[CREATE] custom mock: %s", description),
+        Allure.step(String.format("(MOCK)[CREATE] custom expectation: %s", description),
                 (Allure.ThrowableContextRunnableVoid<Allure.StepContext>) step ->
                         createMock(readJsonFromFile(path))
         );
@@ -282,7 +290,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     //Verify / asserts
 
     @Override
-    @Step("(MOCK)[VERIFY] Assert count of ALL requests to Mock-server {receivedCount}")
+    @Step("(MOCK)[VERIFY] Mock-server received exactly <{receivedCount}> requests")
     public void assertAllMocksCount(int receivedCount) {
         verifyMock(stringMapper("""
                         {
@@ -298,7 +306,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to}")
+    @Step("(MOCK)(VERIFY) Mock-server received requests from <{from}> to <{to}>")
     public void assertAllMocksCount(int from, int to) {
         verifyMock(stringMapper("""
                         {
@@ -317,7 +325,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     public void verifyMockCustom(String description, String path) {
         //step
-        Allure.step(String.format("(MOCK)(VERIFY) Verify custom mock: %s", description),
+        Allure.step(String.format("(MOCK)(VERIFY) Verify mock request: %s", description),
                 (Allure.ThrowableContextRunnableVoid<Allure.StepContext>) step ->
                         verifyMock(readJsonFromFile(path))
         );
@@ -333,7 +341,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         attachJson("Requests to mock-server list(%d): ".formatted(cnt), content);
     }
 
-    @Step("(MOCK)[VERIFY] Verify mock")
+    @Step("(MOCK)[VERIFY] Verify mock-server request")
     public void verifyMock(@Param(mode = HIDDEN) String verifySetup) {
 
         assertLenientValidJson(verifySetup);
@@ -347,32 +355,32 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .statusCode());
         } catch (AssertionError e) {
             if (e.toString().contains("<202> but was: <400>")) {
-                logger.error("Wrong mock verify setup:\n{}", verifySetup);
-                throw new MockEnchantedException("Wrong mock verify setup");
+                logger.error("Wrong request verify setup:\n{}", verifySetup);
+                throw new MockEnchantedException("Wrong request verify setup");
             }
 
             if (enchantedReport) {
-                logger.info("\nMock verify assertion FAILED, start mock verify enchanted report build");
+                logger.info("\nMock-server request verification FAILED, starting enhanced mock verification report generation.");
                 enchantedReport(getRequestBody("{}"), verifySetup);
             }
 
             // if enchanted off
             logger.warn("\nTurn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true");
-            throw new AssertionError("Count of expected mock request(s) not match");
+            throw new AssertionError("Mock-server request verification failed");
         }
     }
 
     @Override
-    @Step("(MOCK)[VERIFY] Verify sequence")
-    public void verifyMockSequence(String verifySetup) {
+    @Step("(MOCK)[VERIFY] Verify mock-server request sequence")
+    public void verifyMockSequence(String verifySequenceSetup) {
 
         assertEquals(
                 202,
-                sendPut("verifySequence", verifySetup)
+                sendPut("verifySequence", verifySequenceSetup)
                         .then()
                         .extract()
                         .statusCode(),
-                "Expected mock sequence not match");
+                "Mock-server request sequence does not match");
 
     }
 
@@ -382,34 +390,34 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     public void verifyMockCustomWithAwait(String description, String path) {
 
-        Allure.step(String.format("(MOCK)(VERIFY) Verify custom mock(with await): %s", description),
+        Allure.step(String.format("(MOCK)(VERIFY) Verify mock-server request using await: %s", description),
                 (Allure.ThrowableContextRunnableVoid<Allure.StepContext>) step ->
                         verifyMockWithAwait(readJsonFromFile(path))
         );
     }
 
     @Override
-    @Step("(MOCK)[VERIFY] Verify sequence with await")
-    public void verifyMockSequenceWithAwait(@Param(mode = HIDDEN) String verifySetup) {
-        verifyMockSequenceWithAwait(verifySetup, await());
+    @Step("(MOCK)[VERIFY] Verify mock-server request sequence using await")
+    public void verifyMockSequenceWithAwait(@Param(mode = HIDDEN) String verifySequenceSetup) {
+        verifyMockSequenceWithAwait(verifySequenceSetup, await());
     }
 
-    private void verifyMockSequenceWithAwait(String verifySetup, int providedAwaitMs) {
+    private void verifyMockSequenceWithAwait(String verifySequenceSetup, int providedAwaitMs) {
 
-        attachJson("Sequence within " + formatMilliseconds(providedAwaitMs), verifySetup);
+        attachJson("Sequence within " + formatMilliseconds(providedAwaitMs), verifySequenceSetup);
 
-        assertLenientValidJson(verifySetup);
+        assertLenientValidJson(verifySequenceSetup);
 
         try {
             awaitCustom(providedAwaitMs).untilAsserted(
-                    () -> verifyMockSequenceNoLogs(verifySetup));
+                    () -> verifyMockSequenceNoLogs(verifySequenceSetup));
         } catch (ConditionTimeoutException e) {
-            verifyMockSequence(verifySetup);
+            verifyMockSequence(verifySequenceSetup);
         }
     }
 
     @Override
-    @Step("(MOCK)[VERIFY] Verify mock with await")
+    @Step("(MOCK)[VERIFY] Verify mock-server request using await")
     public void verifyMockWithAwait(@Param(mode = HIDDEN) String verifySetup) {
         verifyMockWithAwaitMethod(verifySetup, await());
     }
@@ -428,7 +436,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     @Override
-    @Step("(MOCK)(VERIFY) Assert count of ALL requests to Mock-server from:{from} to{to} with await")
+    @Step("(MOCK)(VERIFY) Mock-server received requests from <{from}> to <{to}> using await")
     public void assertMocksCountWithAwait(int from, int to) {
         assertMocksCountWithAwaitMethod(from, to, await());
     }
@@ -512,11 +520,12 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     }
 
     /**
-     * Method to get request body
-     * <p> Used for report methods
+     * Retrieves the request body configured in the mock setup.
      *
-     * @param mockSetup -  setup for request
-     * @return Response
+     * <p>Used by reporting methods.</p>
+     *
+     * @param mockSetup mock setup for the request
+     * @return response containing the request body
      */
     private Response getRequestBody(String mockSetup) {
         return (Response) buildSimpleRequest() //no logs no attachments !!!!

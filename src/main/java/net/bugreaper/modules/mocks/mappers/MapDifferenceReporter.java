@@ -1,14 +1,11 @@
 package net.bugreaper.modules.mocks.mappers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
+
+import static net.bugreaper.core.mappers.JsonObjectMappers.convertJsonToMap;
 
 public final class MapDifferenceReporter {
 
@@ -18,8 +15,8 @@ public final class MapDifferenceReporter {
 
     public static String jsonDifLogic(String expectedJson, String actualJson, boolean isStrict) {
 
-        Map<String, Object> leftMap = jsonStringToMap(expectedJson);
-        Map<String, Object> rightMap = jsonStringToMap(actualJson);
+        Map<String, Object> leftMap = convertJsonToMap(expectedJson);
+        Map<String, Object> rightMap = convertJsonToMap(actualJson);
 
         Map<String, Object> leftFlatMap = MapDiffMapper.flatten(leftMap);
         Map<String, Object> rightFlatMap = MapDiffMapper.flatten(rightMap);
@@ -49,7 +46,7 @@ public final class MapDifferenceReporter {
             }
         }
 
-        //check what is not expected exist in actual result (only for STRICT verify
+        //check what is not expected exist in actual result (only for STRICT verify)
         if (isStrict) {
             diffResult.append("\nExtensive data in Actual Result (for strict match):\n");
             Map<String, Object> entriesOnlyOnRight = difference.entriesOnlyOnRight();
@@ -59,20 +56,6 @@ public final class MapDifferenceReporter {
         }
 
         return diffResult.toString();
-    }
-
-    private static HashMap<String, Object> jsonStringToMap(String json) {
-        TypeReference<HashMap<String, Object>> type =
-                new TypeReference<>() {
-                };
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            return mapper.readValue(json, type);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(MessageFormat.format("Not valid Json for mapping\n{0}", json), e);
-        }
     }
 
 }

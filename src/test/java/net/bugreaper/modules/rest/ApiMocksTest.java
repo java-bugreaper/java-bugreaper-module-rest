@@ -47,7 +47,7 @@ class ApiMocksTest extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for Count verify when no requests found",
                 exception.getMessage(),
-                StringContains.containsString("Count of expected mock request(s) not match"));
+                StringContains.containsString("Mock-server request verification failed"));
 
         assertEquals(
                 """
@@ -75,7 +75,7 @@ class ApiMocksTest extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for Sequence failed",
                 exception.getMessage(),
-                StringContains.containsString("Expected mock sequence not match"));
+                StringContains.containsString("Mock-server request sequence does not match"));
     }
 
 
@@ -137,7 +137,7 @@ class ApiMocksTest extends PreSetup {
                 "Exception for Sequence(order) failed with awaiting",
                 exception.getMessage(),
                 StringContains.containsString("""
-                        Expected mock sequence not match ==> expected: <202> but was: <406>"""));
+                        Mock-server request sequence does not match ==> expected: <202> but was: <406>"""));
 
     }
 
@@ -489,29 +489,6 @@ class ApiMocksTest extends PreSetup {
                 "[0].body.json.testNum");
 
         assertEquals(true, num, "value(bool) grabbed successfully");
-    }
-
-
-    @Test
-    void testCreatePostMockDoRequestGrabValue2() {
-        var text = "test text";
-
-        mocksApi.createMock(universalMock);
-
-        apiJsonPlus.sendPost("/api/post",
-                        """
-                                {"text": "test text"}""")
-                .seeResponseCodeIs(200);
-
-        var value = mocksApi.getRequestValue("""
-                        {
-                            "method": "POST",
-                            "path": "/api/post"
-                          }
-                        """,
-                "[0].body.text");
-
-        assertEquals(text, value, "value grabbed successfully");
     }
 
     @Test

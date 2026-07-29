@@ -39,7 +39,7 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
 
 
     @Override
-    @Step("↑(API)[ASSERT] Status code is: {statusCode}")
+    @Step("↑(API)[ASSERT] Status code is: <{statusCode}>")
     public AssertableResponse seeResponseCodeIs(int statusCode) {
         seeResponseCodeIsMethod(statusCode);
         return this;
@@ -54,21 +54,21 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     }
 
     @Override
-    @Step("↑(API)[ASSERT] Response time less: {maxResponseMs}")
+    @Step("↑(API)[ASSERT] Response time less: <{maxResponseMs}>")
     public AssertableResponse seeResponseTimeLess(long maxResponseMs) {
         seeResponseTimeLessMethod(maxResponseMs);
         return this;
     }
 
     @Override
-    @Step("↑(API)[ASSERT] Response body field: <{path}> {matcher}")
+    @Step("↑(API)[ASSERT] Response body field: '{path}' <{matcher}>")
     public AssertableResponse seeResponseBodyFieldMatch(String path, Matcher<?> matcher) {
         seeResponseBodyFieldMatchMethod(path, matcher);
         return this;
     }
 
     @Override
-    @Step("↑(API)[ASSERT] Response header: <{header}> {matcher}")
+    @Step("↑(API)[ASSERT] Response header: '{header}' <{matcher}>")
     public AssertableResponse seeResponseHeaderMatch(String header, Matcher<?> matcher) {
         seeResponseHeaderMatchMethod(header, matcher);
         return this;
@@ -94,10 +94,11 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
         seeResponseContainsJsonSubsetMethod(expectedBody);
         return this;
     }
+
     @Override
     @Step("↑(API)[ASSERT] Response body: CONTAINS JSON with non-strict order")
-    public AssertableResponse seeResponseContainsJson(Path path) {
-        seeResponseContainsJsonMethod(path);
+    public AssertableResponse seeResponseContainsJson(Path filePath) {
+        seeResponseContainsJsonMethod(filePath);
         return this;
     }
 
@@ -110,8 +111,8 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
 
     @Override
     @Step("↑(API)[ASSERT] Response body: EQUAL to JSON with strict order")
-    public AssertableResponse seeResponseExactlyMatchJson(Path path) {
-        seeResponseExactlyMatchJsonMethod(path);
+    public AssertableResponse seeResponseExactlyMatchJson(Path filePath) {
+        seeResponseExactlyMatchJsonMethod(filePath);
         return this;
     }
 
@@ -138,15 +139,15 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
 
     @Override
     @Step("↑(API)[ASSERT] Response body: has correct JSON schema")
-    public AssertableResponse seeResponseMatchesJsonSchema(Path path) {
-        seeResponseMatchesJsonSchemaMethod(path);
+    public AssertableResponse seeResponseMatchesJsonSchema(Path filePath) {
+        seeResponseMatchesJsonSchemaMethod(filePath);
         return this;
     }
 
     @Override
     @Step("↑(API)[ASSERT] Response body: has correct XML schema")
-    public AssertableResponse seeResponseMatchesXmlSchema(Path path) {
-        seeResponseMatchesXmlSchemaMethod(path);
+    public AssertableResponse seeResponseMatchesXmlSchema(Path filePath) {
+        seeResponseMatchesXmlSchemaMethod(filePath);
         return this;
     }
 
@@ -167,7 +168,7 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     @Override
     @Step("↑(API) Grab response body")
     public String grabResponseBody() {
-        return  grabResponseBodyMethod();
+        return grabResponseBodyMethod();
     }
 
     @Override

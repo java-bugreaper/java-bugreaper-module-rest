@@ -595,7 +595,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockNoBodyAndHeadersExpected");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
 
                 .hasSubStepLeft("No <body> in verify setup : this check will be skipped")
@@ -646,7 +646,7 @@ class ApiMocksEnchantedLogicTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockNoMethodAndPathExpected");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
 
                 .hasSubStepLeft("No <method and/or path> in verify setup : this check will be skipped")

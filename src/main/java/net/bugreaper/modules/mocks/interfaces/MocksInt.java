@@ -8,7 +8,7 @@ package net.bugreaper.modules.mocks.interfaces;
 public interface MocksInt {
 
     /**
-     * Reset mock server
+     * Reset mock-server.
      *
      * <p>Clean all: logs, requests, expectations
      */
@@ -20,8 +20,9 @@ public interface MocksInt {
     void cleanMockLogs();
 
     /**
-     * Add attachment with mock server logs (requests/responses)
-     * <p>On DEBUG level also print to console
+     * Adds an attachment with mock-server logs (requests/responses).
+     *
+     * <p>At DEBUG level, logs are also printed to the console.</p>
      */
     void showMockLogs();
 
@@ -31,127 +32,124 @@ public interface MocksInt {
     void showMockRequests();
 
     /**
-     * Add attachment with mock requests list
-     * (only method and path)
+     * Adds an attachment with a list of mock-server requests
+     * (only HTTP method and path).
      */
     void showBaseRequestsList();
 
     /**
-     * Create mock expectation
+     * Creates a mock-server expectation.
      *
-     * @param mockExpectation - String with mock expectation Json
+     * @param mockExpectation JSON string containing the mock-server expectation definition
      */
     void createMock(String mockExpectation);
 
     /**
-     * Create mock expectation
+     * Creates a mock-server expectation loaded from a file.
      *
-     * @param description - description part for step
-     * @param path - path to file in resources
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param description description part for step
+     * @param path        path to the resource file with mock-server expectation
+     * @throws IllegalArgumentException if reading the file fails or the provided data is not valid JSON
      */
     void createMockCustom(String description, String path);
 
     /**
-     * Verify requests to mock-server by verify setup
+     * Verifies mock-server requests according to the provided verification setup.
      *
-     * @param verifySetup - String with mock verify Json
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param verifySetup JSON string containing the mock-server verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void verifyMock(String verifySetup);
 
     /**
-     * Verify requests to mock-server by setup from file
+     * Verifies mock-server requests according to the verification setup loaded from a file.
      *
-     * @param description - description part for step
-     * @param path - path to file in resources
-     *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param description description part for step
+     * @param path        path to the resource file with mock-server verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if reading the file fails or the provided data is not valid JSON
      */
     void verifyMockCustom(String description, String path);
 
     /**
-     * Verify sequence of requests to mock-server by verify setup
+     * Verifies mock-server requests according to the verification setup loaded from a file.
      *
-     * @param verifySetup - String with mock verify Json
-     *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param verifySetup JSON string containing the mock-server sequence verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void verifyMockSequence(String verifySetup);
 
     /**
-     * Verify requests to mock-server by verify setup
-     * <p><b>with await</b>
+     * Verifies mock-server requests according to the provided verification setup.
      *
-     * @param verifySetup - String with mock verify Json
+     * <p><b>Uses await.</b></p>
      *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param verifySetup JSON string containing the mock-server verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void verifyMockWithAwait(String verifySetup);
 
     /**
-     * Verify requests to mock-server by setup from file
-     * <p><b>with await</b>
+     * Verifies mock-server requests according to the verification setup loaded from a file.
+     * <p><b>Uses await.</b></p>
      *
-     * @param description - description part for step
-     * @param path - path to file in resources
-     *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param description description part for step
+     * @param path        path to the resource file with mock-server verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if reading the file fails or the provided data is not valid JSON
      */
     void verifyMockCustomWithAwait(String description, String path);
 
     /**
-     * Verify sequence of requests to mock server by verify setup
-     * <p><b>with await</b>
+     * Verifies  mock-server requests according to the sequence verification setup
      *
-     * @param verifySetup - String with mock verify Json
+     * <p><b>Uses await.</b></p>
      *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param verifySequenceSetup JSON string containing the mock-server sequence verification setup
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
-    void verifyMockSequenceWithAwait(String verifySetup);
+    void verifyMockSequenceWithAwait(String verifySequenceSetup);
 
     /**
-     * Assert of all requests to mock-server count from to
-     * <p><b>with await</b>
+     * Asserts that the total number of requests to mock-server is within the specified range.
      *
-     * @param from int minimum expected requests
-     * @param to int maximum expected requests
+     * <p><b>Uses await.</b></p>
      *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param from minimum expected number of requests
+     * @param to   maximum expected number of requests
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void assertMocksCountWithAwait(int from, int to);
 
     /**
-     * Assert of all requests to mock-server count
+     * Asserts that the total number of requests to mock-server matches the expected count.
      *
-     * @param receivedCount - expected EXACTLY count of requests
-     *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param receivedCount expected exact number of requests
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void assertAllMocksCount(int receivedCount);
 
     /**
-     * Assert of all requests to mock-server count from to
+     * Asserts that the total number of requests to mock-server is within the specified range.
      *
-     * @param from int expected from
-     * @param to int expected to
-     *
-     * @throws AssertionError an assert fail
-     * @throws IllegalArgumentException on wrong JSON type
+     * @param from minimum expected number of requests
+     * @param to   maximum expected number of requests
+     * @throws AssertionError           if the assertion fails
+     * @throws IllegalArgumentException if the provided data is not valid JSON
      */
     void assertAllMocksCount(int from, int to);
 
     /**
-     * Return value from request (can be body, header, other)
-     * <p> Can be used to get some info (id, hash, base64...) for next check</p>
+     * Returns a value extracted from a mock-server request (body, header, or other source).
+     *
+     * <p>Can be used to retrieve dynamic data (for example, ID, hash, or Base64 value)
+     * required for subsequent assertions.</p>
      *
      * <pre>{@code
      * var value = mocksApi.getRequestValue(
@@ -160,10 +158,11 @@ public interface MocksInt {
      *           "method": "POST",
      *           "path": "/api/user"
      *      }""",
-     *      "[0].body.name"); //grab value from key "name" from body of first request by condition
+     *      "[0].body.json.name"); //grab value from key "name" from body of first request by condition
      * }</pre>
+     *
      * @param mockSetup   - setup for request
-     * @param extractPath - json path in request to mock (example: "[0].body.parameters.name")
+     * @param extractPath - json path in request to mock (example: {@code "[0].body.json.id"})
      * @return Object (any types)
      */
     Object getRequestValue(String mockSetup, String extractPath);

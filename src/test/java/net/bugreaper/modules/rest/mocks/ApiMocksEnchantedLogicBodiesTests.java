@@ -283,7 +283,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockAssertBodyNotStrictNoMatchType");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
 
                 .hasSubStep("Check assert for body")
@@ -381,7 +381,7 @@ class ApiMocksEnchantedLogicBodiesTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("testVerifyMockAssertBodyStrict");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
 
                 .hasSubStep("Check assert for body")

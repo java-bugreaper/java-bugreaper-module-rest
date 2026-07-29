@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import static net.bugreaper.core.allurereporter.AllureReporter.*;
+import static net.bugreaper.core.assertions.JsonAsserts.assertJsonNotContains;
 import static net.bugreaper.core.assertions.ListAsserts.containsJsonInList;
 import static net.bugreaper.core.assertions.ListAsserts.equalsJsonInList;
-import static net.bugreaper.modules.mocks.asserts.JsonAsserts.assertJsonNotEqual;
 import static net.bugreaper.modules.mocks.asserts.ListAsserts.schemaCheckInList;
 import static net.bugreaper.modules.mocks.asserts.ListAssertsEvery.everyJsonAsserBuilder;
 import static net.bugreaper.modules.mocks.asserts.ListAssertsEvery.everyJsonSchemaAsserBuilder;
@@ -142,14 +142,14 @@ public final class MockEnchantedDiffer extends EnchantedSetup {
 
     public static void noRequestsCheck(String requestsString) {
         try {
-            assertJsonNotEqual("[]", requestsString);
+            assertJsonNotContains("[]", requestsString);
         } catch (AssertionError s2) {
             throw new AssertionError("No requests to mock-server in test");
         }
     }
 
     private static void assertRequestsCount(JSONObject verifyJSON, int allRequestsCount) {
-        if (getObjectFromJsonByKey(verifyJSON, REQUEST_KEY).length() == 0) {
+        if (getObjectFromJsonByKey(verifyJSON, REQUEST_KEY).isEmpty()) {
 
             throw new AssertionError(MessageFormat.format("Failed assert all mocks count: expected {0} with AR <{1}>",
                     assertRequestsCountText(verifyJSON), allRequestsCount));

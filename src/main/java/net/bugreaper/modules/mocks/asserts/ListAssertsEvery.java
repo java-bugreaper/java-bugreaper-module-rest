@@ -7,7 +7,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.util.List;
 
 import static net.bugreaper.core.assertions.JsonAsserts.assertJsonMethod;
-import static net.bugreaper.modules.mocks.asserts.JsonAsserts.assertSchemaMethod;
+import static net.bugreaper.modules.mocks.asserts.JsonSchemaAsserts.assertSchemaMethod;
 
 public final class ListAssertsEvery {
 

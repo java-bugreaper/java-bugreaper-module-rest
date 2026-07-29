@@ -189,7 +189,7 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("ActualBodyListInfoLogTest");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
 
                 .hasSubStep("Check assert for method and/or path")
@@ -211,7 +211,7 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
 
 
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasSubStep("Check assert for jsonSchema")
                 .hasAttachment("Expected schema","""
@@ -243,7 +243,7 @@ class CheckEnchantedDebugLogsTests extends PreSetup {
                         ========================
                         Schema assert failed (Actual body not JSON)""")
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasAttachment("Summary Table", readTextFromFile("allure/ActualBodyListInfoLogTest.html"));
     }
