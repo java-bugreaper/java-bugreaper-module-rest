@@ -49,7 +49,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for wrong verify setup",
                 exception.getMessage(),
-                StringContains.containsString("Invalid lenient JSON/JSONArray"));
+                StringContains.containsString("Invalid JSON or JSON array format (lenient)"));
     }
 
     @Test
@@ -120,7 +120,7 @@ class ApiMocksEnchantedValidationTests extends PreSetup {
         assertEquals(
                 """
                         [[INFO]\s
-                        Mock verify assertion FAILED, start mock verify enchanted report build]""",
+                        Mock-server request verification FAILED, starting enhanced mock verification report generation.]""",
                 logWatcher.getLoggedEvents(Level.INFO).toString());
     }
 

@@ -126,7 +126,7 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
         JsonNode result = AllureResultLoader.loadByTestName("SummaryTableInfoLogTest");
 
         AllureAssert.assertThat(result)
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasSubStep("Check assert for method and/or path")
 
@@ -153,7 +153,7 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
 
 
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasSubStep("Check assert for jsonSchema")
                 .hasAttachment("jsonSchema validate №1 failed:","""
@@ -164,8 +164,8 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
                           "text": "some text"
                         }
                         ========================
-                        $.id: is not defined in the schema and the schema does not allow additional properties
-                        $.text: is not defined in the schema and the schema does not allow additional properties
+                        $: property 'id' is not defined in the schema and the schema does not allow additional properties
+                        $: property 'text' is not defined in the schema and the schema does not allow additional properties
                         """)
                 .hasAttachment("jsonSchema validate №2 failed:","""
                         
@@ -182,15 +182,15 @@ class CheckEnchantedInfoLogsTests extends PreSetup {
                         ========================
                         Schema check passed""")
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasSubStep("No <headers> in verify setup : this check will be skipped")
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasSubStep("No <query params> in verify setup : this check will be skipped")
 
-                .hasStep("(MOCK)[VERIFY] Verify mock")
+                .hasStep("(MOCK)[VERIFY] Verify mock-server request")
                 .hasSubStep("[MOCK-REPORT]: Enchanted mock verify report")
                 .hasAttachment("Summary Table", readTextFromFile("allure/SummaryTableInfoLogTest.html"));
     }

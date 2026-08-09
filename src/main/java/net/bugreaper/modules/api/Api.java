@@ -26,19 +26,23 @@ import io.restassured.http.ContentType;
 import java.util.Map;
 
 /**
- * Simple wrapper around RestAssured for sending HTTP requests.
+ * API helper that provides a common API for operating with HTTP requests using RestAssured.
  *
- * <p>For one instance run recommended: {@code Api api = api.getInstance();}</p>
+ * <p>It is recommended to use a single instance:
+ * {@code Api api = Api.getInstance();}
+ * </p>
  *
  * <p>This client provides a convenient fluent API for:</p>
  * <ul>
  *     <li>Sending GET, POST, PUT and DELETE requests</li>
- *     <li>Configuring request headers/query params</li>
+ *     <li>Configuring global and per-request headers and query parameters</li>
  *     <li>Using Basic or Bearer authentication</li>
  *     <li>Enabling request/response logging</li>
  *     <li>Support BugReaper YML config</li>
  * </ul>
  *
+ * @author Oleksii Betin "ambu550"
+ * @since 1.0.0
  */
 public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
@@ -47,9 +51,9 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     private static final String YML_KEY = "modules.api";
 
     /**
-     * This constructor initializes client for interaction with API
+     * Creates an API client with the specified service connection settings.
      *
-     * @param url  service url ({@code "http://my-service"})
+     * @param url  service url (for example: {@code "http://my-service"})
      * @param port service port
      */
     public Api(String url, int port) {
@@ -61,7 +65,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * <p>
      * This implementation is thread-safe using method-level synchronization.
      *
-     * @return the singleton instance of {@link Api}
+     * @return the shared instance of {@link Api}
      * @see #Api() config setup
      */
     public static synchronized Api getInstance() {
@@ -73,7 +77,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     }
 
     /**
-     * Constructs api client configuration.
+     * Constructs an Api client using YAML configuration.
      *
      * <p>Loads configuration values from a YAML file.</p>
      *
@@ -85,23 +89,25 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      *   api:
      *     url: http://localhost
      *     port: 1082
-     *     username: user_1 # optional
-     *     password: pass123 # optional
-     *     token: my-token # optional more priority than base auth!
-     *     logging: true # optional
-     *     max-response-ms-assert: 2000 # optional
-     *     max-timeout-ms: 1000 # optional
+     *     username: user_1 # (optional)
+     *     password: pass123 # (optional)
+     *     token: my-token # (optional) more priority than base auth!
+     *     logging: true # (optional)
+     *     max-response-ms-assert: 2000 # (optional)
+     *     max-timeout-ms: 1000 # (optional)
      * </pre>
      *
      * <p>Missing required keys will result in configuration errors.
      * Missing optional keys will fall back to predefined defaults.</p>
+     *
+     * @throws IllegalArgumentException if the configuration contains invalid values
      */
     public Api() {
         loadFromYaml("");
     }
 
     /**
-     * Constructs api client configuration.
+     * Constructs an Api client using YAML configuration.
      *
      * @param suffix concatenation of Api client (example Api("-2") keys will be "modules.api<b>-2</b>")
      *
@@ -115,12 +121,12 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      *   api{suffix}: # example new Api("-2") key will be "api-2"
      *     url: http://localhost
      *     port: 8080
-     *     username: user_2 # optional
-     *     password: pass123 # optional
-     *     token: my-token # optional more priority than base auth!
-     *     logging: true # optional
-     *     max-response-ms-assert: 2000 # optional
-     *     max-timeout-ms: 1000 # optional
+     *     username: user_2 # (optional)
+     *     password: pass123 # (optional)
+     *     token: my-token # (optional) more priority than base auth!
+     *     logging: true # (optional)
+     *     max-response-ms-assert: 2000 # (optional)
+     *     max-timeout-ms: 1000 # (optional)
      * </pre>
      *
      * <p>Missing required keys will result in configuration errors.

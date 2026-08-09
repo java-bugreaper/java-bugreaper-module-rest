@@ -60,7 +60,7 @@ class MocksApiCatchTest extends PreSetup {
 
         MatcherAssert.assertThat(
                 exception.getMessage(),
-                StringContains.containsString("Expected mock sequence not match"));
+                StringContains.containsString("Mock-server request sequence does not match"));
     }
 
     @Test
@@ -84,7 +84,7 @@ class MocksApiCatchTest extends PreSetup {
         MatcherAssert.assertThat(
                 "Broken JSON for mock creation",
                 exception.getMessage(),
-                StringContains.containsString("Wrong mock creation setup"));
+                StringContains.containsString("Failed to create mock-server expectation"));
     }
 
     @Test
@@ -104,7 +104,7 @@ class MocksApiCatchTest extends PreSetup {
         MatcherAssert.assertThat(
                 "Broken JSON for mock verify",
                 exception.getMessage(),
-                StringContains.containsString("Invalid lenient JSON/JSONArray"));
+                StringContains.containsString("Invalid JSON or JSON array format (lenient)"));
     }
 
 }

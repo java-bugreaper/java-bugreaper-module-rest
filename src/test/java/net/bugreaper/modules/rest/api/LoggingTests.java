@@ -123,7 +123,7 @@ class LoggingTests extends PreSetup {
                 .hasAttachment("Request")
                 .hasAttachment("HTTP/1.1 200 OK")
 
-                .hasStep("↑(API)[ASSERT] Status code is: 200");
+                .hasStep("↑(API)[ASSERT] Status code is: <200>");
     }
 
 

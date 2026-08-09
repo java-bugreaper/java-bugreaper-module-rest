@@ -12,7 +12,7 @@ public interface ApiInt {
      * Send GET request
      * 
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendGet(String path);
 
@@ -20,7 +20,7 @@ public interface ApiInt {
      * Send HEAD request
      *
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendHead(String path);
 
@@ -28,7 +28,7 @@ public interface ApiInt {
      * Send OPTIONS request
      *
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendOptions(String path);
 
@@ -37,7 +37,7 @@ public interface ApiInt {
      *
      * @param path String with path (/api/user1)
      * @param body String with body
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendPost(String path, Object body);
 
@@ -45,7 +45,7 @@ public interface ApiInt {
      * Send POST request without body
      *
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendPost(String path);
 
@@ -54,7 +54,7 @@ public interface ApiInt {
      *
      * @param path String with path (/api/user1)
      * @param body String with body
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendPut(String path, Object body);
 
@@ -62,7 +62,7 @@ public interface ApiInt {
      * Send PUT request without body
      *
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendPut(String path);
 
@@ -71,7 +71,7 @@ public interface ApiInt {
      *
      * @param path String with path (/api/user1)
      * @param body String with body
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendPatch(String path, Object body);
 
@@ -80,7 +80,7 @@ public interface ApiInt {
      *
      * @param path String with path (/api/user1)
      * @param body String with body
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendDelete(String path, Object body);
 
@@ -88,7 +88,7 @@ public interface ApiInt {
      * Send DELETE request without body
      *
      * @param path String with path (/api/user1)
-     * @return {@link AssertableResponse}
+     * @return {@link AssertableResponse} containing the response
      */
     AssertableResponse sendDelete(String path);
 }

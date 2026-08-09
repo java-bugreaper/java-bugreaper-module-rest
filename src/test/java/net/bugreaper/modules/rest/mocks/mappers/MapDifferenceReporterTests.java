@@ -1,5 +1,6 @@
 package net.bugreaper.modules.rest.mocks.mappers;
 
+import net.bugreaper.core.exceptions.JsonMappersException;
 import net.bugreaper.modules.mocks.mappers.MapDifferenceReporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
@@ -250,12 +251,12 @@ class MapDifferenceReporterTests {
                   "id": 1
                 """;
 
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
+        Throwable exception = assertThrows(JsonMappersException.class, () ->
                 jsonDifLogic(er, er, false));
 
 
         MatcherAssert.assertThat(
-                "Exception for wronj Json",
+                "Exception for wrong Json",
                 exception.getMessage(),
                 StringContains.containsString("Not valid Json for mapping"));
 

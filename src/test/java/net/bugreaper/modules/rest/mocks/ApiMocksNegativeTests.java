@@ -35,7 +35,7 @@ class ApiMocksNegativeTests extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for wrong verify setup",
                 exception.getMessage(),
-                StringContains.containsString("Invalid lenient JSON/JSONArray"));
+                StringContains.containsString("Invalid JSON or JSON array format (lenient)"));
     }
 
     @Test
@@ -48,7 +48,7 @@ class ApiMocksNegativeTests extends PreSetup {
         MatcherAssert.assertThat(
                 "Exception for wrong verify setup",
                 exception.getMessage(),
-                StringContains.containsString("Wrong mock verify setup"));
+                StringContains.containsString("Wrong request verify setup"));
     }
 
 }

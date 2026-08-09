@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static net.bugreaper.modules.mocks.asserts.JsonAsserts.assertSchemaMethod;
+import static net.bugreaper.modules.mocks.asserts.JsonSchemaAsserts.assertSchemaMethod;
 
 public final class ListAsserts {
 
