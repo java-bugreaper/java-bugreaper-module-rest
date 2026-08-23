@@ -12,6 +12,7 @@ modules:
     url: http://localhost
     port: 1082
     await: 440 # optional
+    await-poll-interval: 200 # optional
     logging: true # optional
     enchanted-report: false # optional
 

@@ -144,6 +144,7 @@ class ConfigTests extends PreSetup {
                             url=%s
                             port=1082
                             await=440
+                            awaitPollInterval=200
                             enableLogging=true
                             enchantedReport=false
                         """, expectedHost),
@@ -176,6 +177,7 @@ class ConfigTests extends PreSetup {
                             url=%s
                             port=1082
                             await=2000
+                            awaitPollInterval=100
                             enableLogging=false
                             enchantedReport=true
                         """, expectedHost),

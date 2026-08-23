@@ -62,17 +62,24 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     private static MocksApi instance;
 
     /**
-     * enchanted report feature
+     * Enchanted report feature
+     *
+     * @see net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer MockEnchantedDiffer
      */
     private volatile boolean enchantedReport = true;
 
     /**
-     * default ms await in tests
+     * Default await timeout for tests, in milliseconds.
      */
     private volatile int awaitMs = 2000;
 
     /**
-     * specific ms await in specific assert (configure with {@link #withAwaitMs(int)})
+     * Default await polling interval in milliseconds for tests.
+     */
+    protected volatile int awaitPollInterval = 100;
+
+    /**
+     * Specific ms await in specific assert (configure with {@link #withAwaitMs(int)})
      */
     private final ThreadLocal<Integer> specificAwaitMs = ThreadLocal.withInitial(() -> 0);
 
@@ -93,9 +100,8 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * This implementation is thread-safe using method-level synchronization.
      *
      * @return the shared instance of {@link MocksApi}
-     * @see #MocksApi() config setup
-     *
      * @throws IllegalArgumentException if the configuration contains invalid values
+     * @see #MocksApi() config setup
      */
     public static synchronized MocksApi getInstance() {
         if (instance == null) {
@@ -155,6 +161,10 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
             setAwaitMs(assertMs);
         }
 
+        Object awaitPollIntervalVal = YamlUtils.getValueByPath("modules.mocks.await-poll-interval", true);
+        if (awaitPollIntervalVal instanceof Number number) {
+            this.awaitPollInterval = number.intValue();
+        }
     }
 
     @Override
@@ -192,15 +202,16 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     public String getConfigSummary() {
         String info = String.format("""
-        %s:
-            url=%s
-            port=%d
-            await=%d
-            enableLogging=%b
-            enchantedReport=%b%n""",
+                        %s:
+                            url=%s
+                            port=%d
+                            await=%d
+                            awaitPollInterval=%d
+                            enableLogging=%b
+                            enchantedReport=%b%n""",
                 this.getClass().getSimpleName(),
-                url, port, awaitMs,
-               enableLogging, enchantedReport);
+                url, port, awaitMs, awaitPollInterval,
+                enableLogging, enchantedReport);
 
         logger.info(info);
         return info;
@@ -242,7 +253,8 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
     @Override
     @Step("(MOCK)[LOGS] Retrieve all requests to mock-server")
-    public void showMockRequests() {sendPut("retrieve?type=LOGS");
+    public void showMockRequests() {
+        sendPut("retrieve?type=LOGS");
     }
 
     @Override
@@ -409,7 +421,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
         assertLenientValidJson(verifySequenceSetup);
 
         try {
-            awaitCustom(providedAwaitMs).untilAsserted(
+            awaitCustom(providedAwaitMs, awaitPollInterval).untilAsserted(
                     () -> verifyMockSequenceNoLogs(verifySequenceSetup));
         } catch (ConditionTimeoutException e) {
             verifyMockSequence(verifySequenceSetup);
@@ -428,7 +440,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         assertLenientValidJson(verifySetup);
         try {
-            awaitCustom(providedAwaitMs).untilAsserted(
+            awaitCustom(providedAwaitMs, awaitPollInterval).untilAsserted(
                     () -> verifyMockNoLogs(verifySetup));
         } catch (ConditionTimeoutException e) {
             verifyMock(verifySetup);
@@ -443,7 +455,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
     private void assertMocksCountWithAwaitMethod(int from, int to, int providedAwaitMs) {
         try {
-            awaitCustom(providedAwaitMs).untilAsserted(
+            awaitCustom(providedAwaitMs, awaitPollInterval).untilAsserted(
                     () -> assertAllMocksCountNoLogs(from, to));
         } catch (ConditionTimeoutException e) {
             assertAllMocksCount(from, to);
@@ -484,14 +496,14 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     // for retry awaiting no steps/no logs!
     private void verifyMockNoLogs(String verifySetup) {
 
-            assertEquals(
-                    202,
-                    buildSimpleRequest() //no logs no attachments !!!!
-                            .body(verifySetup)
-                            .put("/mockserver/verify")
-                            .then()
-                            .extract()
-                            .statusCode());
+        assertEquals(
+                202,
+                buildSimpleRequest() //no logs no attachments !!!!
+                        .body(verifySetup)
+                        .put("/mockserver/verify")
+                        .then()
+                        .extract()
+                        .statusCode());
     }
 
     //Grab
