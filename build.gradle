@@ -8,7 +8,7 @@ plugins {
 }
 
 
-description = 'BugReaper module for interaction with API and mocks'
+description = 'Is part of the BugReaper JAVA test helper framework that simplifies API and mocks interaction in automated tests.'
 
 group = 'net.bugreaper'
 version = properties["VERSION_NAME"].toString()
@@ -50,7 +50,7 @@ repositories {
 def restAssuredVersion = "6.0.1"
 
 dependencies {
-    api 'net.bugreaper:core:1.4.3'
+    api 'net.bugreaper:core:1.4.4'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"
