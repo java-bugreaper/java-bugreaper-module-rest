@@ -50,7 +50,7 @@ repositories {
 def restAssuredVersion = "6.0.1"
 
 dependencies {
-    api 'net.bugreaper:core:1.4.4'
+    api 'net.bugreaper:core:1.5.0'
 
     api "io.rest-assured:rest-assured:${restAssuredVersion}"
     api "io.rest-assured:json-schema-validator:${restAssuredVersion}"

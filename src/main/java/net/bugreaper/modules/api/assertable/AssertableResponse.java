@@ -4,11 +4,12 @@ import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.hamcrest.Matcher;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
+import static net.bugreaper.core.allurereporter.AllureReporter.attachObject;
+import static net.bugreaper.modules.api.logger.Log.LOGGER;
 
 /**
  * Provides a fluent API for asserting and extracting data from API responses.
@@ -34,7 +35,7 @@ import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 public class AssertableResponse extends AssertableResponseAbstract implements ResponseAsserts, ResponseGrab {
 
     public AssertableResponse(Response response) {
-        super(response, LoggerFactory.getLogger("bugreaper-module-api"));
+        super(response, LOGGER);
     }
 
 
@@ -180,7 +181,9 @@ public class AssertableResponse extends AssertableResponseAbstract implements Re
     @Override
     @Step("↑(API) Grab response body field <{path}>")
     public Object grabDataFromResponseByPath(String path) {
-        return grabDataFromResponseByPathMethod(path);
+        Object obj = grabDataFromResponseByPathMethod(path);
+        attachObject(path, obj);
+        return obj;
     }
 
 }

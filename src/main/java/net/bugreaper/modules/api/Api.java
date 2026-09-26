@@ -19,11 +19,14 @@ import net.bugreaper.core.config.YamlUtils;
 import net.bugreaper.modules.api.assertable.AssertableResponse;
 import net.bugreaper.modules.api.interfaces.ApiConfig;
 import net.bugreaper.modules.api.interfaces.ApiInt;
-import net.bugreaper.modules.api.setup.ApiAbstract;
+import net.bugreaper.modules.api.internal.ApiHelper;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 
 import java.util.Map;
+
+import static net.bugreaper.core.config.YamlUtils.getConfigMapValueByPath;
+import static net.bugreaper.modules.api.logger.Log.LOGGER;
 
 /**
  * API helper that provides a common API for operating with HTTP requests using RestAssured.
@@ -31,6 +34,8 @@ import java.util.Map;
  * <p>It is recommended to use a single instance:
  * {@code Api api = Api.getInstance();}
  * </p>
+ * <p>
+ * Responses can be checked by {@link AssertableResponse}
  *
  * <p>This client provides a convenient fluent API for:</p>
  * <ul>
@@ -44,11 +49,14 @@ import java.util.Map;
  * @author Oleksii Betin "ambu550"
  * @since 1.0.0
  */
-public class Api extends ApiAbstract implements ApiInt, ApiConfig {
+public class Api implements ApiInt, ApiConfig {
+
+    private final ApiHelper apiApiHelper;
 
     private static Api instance;
 
-    private static final String YML_KEY = "modules.api";
+    private static final String YML_PATH = "modules.api";
+
 
     /**
      * Creates an API client with the specified service connection settings.
@@ -57,7 +65,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * @param port service port
      */
     public Api(String url, int port) {
-        super(url, port);
+        apiApiHelper = new ApiHelper(url, port, LOGGER);
     }
 
     /**
@@ -103,7 +111,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * @throws IllegalArgumentException if the configuration contains invalid values
      */
     public Api() {
-        loadFromYaml("");
+        this("");
     }
 
     /**
@@ -133,43 +141,47 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
      * Missing optional keys will fall back to predefined defaults.</p>
      */
     public Api(String suffix) {
-        if (suffix == null || suffix.isBlank()) {
-            throw new IllegalArgumentException("suffix can`t be empty or null");
+
+        if (suffix == null) {
+            throw new IllegalArgumentException("suffix can`t be null");
         }
-        loadFromYaml(suffix);
+
+        apiApiHelper = new ApiHelper(
+                YamlUtils.getStringValueByPath(YML_PATH + suffix + ".url"),
+                YamlUtils.getIntegerValueByPath(YML_PATH + suffix + ".port"),
+                getConfigMapValueByPath(YML_PATH + suffix + ".options", true),
+                LOGGER);
+
+
+        loadYmlSetters(suffix);
     }
 
 
-    private void loadFromYaml(String num) {
-
-        //required config fields
-        this.url = YamlUtils.getStringValueByPath(YML_KEY + num + ".url");
-        this.port = YamlUtils.getIntegerValueByPath(YML_KEY + num + ".port");
-
+    private void loadYmlSetters(String suffix) {
 
         //optional config fields
-        Object usernameVal = YamlUtils.getValueByPath(YML_KEY + num + ".username", true);
-        Object passwordVal = YamlUtils.getValueByPath(YML_KEY + num + ".password", true);
+        Object usernameVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".username", true);
+        Object passwordVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".password", true);
         if (usernameVal instanceof String stringUser && passwordVal instanceof String stringPass) {
             setBasicAuth(stringUser, stringPass);
         }
 
-        Object tokenVal = YamlUtils.getValueByPath(YML_KEY + num + ".token", true);
+        Object tokenVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".token", true);
         if (tokenVal instanceof String token) {
             setBearerAuth(token);
         }
 
-        Object loggingVal = YamlUtils.getValueByPath(YML_KEY + num + ".logging", true);
+        Object loggingVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".logging", true);
         if (loggingVal instanceof Boolean logging) {
             setLogging(logging);
         }
 
-        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(YML_KEY + num + ".max-response-ms-assert", true);
+        Object maxResponseMsAssertVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".max-response-ms-assert", true);
         if (maxResponseMsAssertVal instanceof Integer assertMs) {
             setMaxResponseMsAssert(assertMs);
         }
 
-        Object maxTimeoutMsVal = YamlUtils.getValueByPath(YML_KEY + num + ".max-timeout-ms", true);
+        Object maxTimeoutMsVal = YamlUtils.getValueByPath(YML_PATH + suffix + ".max-timeout-ms", true);
         if (maxTimeoutMsVal instanceof Integer timeoutMs) {
             setTimeoutMs(timeoutMs);
         }
@@ -179,130 +191,115 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
     @Override
     public Api setContentTypeJson() {
-        this.contentType = ContentType.JSON;
+        apiApiHelper.setContentType(ContentType.JSON);
         return this;
     }
 
     @Override
     public Api setContentTypeXml() {
-        this.contentType = ContentType.XML;
+        apiApiHelper.setContentType(ContentType.XML);
         return this;
     }
 
     @Override
     public Api setContentType(ContentType contentType) {
-        this.contentType = contentType;
+        apiApiHelper.setContentType(contentType);
+        return this;
+    }
+
+    @Override
+    public Api setNoContentType() {
+        apiApiHelper.setContentType(null);
         return this;
     }
 
     @Override
     public Api setMaxResponseMsAssert(int maxResponseMs) {
-        this.maxResponseMsAssert = maxResponseMs;
+        apiApiHelper.setMaxResponseMsAssert(maxResponseMs);
         return this;
     }
 
     @Override
     public Api setTimeoutMs(int maxTimeoutMs) {
-        this.maxTimeoutMs = maxTimeoutMs;
-        return this;
-    }
-
-
-    @Override
-    public Api setNoContentType() {
-        this.contentType = null;
+        apiApiHelper.setTimeoutMs(maxTimeoutMs);
         return this;
     }
 
     @Override
     public Api setHeader(String key, Object value) {
-        this.headers.put(key, value);
+        apiApiHelper.setHeader(key, value);
         return this;
     }
 
-
     @Override
     public Api setHeaders(Map<String, Object> headers) {
-        synchronized (this.headers) {
-            this.headers.clear();
-            this.headers.putAll(headers);
-        }
+        apiApiHelper.setHeaders(headers);
         return this;
     }
 
     @Override
     public Api cleanSetHeaders() {
-        this.headers.clear();
+        apiApiHelper.cleanSetHeaders();
         return this;
     }
 
     @Override
     public Api withHeader(String key, Object value) {
-        this.requestHeaders.get().put(key, value);
+        apiApiHelper.withHeader(key, value);
         return this;
     }
 
     @Override
-    public Api withHeaders(Map<String, Object> queryParams) {
-        this.requestHeaders.get().putAll(queryParams);
+    public Api withHeaders(Map<String, Object> headers) {
+        apiApiHelper.withHeaders(headers);
         return this;
     }
 
     @Override
     public Api setQueryParams(Map<String, Object> queryParams) {
-        synchronized (this.queryParams) {
-            this.queryParams.clear();
-            this.queryParams.putAll(queryParams);
-        }
+        apiApiHelper.setQueryParams(queryParams);
         return this;
     }
 
     @Override
     public Api cleanSetQueryParams() {
-        this.queryParams.clear();
+        apiApiHelper.cleanSetQueryParams();
         return this;
     }
 
     @Override
     public Api withQueryParam(String key, Object value) {
-        this.requestQueryParams.get().put(key, value);
+        apiApiHelper.withQueryParam(key, value);
         return this;
     }
 
     @Override
     public Api withQueryParams(Map<String, Object> queryParams) {
-        this.requestQueryParams.get().putAll(queryParams);
+        apiApiHelper.withQueryParams(queryParams);
         return this;
     }
 
     @Override
     public Api setBearerAuth(String token) {
-        this.authToken = token;
-        this.useBasicAuth = false;
+        apiApiHelper.setBearerAuth(token);
         return this;
     }
 
     @Override
     public Api setBasicAuth(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.useBasicAuth = true;
-        this.authToken = null;
+        apiApiHelper.setBasicAuth(username, password);
         return this;
     }
 
     @Override
     public Api setNoAuth() {
-        this.authToken = null;
-        this.username = null;
-        this.password = null;
-        this.useBasicAuth = false;
+        apiApiHelper.setNoAuth();
         return this;
     }
 
     @Override
     public Api setLogging(boolean enable) {
-        this.enableLogging = enable;
+        apiApiHelper.setLogging(enable);
         return this;
     }
 
@@ -310,24 +307,12 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
 
     @Override
     public String getConfigSummary() {
-        String info = String.format("""
-        %s:
-            url=%s
-            port=%d
-            username=%s
-            password=%s
-            useBasicAuth=%b
-            authToken=%s
-            contentType=%s
-            enableLogging=%b
-            maxResponseMsAssert=%d
-            maxTimeoutMs=%d%n""",
-                this.getClass().getSimpleName(),
-                url, port, username, password, useBasicAuth, authToken,
-                contentType, enableLogging, maxResponseMsAssert, maxTimeoutMs);
+        return apiApiHelper.getConfigSummary(this.getClass());
+    }
 
-        logger.info(info);
-        return info;
+    @Override
+    public String getHttpClientParams() {
+        return  apiApiHelper.getHttpClientParams();
     }
 
     // interactions
@@ -335,7 +320,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send GET {path}")
     public AssertableResponse sendGet(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .get(path));
     }
@@ -343,7 +328,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send HEAD {path}")
     public AssertableResponse sendHead(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .head(path));
     }
@@ -351,7 +336,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send OPTIONS {path}")
     public AssertableResponse sendOptions(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .options(path));
     }
@@ -359,7 +344,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send POST {path}")
     public AssertableResponse sendPost(String path, Object body) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .body(body)
                 .when()
                 .post(path));
@@ -368,7 +353,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send POST {path}")
     public AssertableResponse sendPost(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .post(path));
     }
@@ -376,7 +361,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send PUT {path}")
     public AssertableResponse sendPut(String path, Object body) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .body(body)
                 .when()
                 .put(path));
@@ -385,7 +370,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send PUT {path}")
     public AssertableResponse sendPut(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .put(path));
     }
@@ -393,7 +378,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send PATCH {path}")
     public AssertableResponse sendPatch(String path, Object body) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .body(body)
                 .when()
                 .patch(path));
@@ -402,7 +387,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send DELETE {path}")
     public AssertableResponse sendDelete(String path, Object body) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .body(body)
                 .when()
                 .delete(path));
@@ -411,7 +396,7 @@ public class Api extends ApiAbstract implements ApiInt, ApiConfig {
     @Override
     @Step("(API) Send DELETE {path}")
     public AssertableResponse sendDelete(String path) {
-        return new AssertableResponse(buildRequest()
+        return new AssertableResponse(apiApiHelper.buildRequest()
                 .when()
                 .delete(path));
     }

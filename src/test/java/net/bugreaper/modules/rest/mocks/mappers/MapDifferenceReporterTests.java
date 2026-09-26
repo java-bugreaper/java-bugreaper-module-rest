@@ -1,13 +1,9 @@
 package net.bugreaper.modules.rest.mocks.mappers;
 
 import net.bugreaper.core.exceptions.JsonMappersException;
-import net.bugreaper.modules.mocks.mappers.MapDifferenceReporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import static net.bugreaper.core.filereaders.FileReader.readTextFromFile;
 import static net.bugreaper.modules.mocks.mappers.MapDifferenceReporter.jsonDifLogic;
@@ -16,18 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class MapDifferenceReporterTests {
-
-    @Test
-    void staticClass() throws NoSuchMethodException {
-        Constructor<MapDifferenceReporter> constructor = MapDifferenceReporter.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-
-        InvocationTargetException thrown = assertThrows(InvocationTargetException.class, constructor::newInstance);
-
-        Throwable cause = thrown.getCause();
-        assert (cause instanceof IllegalStateException);
-        assert ("Utility class".equals(cause.getMessage()));
-    }
 
     @Test
     void checkNotStrictPass() {

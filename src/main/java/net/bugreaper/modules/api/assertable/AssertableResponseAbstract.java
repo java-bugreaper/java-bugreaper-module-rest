@@ -183,11 +183,7 @@ public class AssertableResponseAbstract{
     }
 
     protected Object grabDataFromResponseByPathMethod(String path) {
-        Object obj = response.then().extract().path(path);
-
-        attachObject(path, obj);
-
-        return obj;
+        return response.then().extract().path(path);
     }
 
 }

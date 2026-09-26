@@ -4,6 +4,7 @@ import net.bugreaper.core.config.YamlUtils;
 import net.bugreaper.modules.api.Api;
 import net.bugreaper.modules.mocks.MocksApi;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @Isolated
-class ConfigTests extends PreSetup {
+class Config1Tests extends PreSetup {
 
     final String endpoint = "/api/test";
 
@@ -43,7 +44,8 @@ class ConfigTests extends PreSetup {
         }else {
             System.clearProperty(PROPERTY);
         }
-        Api apiConf = new Api();
+        Api apiConf = Api.getInstance();
+        Api apiConf2 = Api.getInstance();
 
         apiConf.sendGet(endpoint)
                 .seeResponseCodeIsSuccessful();
@@ -63,7 +65,7 @@ class ConfigTests extends PreSetup {
                             maxResponseMsAssert=2000
                             maxTimeoutMs=1000
                         """, expectedHost),
-                apiConf.getConfigSummary());
+                apiConf2.getConfigSummary());
     }
 
     @Test
@@ -95,7 +97,7 @@ class ConfigTests extends PreSetup {
             System.setProperty(PROPERTY, "noopt");
         }
 
-        Api apiConf = Api.getInstance();
+        Api apiConf = new Api();
 
         apiConf.sendGet(endpoint)
                 .seeResponseCodeIsSuccessful();
@@ -191,12 +193,13 @@ class ConfigTests extends PreSetup {
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
                 new Api( null));
 
-        assertEquals("suffix can`t be empty or null",
+        assertEquals("suffix can`t be null",
                 exception.getMessage());
 
     }
 
     @Test
+    @Disabled("empty is default constructor")
     void testConfigCustom5ValidationEmpty() {
         System.setProperty(PROPERTY, "custom");
 

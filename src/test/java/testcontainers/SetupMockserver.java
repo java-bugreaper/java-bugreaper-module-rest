@@ -13,7 +13,7 @@ import java.util.Objects;
 public class SetupMockserver {
 
     private static final String STABLE_VERSION = "mockserver/mockserver:5.15.0";
-    private static final String LATEST_VERSION = "mockserver/mockserver:7.5.0";
+    private static final String LATEST_VERSION = "mockserver/mockserver:8.0.0";
 
     private static final String DOCKER_IMAGE = resolveDockerImage();
 
