@@ -1,4 +1,33 @@
 modules:
+  api:
+    url: http://localhost
+    port: 1082
+    options:
+      http.socket.timeout: 6000
+      http.connection.max-header-count: 7000
+  api-2:
+    url: http://localhost
+    port: 1082
+  api-3:
+    url: http://localhost
+    port: 1082
+    max-timeout-ms: 2000 # optional
+  api-4:
+    url: http://localhost
+    port: 1082
+    max-timeout-ms: 1000 # optional will override options: http.socket.timeout & http.connection.timeout
+    options:
+      http.socket.timeout: 2200
+      http.connection.max-header-count: 5000
+      #        "http.tcp.nodelay",
+      #        "http.socket.buffer-size",
+      #        "http.socket.linger",
+      #        "http.socket.reuseaddr",
+      #        "http.connection.timeout",
+      #        "http.connection.stalecheck",
+      #        "http.connection.max-line-length",
+      #        "http.connection.min-chunk-limit",
+      #        "http.socket.keepalive"
   api-5:
     url: http://my-host
     port: 8085

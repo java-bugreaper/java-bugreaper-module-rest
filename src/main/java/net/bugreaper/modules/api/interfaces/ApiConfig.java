@@ -205,4 +205,13 @@ public interface ApiConfig {
      */
     String getConfigSummary();
 
+    /**
+     * Returns and logs (at INFO level) a human-readable summary of all resolved
+     * HTTP client parameters.
+     * <p>
+     *
+     * @return String with HTTP client parameters
+     */
+    String getHttpClientParams();
+
 }

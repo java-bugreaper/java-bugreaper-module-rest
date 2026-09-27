@@ -16,7 +16,7 @@
 package net.bugreaper.modules.mocks;
 
 import net.bugreaper.core.config.YamlUtils;
-import net.bugreaper.modules.api.setup.ApiAbstract;
+import net.bugreaper.modules.api.internal.ApiHelper;
 import net.bugreaper.modules.mocks.exceptions.MockEnchantedException;
 import net.bugreaper.modules.mocks.interfaces.MocksConfig;
 import net.bugreaper.modules.mocks.interfaces.MocksInt;
@@ -25,6 +25,7 @@ import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
@@ -57,9 +58,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0.0
  */
 @SuppressWarnings("squid:S5960")
-public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
+public class MocksApi implements MocksInt, MocksConfig {
+
+    private static final String YML_PATH = "modules.mocks.";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("bugreaper-module-mocks");
 
     private static MocksApi instance;
+
+    private final ApiHelper apiApiHelper;
+
+    private String url;
+
+    private int port;
 
     /**
      * Enchanted report feature
@@ -91,7 +102,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * @param port mock-server port
      */
     public MocksApi(String url, int port) {
-        super(url, port, LoggerFactory.getLogger("bugreaper-module-mocks"));
+        apiApiHelper = new ApiHelper(url, port, LOGGER);
     }
 
     /**
@@ -135,33 +146,32 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * @throws IllegalArgumentException if the configuration contains invalid values
      */
     public MocksApi() {
+        this.url = YamlUtils.getStringValueByPath(YML_PATH + "url");
+        this.port = YamlUtils.getIntegerValueByPath(YML_PATH + "port");
+
+        apiApiHelper = new ApiHelper(url,port, LOGGER);
         loadFromYaml();
     }
 
     private void loadFromYaml() {
 
-        //required config fields
-        this.url = YamlUtils.getStringValueByPath("modules.mocks.url");
-        this.port = YamlUtils.getIntegerValueByPath("modules.mocks.port");
-
-
         //optional config fields
-        Object loggingVal = YamlUtils.getValueByPath("modules.mocks.logging", true);
+        Object loggingVal = YamlUtils.getValueByPath(YML_PATH + "logging", true);
         if (loggingVal instanceof Boolean logging) {
-            setLogging(logging);
+            apiApiHelper.setLogging(logging);
         }
 
-        Object enchantedReportVal = YamlUtils.getValueByPath("modules.mocks.enchanted-report", true);
-        if (enchantedReportVal instanceof Boolean logging) {
-            setEnchantedReport(logging);
+        Object enchantedReportVal = YamlUtils.getValueByPath(YML_PATH + "enchanted-report", true);
+        if (enchantedReportVal instanceof Boolean report) {
+            setEnchantedReport(report);
         }
 
-        Object awaitVal = YamlUtils.getValueByPath("modules.mocks.await", true);
+        Object awaitVal = YamlUtils.getValueByPath(YML_PATH + "await", true);
         if (awaitVal instanceof Integer assertMs) {
             setAwaitMs(assertMs);
         }
 
-        Object awaitPollIntervalVal = YamlUtils.getValueByPath("modules.mocks.await-poll-interval", true);
+        Object awaitPollIntervalVal = YamlUtils.getValueByPath(YML_PATH + "await-poll-interval", true);
         if (awaitPollIntervalVal instanceof Number number) {
             this.awaitPollInterval = number.intValue();
         }
@@ -187,7 +197,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
     @Override
     public MocksApi setLogging(boolean enable) {
-        this.enableLogging = enable;
+        apiApiHelper.setLogging(enable);
         return this;
     }
 
@@ -211,23 +221,23 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             enchantedReport=%b%n""",
                 this.getClass().getSimpleName(),
                 url, port, awaitMs, awaitPollInterval,
-                enableLogging, enchantedReport);
+                apiApiHelper.getLogging(), enchantedReport);
 
-        logger.info(info);
+        LOGGER.info(info);
         return info;
     }
 
     // interactions
 
     private Response sendPut(String endpoint, Object body) {
-        return buildRequest()
+        return apiApiHelper.buildRequest()
                 .body(body)
                 .when()
                 .put("/mockserver/" + endpoint);
     }
 
     private void sendPut(String endpoint) {
-        buildRequest()
+        apiApiHelper.buildRequest()
                 .when()
                 .put("/mockserver/" + endpoint);
     }
@@ -285,7 +295,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .extract()
                             .statusCode());
         } catch (AssertionError e) {
-            logger.error("Expectation creation failed:", e);
+            LOGGER.error("Expectation creation failed:", e);
             throw new IllegalArgumentException("Failed to create mock-server expectation");
         }
     }
@@ -349,7 +359,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         String content = listToString(list).replace("\\", "");
 
-        logger.info("\nRequests to mock-server list({}):\n{}", cnt, content);
+        LOGGER.info("\nRequests to mock-server list({}):\n{}", cnt, content);
         attachJson("Requests to mock-server list(%d): ".formatted(cnt), content);
     }
 
@@ -367,17 +377,17 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
                             .statusCode());
         } catch (AssertionError e) {
             if (e.toString().contains("<202> but was: <400>")) {
-                logger.error("Wrong request verify setup:\n{}", verifySetup);
+                LOGGER.error("Wrong request verify setup:\n{}", verifySetup);
                 throw new MockEnchantedException("Wrong request verify setup");
             }
 
             if (enchantedReport) {
-                logger.info("\nMock-server request verification FAILED, starting enhanced mock verification report generation.");
+                LOGGER.info("\nMock-server request verification FAILED, starting enhanced mock verification report generation.");
                 enchantedReport(getRequestBody("{}"), verifySetup);
             }
 
             // if enchanted off
-            logger.warn("\nTurn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true");
+            LOGGER.warn("\nTurn on enchanted report for more info: by setter .setEnchantedReport(true) or in config modules:mocks:enchanted-report:true");
             throw new AssertionError("Mock-server request verification failed");
         }
     }
@@ -483,7 +493,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         assertEquals(
                 202,
-                buildSimpleRequest() //no logs no attachments !!!!
+                apiApiHelper.buildSimpleRequest() //no logs no attachments !!!!
                         .body(verifySetup)
                         .put("/mockserver/verifySequence")
                         .then()
@@ -498,7 +508,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
 
         assertEquals(
                 202,
-                buildSimpleRequest() //no logs no attachments !!!!
+                apiApiHelper.buildSimpleRequest() //no logs no attachments !!!!
                         .body(verifySetup)
                         .put("/mockserver/verify")
                         .then()
@@ -511,7 +521,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
     @Override
     @Step("[MOCK]: Get value from request {extractPath}")
     public Object getRequestValue(String mockSetup, String extractPath) {
-        Object obj = buildRequest()
+        Object obj = apiApiHelper.buildRequest()
                 .body(mockSetup)
                 .put("retrieve?type=REQUESTS")
                 .then()
@@ -540,7 +550,7 @@ public class MocksApi extends ApiAbstract implements MocksInt, MocksConfig {
      * @return response containing the request body
      */
     private Response getRequestBody(String mockSetup) {
-        return (Response) buildSimpleRequest() //no logs no attachments !!!!
+        return (Response) apiApiHelper.buildSimpleRequest() //no logs no attachments !!!!
                 .body(mockSetup)
                 .put("retrieve?type=REQUESTS")
                 .then()

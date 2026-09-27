@@ -22,3 +22,14 @@ project or at https://apache.org
 
 * io.rest-assured : json-schema-validator
   Copyright (c) REST [Johan Haleby]. All rights reserved.
+
+------------------------------------------------------------------------
+Inclusions and Modified Code (Apache License, Version 2.0)
+------------------------------------------------------------------------
+* io.qameta.allure : allure-rest-assured (Modified Portions)
+  This product includes code modified from the 'allure-rest-assured' library,
+  developed by Qameta Software / Allure Framework (https://allurereport.org).
+  Original Copyright (c) Qameta Software. All rights reserved.
+
+  Modifications and additions:
+  Copyright (c)  [Oleksii Betin]. All rights reserved.

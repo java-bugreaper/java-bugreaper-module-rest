@@ -14,6 +14,12 @@
  * Portions of this file are derived from code originally from:
  * Allure Framework - allure-java (https://github.com/allure-framework/allure-java)
  * Copyright © the Allure contributors, licensed under the Apache License 2.0.
+ *
+ * Original code Copyright (c) Qameta Software, Allure Framework
+ * Licensed under the Apache License, Version 2.0
+ *
+ * Modifications Copyright (c) Oleksii Betin (net.bugreaper)
+ * Subsequently modified to [catch AttachmentRenderException].
  */
 package net.bugreaper.modules.api.allurereporter;
 

@@ -38,7 +38,7 @@ helping you write reliable and maintainable tests with minimal boilerplate.
 ### Tested with:
 
     mockserver/mockserver:5.15.0
-    mockserver/mockserver:7.5.0
+    mockserver/mockserver:8.0.0
 
 ## Real examples here:
 - ### [Report-api](https://bug-reaper.gitlab.io/java-bugreaper-sandbox/#behaviors)

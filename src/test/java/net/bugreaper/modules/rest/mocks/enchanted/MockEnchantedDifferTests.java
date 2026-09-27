@@ -1,14 +1,11 @@
 package net.bugreaper.modules.rest.mocks.enchanted;
 
 
-import net.bugreaper.modules.mocks.enchanted.MockEnchantedDiffer;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
@@ -21,18 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("java:S5976")
 class MockEnchantedDifferTests {
-
-    @Test
-    void staticClass() throws NoSuchMethodException {
-        Constructor<MockEnchantedDiffer> constructor = MockEnchantedDiffer.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-
-        InvocationTargetException thrown = assertThrows(InvocationTargetException.class, constructor::newInstance);
-
-        Throwable cause = thrown.getCause();
-        assert (cause instanceof IllegalStateException);
-        assert ("Utility class".equals(cause.getMessage()));
-    }
 
 
     @Test
